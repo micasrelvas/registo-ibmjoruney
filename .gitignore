@@ -6,4 +6,3 @@ __pycache__/
 *.csv
 *.png
 .env
-service_account.json
