@@ -59,6 +59,18 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 • **Open-Source Commitment:** Promoting collaboration and innovation through open-source projects.
 """)
 
+# --- About Timestamp ---
+with st.expander("💡 About Timestamp", expanded=False):
+    st.markdown("""
+Timestamp, provide innovative solutions and services in both national and international markets. The Timestamp Group integrates several Portuguese-owned companies, built around the principles of **excellence** and **knowledge sharing**.
+
+They focus on **technological leadership**, based on quality, certifications, and continuous training, which is also reflected in the development and delivery of the innovative services we provide globally.
+
+Their operations rely on a **network of competencies** formed by their teams and a set of partnerships with other national and international companies.  
+Timestamp goal is to create an extended hub of highly specialized skills, allowing them to respond with quality and rigor to the challenges posed by each project and every organization they collaborate with.
+""")
+
+
 # --- Technology ---
 with st.expander(" Technology", expanded=False):
     st.markdown("""
