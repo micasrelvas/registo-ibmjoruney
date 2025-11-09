@@ -59,15 +59,8 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 • **Open-Source Commitment:** Promoting collaboration and innovation through open-source projects.
 """)
 
-# --- Prizes ---
-with st.expander("🏆 Prizes", expanded=False):
-    st.markdown("""
-- **Winning Team:** Experience professional placement during the last fortnight of June.  
-- **All Participating Teams:** Certificate of participation + exclusive merchandising.
-""")
-
 # --- Technology ---
-with st.expander("🤖 Technology", expanded=False):
+with st.expander(" Technology", expanded=False):
     st.markdown("""
 The IBM Journey leverages cutting-edge technologies such as **watsonx Orchestrate** to develop agentic AI solutions that connect apps, tools, and workflows. Participants will explore automation, digital skills, integrations, and AI orchestration in real-world scenarios.
 """)
@@ -91,6 +84,12 @@ Explore how watsonx Orchestrate is already being applied:
 • **Sales:** Support sales teams with CRM updates, scheduling, and lead follow-up.
 """)
 
+# --- Prizes ---
+with st.expander("🏆 Prizes", expanded=False):
+    st.markdown("""
+- **Winning Team:** Experience professional placement during the last fortnight of June.  
+- **All Participating Teams:** Certificate of participation + exclusive merchandising.
+""")
 
 # --- Dados temporários em memória ---
 if "registos" not in st.session_state:
