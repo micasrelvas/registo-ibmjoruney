@@ -4,8 +4,35 @@ from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
 
-st.set_page_config(page_title="IBM Journey - Registo", layout="centered")
-st.title("Bem-vindo ao IBM Journey powered by Timestamp - Se queres aprender a fazer agentes de forma rápida e com a melhor tecnologia do mercado, inscreve-te")
+# --- Página ---
+st.set_page_config(page_title="IBM Journey - Registo", layout="wide")
+
+# --- CSS personalizado ---
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+        color: white;
+        font-family: 'Arial', sans-serif;
+    }
+    .stButton>button {
+        background-color: #4CAF50;
+        color: white;
+        font-weight: bold;
+    }
+    .stDataFrame th {
+        background-color: #1f3c52;
+        color: white;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# --- Título ---
+st.markdown("<h1 style='color:#00ffff;'>🚀 Bem-vindo ao IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
+st.markdown("<p style='color:#cccccc;'>Aprende a criar agentes com a melhor tecnologia do mercado!</p>", unsafe_allow_html=True)
 
 # --- Dados temporários em memória ---
 if "registos" not in st.session_state:
@@ -28,26 +55,24 @@ def enviar_email(destinatario, assunto, mensagem):
     except Exception as e:
         st.warning(f"Não foi possível enviar email para {destinatario}: {e}")
 
-# --- Inputs do aluno ---
-st.subheader("📝 Registo / Cancelamento de presença")
-nome = st.text_input("👤 Nome")
-apelido = st.text_input("👤 Apelido")
-email = st.text_input("📧 Email")
-equipa = st.text_input("👥 Equipa")
-
-col1, col2 = st.columns(2)
-
-# --- Confirmar presença ---
-with col1:
+# --- Inputs em expansores ---
+with st.expander("📝 Registo de Presença", expanded=True):
+    col1, col2 = st.columns(2)
+    with col1:
+        nome = st.text_input("👤 Nome")
+        apelido = st.text_input("👤 Apelido")
+    with col2:
+        email = st.text_input("📧 Email")
+        equipa = st.text_input("👥 Equipa")
+    
     if st.button("✅ Confirmar Presença"):
-        # Verificar campos obrigatórios
         if not all([nome, apelido, email, equipa]):
             st.warning("Todos os campos são obrigatórios para registar a presença.")
         else:
             datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             st.session_state.registos.loc[len(st.session_state.registos)] = [nome, apelido, email, equipa, datahora]
-            st.success(f"Presença registada para {nome} {apelido}!")
-
+            st.success(f"🤖 Presença registada para {nome} {apelido}!")
+            
             # Enviar email de confirmação
             assunto = "Confirmação de registo no IBM Journey"
             mensagem = f"""Olá {nome},
@@ -59,17 +84,15 @@ Data/Hora: {datahora}
 """
             enviar_email(email, assunto, mensagem)
 
-# --- Cancelar presença ---
-with col2:
-    if st.button("❌ Cancelar Presença"):
-        # Verificar campos obrigatórios
+with st.expander("❌ Cancelamento de Presença"):
+    if st.button("Cancelar Presença"):
         if not all([nome, apelido, email, equipa]):
             st.warning("Todos os campos são obrigatórios para cancelar a presença.")
         else:
             mask = ~(st.session_state.registos["Email"] == email)
             st.session_state.registos = st.session_state.registos[mask]
-            st.info(f"Registo cancelado para {email}")
-
+            st.info(f"🛑 Registo cancelado para {email}")
+            
             # Enviar email de cancelamento
             assunto = "Cancelamento de registo no IBM Journey"
             mensagem = f"""Olá {nome},
@@ -80,22 +103,15 @@ Equipa: {equipa}
 """
             enviar_email(email, assunto, mensagem)
 
-# --- Mostrar tabela de registos ---
-st.subheader("📋 Registos atuais (em memória)")
-st.dataframe(st.session_state.registos)
-
 # --- Dashboard do professor ---
-st.subheader("📊 Dashboard do Professor")
+with st.expander("📊 Dashboard do Professor", expanded=True):
+    if not st.session_state.registos.empty:
+        st.markdown("### 🤖 Alunos inscritos")
+        st.dataframe(st.session_state.registos[["Nome", "Apelido", "Equipa", "DataHora"]])
 
-if not st.session_state.registos.empty:
-    st.write("**Alunos inscritos:**")
-    # Mostrar tabela completa com Nome, Apelido, Equipa e Data/Hora
-    st.dataframe(st.session_state.registos[["Nome", "Apelido", "Equipa", "DataHora"]])
-
-    st.write("**Número de alunos por equipa:**")
-    count_equipa = st.session_state.registos.groupby("Equipa")["Email"].count().reset_index()
-    count_equipa.columns = ["Equipa", "Número de alunos"]
-    st.table(count_equipa)
-
-else:
-    st.info("Ainda não há registos para mostrar no dashboard.")
+        st.markdown("### 🚀 Número de alunos por equipa")
+        count_equipa = st.session_state.registos.groupby("Equipa")["Email"].count().reset_index()
+        count_equipa.columns = ["Equipa", "Número de alunos"]
+        st.bar_chart(count_equipa.set_index("Equipa"))
+    else:
+        st.info("Ainda não há registos para mostrar no dashboard.")
