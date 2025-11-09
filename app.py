@@ -98,7 +98,7 @@ Explore how watsonx Orchestrate is already being applied:
 
 # --- Prizes ---
 with st.expander("🏆 Prizes", expanded=False):
-    st.markdown("### 🎁 What you can win!")
+    st.markdown("### What you can win!")
 
     col1, col2 = st.columns(2)
 
