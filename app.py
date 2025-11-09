@@ -41,12 +41,56 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Imagem de topo ---
-st.image("https://images.unsplash.com/photo-1581091215365-9f3f07ff14df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHwxfHNlYXJjaHwxfHx0ZWNobm9sb2d5fGVufDB8fHx8MTY5OTM2MjgwMA&ixlib=rb-4.0.3&q=80&w=1080", use_column_width=True)
-
 # --- Título ---
 st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
 st.markdown("<p>Aprende a criar agentes com a melhor tecnologia do mercado!</p>", unsafe_allow_html=True)
+
+import streamlit as st
+
+# --- About IBM ---
+with st.expander("💡 About IBM", expanded=False):
+    st.markdown("""
+IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades. Their contributions span across various fields, including AI, cloud computing, and quantum computing. IBM's cutting-edge technology and research continue to drive advancements in multiple sectors:
+
+• **AI and Machine Learning:** Leading the charge in AI development with powerful tools and models.  
+• **Cloud Solutions:** Providing scalable and flexible cloud services.  
+• **Quantum Computing:** Pushing the boundaries of computing with quantum technology.  
+• **Research and Development:** Continuously advancing technology with extensive research and high-quality datasets.  
+• **Open-Source Commitment:** Promoting collaboration and innovation through open-source projects.
+""")
+
+# --- Prizes ---
+with st.expander("🏆 Prizes", expanded=False):
+    st.markdown("""
+- **Winning Team:** Experience professional placement during the last fortnight of June.  
+- **All Participating Teams:** Certificate of participation + exclusive merchandising.
+""")
+
+# --- Technology ---
+with st.expander("🤖 Technology", expanded=False):
+    st.markdown("""
+The IBM Journey leverages cutting-edge technologies such as **watsonx Orchestrate** to develop agentic AI solutions that connect apps, tools, and workflows. Participants will explore automation, digital skills, integrations, and AI orchestration in real-world scenarios.
+""")
+
+# --- Challenge ---
+with st.expander("🚀 Challenge: Build the Next Generation of Agentic AI", expanded=False):
+    st.markdown("""
+Your challenge is to design and develop an AI agent powered by **IBM watsonx Orchestrate** that helps people and businesses achieve more with less effort. By combining digital skills, integrations, and workflow automation, participants will create agents that can act, decide, and collaborate in real-world scenarios.
+
+### What’s Expected?
+• **Harness watsonx Orchestrate:** Use its orchestration features, integrations, and digital skills to build agents that connect across apps, tools, and workflows.  
+• **Focus on Real-World Impact:** Create agents that solve common pain points in areas such as HR, sales, customer service, finance, or procurement.  
+• **Innovate for the Future of Work:** Demonstrate how agentic AI can augment human potential, reduce friction, and redefine productivity.
+
+### Inspiration & Use Cases
+Explore how watsonx Orchestrate is already being applied:  
+• **Customer Service:** Deliver faster responses, automate ticket handling, and improve customer experiences.  
+• **Finance:** Streamline approvals, reporting, and risk analysis to enhance financial operations.  
+• **HR:** Simplify onboarding, manage employee requests, and improve HR efficiency.  
+• **Procurement:** Automate supplier management, purchase orders, and procurement cycles.  
+• **Sales:** Support sales teams with CRM updates, scheduling, and lead follow-up.
+""")
+
 
 # --- Dados temporários em memória ---
 if "registos" not in st.session_state:
