@@ -2,20 +2,14 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import qrcode
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from io import BytesIO
 
-# Configurações do Google Sheets
-SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-CREDS_FILE = "service_account.json"  # chave do Google API
-SHEET_NAME = "Presencas_Aulas"
+st.set_page_config(page_title="Registo de Presenças - Teste", layout="centered")
+st.title("📚 Registo de Presença - Aula (Teste)")
 
-gc = gspread.service_account(filename=CREDS_FILE)
-sheet = gc.open(SHEET_NAME).sheet1
-
-# Streamlit page
-st.set_page_config(page_title="Registo de Presenças", page_icon="📚", layout="centered")
-st.title("📚 Registo de Presença - Aula")
+# --- Dados temporários em memória ---
+if "registos" not in st.session_state:
+    st.session_state.registos = pd.DataFrame(columns=["Aula", "Nome", "Apelido", "Email", "Equipa", "DataHora"])
 
 # --- Inputs ---
 nome = st.text_input("👤 Nome")
@@ -31,21 +25,28 @@ with col1:
     if st.button("✅ Confirmar Presença"):
         if nome and apelido and email and equipa and aula:
             datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            sheet.append_row([aula, nome, apelido, email, equipa, datahora])
+            st.session_state.registos.loc[len(st.session_state.registos)] = [aula, nome, apelido, email, equipa, datahora]
             st.success(f"Presença registada para {nome} {apelido}!")
+            
+            # Gerar QR code
+            qr = qrcode.QRCode(version=1, box_size=10, border=4)
+            qr.add_data(f"{nome} {apelido} - {aula}")
+            qr.make(fit=True)
+            img = qr.make_image(fill="black", back_color="white")
+            buf = BytesIO()
+            img.save(buf)
+            st.image(buf)
+
         else:
             st.warning("Preenche todos os campos!")
 
 # Cancelar presença
 with col2:
     if st.button("❌ Cancelar Presença"):
-        all_values = sheet.get_all_values()
-        df = pd.DataFrame(all_values[1:], columns=all_values[0])
-        mask = (df['Email'] != email) | (df['Aula'] != aula)
-        df_new = df[mask]
-        # Limpa e reescreve
-        sheet.clear()
-        sheet.append_row(all_values[0])
-        for row in df_new.values.tolist():
-            sheet.append_row(row)
+        mask = ~((st.session_state.registos["Email"] == email) & (st.session_state.registos["Aula"] == aula))
+        st.session_state.registos = st.session_state.registos[mask]
         st.info(f"Registo cancelado para {email} na aula {aula}")
+
+# --- Mostrar tabela ---
+st.subheader("📋 Registos atuais (em memória)")
+st.dataframe(st.session_state.registos)
