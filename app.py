@@ -98,9 +98,24 @@ Explore how watsonx Orchestrate is already being applied:
 
 # --- Prizes ---
 with st.expander("🏆 Prizes", expanded=False):
-    st.markdown("""
-- **Winning Team:** Experience professional placement during the last fortnight of June.  
-- **All Participating Teams:** Certificate of participation + exclusive merchandising.
+    st.markdown("### 🎁 What you can win!")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.image("https://images.unsplash.com/photo-1605902711622-cfb43c443c22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", caption="🥇 Winning Team Experience", use_column_width=True)
+        st.markdown("""
+**Winning Team:**  
+A unique professional experience during the **last fortnight of June**.  
+Get hands-on exposure to real-world projects and accelerate your career in AI!
+""")
+
+    with col2:
+        st.image("https://images.unsplash.com/photo-1596496055692-0e8a77d91473?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", caption="🎖️ Participation Rewards", use_column_width=True)
+        st.markdown("""
+**All Participating Teams:**  
+Receive a **Certificate of Participation** and **exclusive merchandising**,  
+celebrating your journey and achievements in innovation and AI.
 """)
 
 # --- Dados temporários em memória ---
