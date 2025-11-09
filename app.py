@@ -147,7 +147,7 @@ def enviar_email(destinatario, assunto, mensagem):
         st.warning(f"Não foi possível enviar email para {destinatario}: {e}")
 
 # --- Inputs em expansores ---
-with st.expander("📝 Registo de Presença", expanded=True):
+with st.expander("📝 Inscrição no Open Day", expanded=True):
     col1, col2 = st.columns(2)
     with col1:
         nome = st.text_input("👤 Nome")
@@ -156,16 +156,16 @@ with st.expander("📝 Registo de Presença", expanded=True):
         email = st.text_input("📧 Email")
         equipa = st.text_input("👥 Equipa")
     
-    if st.button("✅ Confirmar Presença"):
+    if st.button("✅ Confirmar Inscrição"):
         if not all([nome, apelido, email, equipa]):
-            st.warning("Todos os campos são obrigatórios para registar a presença.")
+            st.warning("Todos os campos são obrigatórios para registar a inscrição.")
         else:
             datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             st.session_state.registos.loc[len(st.session_state.registos)] = [nome, apelido, email, equipa, datahora]
-            st.success(f"🤖 Presença registada para {nome} {apelido}!")
+            st.success(f"🤖 Confirmamos o registo no Open Day, dia 2 de Dezembro, para {nome} {apelido}!")
             
             # Enviar email de confirmação
-            assunto = "Confirmação de registo no IBM Journey"
+            assunto = "Confirmação de inscrição no IBM Journey"
             mensagem = f"""Olá {nome},
 
 O teu registo no IBM Journey foi confirmado com sucesso!
@@ -176,12 +176,12 @@ Data/Hora: {datahora}
             enviar_email(email, assunto, mensagem)
 
 # --- Cancelamento apenas com email ---
-with st.expander("❌ Cancelamento de Presença"):
-    email_cancel = st.text_input("📧 Email para cancelar registo")
+with st.expander("❌ Cancelamento de Inscrição"):
+    email_cancel = st.text_input("📧 Email para cancelar a inscrição")
 
     if st.button("Cancelar Presença"):
         if not email_cancel:
-            st.warning("O campo Email é obrigatório para cancelar a presença.")
+            st.warning("O campo Email é obrigatório para cancelar a inscrição.")
         else:
             registro = st.session_state.registos[st.session_state.registos["Email"] == email_cancel]
             if registro.empty:
@@ -193,13 +193,13 @@ with st.expander("❌ Cancelamento de Presença"):
 
                 # Remove o registo
                 st.session_state.registos = st.session_state.registos[st.session_state.registos["Email"] != email_cancel]
-                st.info(f"🛑 Registo cancelado para {email_cancel}")
+                st.info(f"🛑 Inscrição cancelada para {email_cancel}")
 
                 # Enviar email de cancelamento
-                assunto = "Cancelamento de registo no IBM Journey"
+                assunto = "Cancelamento de inscrição no Open Day, dia 3 de dezembro"
                 mensagem = f"""Olá {nome_c},
 
-O teu registo no IBM Journey foi cancelado.
+A tua inscrição no Open Day foi cancelada.
 
 Equipa: {equipa_c}
 """
@@ -216,4 +216,4 @@ with st.expander("📊 Dashboard do Professor", expanded=True):
         count_equipa.columns = ["Equipa", "Número de alunos"]
         st.bar_chart(count_equipa.set_index("Equipa"))
     else:
-        st.info("Ainda não há registos para mostrar no dashboard.")
+        st.info("Ainda não há inscrições para mostrar no dashboard.")
