@@ -70,12 +70,20 @@ Their operations rely on a **network of competencies** formed by their teams and
 Timestamp goal is to create an extended hub of highly specialized skills, allowing them to respond with quality and rigor to the challenges posed by each project and every organization they collaborate with.
 """)
 
-
 # --- Technology ---
-with st.expander(" Technology", expanded=False):
+with st.expander("⚙️ Technology", expanded=False):
     st.markdown("""
 The IBM Journey leverages cutting-edge technologies such as **watsonx Orchestrate** to develop agentic AI solutions that connect apps, tools, and workflows. Participants will explore automation, digital skills, integrations, and AI orchestration in real-world scenarios.
+
+### 📚 Resources to Explore
+In preparation, explore these resources:
+
+- [Product Overview](https://www.ibm.com/products/watsonx-orchestrate)  
+- [Demo Experience](https://www.ibm.com/products/watsonx-orchestrate/demos)  
+- [Integrations](https://www.ibm.com/products/watsonx-orchestrate/integrations)  
+- [Resources & Support](https://www.ibm.com/products/watsonx-orchestrate/resources)
 """)
+
 
 # --- Challenge ---
 with st.expander("🚀 Challenge: Build the Next Generation of Agentic AI", expanded=False):
