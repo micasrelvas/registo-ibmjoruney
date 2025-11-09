@@ -86,10 +86,16 @@ st.dataframe(st.session_state.registos)
 
 # --- Dashboard do professor ---
 st.subheader("📊 Dashboard do Professor")
+
 if not st.session_state.registos.empty:
+    st.write("**Alunos inscritos:**")
+    # Mostrar tabela completa com Nome, Apelido, Equipa e Data/Hora
+    st.dataframe(st.session_state.registos[["Nome", "Apelido", "Equipa", "DataHora"]])
+
     st.write("**Número de alunos por equipa:**")
     count_equipa = st.session_state.registos.groupby("Equipa")["Email"].count().reset_index()
     count_equipa.columns = ["Equipa", "Número de alunos"]
     st.table(count_equipa)
+
 else:
     st.info("Ainda não há registos para mostrar no dashboard.")
