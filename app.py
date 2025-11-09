@@ -14,9 +14,10 @@ if "registos" not in st.session_state:
 # --- Função para enviar email ---
 def enviar_email(destinatario, assunto, mensagem):
     """
-    Esta função envia email. No Streamlit Cloud, os dados de login devem estar como Secrets.
+    Envia email usando SMTP.
+    As credenciais devem estar nos Secrets do Streamlit Cloud:
+    EMAIL_REMETENTE e EMAIL_PASSWORD
     """
-    # Substituir com os teus secrets
     EMAIL_REMETENTE = st.secrets["EMAIL_REMETENTE"]
     EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
 
@@ -48,10 +49,16 @@ with col1:
             datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             st.session_state.registos.loc[len(st.session_state.registos)] = [nome, apelido, email, equipa, datahora]
             st.success(f"Presença registada para {nome} {apelido}!")
-            
+
             # Enviar email de confirmação
             assunto = "Confirmação de registo no IBM Journey"
-            mensagem = f"Olá {nome},\n\nO teu registo no IBM Journey foi confirmado com sucesso!\n\nEquipa: {equipa}\nData/Hora: {datahora}"
+            mensagem = f"""Olá {nome},
+
+O teu registo no IBM Journey foi confirmado com sucesso!
+
+Equipa: {equipa}
+Data/Hora: {datahora}
+"""
             enviar_email(email, assunto, mensagem)
         else:
             st.warning("Preenche todos os campos!")
@@ -59,9 +66,30 @@ with col1:
 # Cancelar presença
 with col2:
     if st.button("❌ Cancelar Presença"):
-        mask = ~((st.session_state.registos["Email"] == email))
+        mask = ~(st.session_state.registos["Email"] == email)
         st.session_state.registos = st.session_state.registos[mask]
         st.info(f"Registo cancelado para {email}")
 
         # Enviar email de cancelamento
-        assunto = "Cancelamento
+        assunto = "Cancelamento de registo no IBM Journey"
+        mensagem = f"""Olá {nome},
+
+O teu registo no IBM Journey foi cancelado.
+
+Equipa: {equipa}
+"""
+        enviar_email(email, assunto, mensagem)
+
+# --- Mostrar tabela de registos ---
+st.subheader("📋 Registos atuais (em memória)")
+st.dataframe(st.session_state.registos)
+
+# --- Dashboard do professor ---
+st.subheader("📊 Dashboard do Professor")
+if not st.session_state.registos.empty:
+    st.write("**Número de alunos por equipa:**")
+    count_equipa = st.session_state.registos.groupby("Equipa")["Email"].count().reset_index()
+    count_equipa.columns = ["Equipa", "Número de alunos"]
+    st.table(count_equipa)
+else:
+    st.info("Ainda não há registos para mostrar no dashboard.")
