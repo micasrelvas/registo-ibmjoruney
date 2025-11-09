@@ -11,28 +11,42 @@ st.set_page_config(page_title="IBM Journey - Registo", layout="wide")
 st.markdown(
     """
     <style>
+    /* Fundo e cores principais */
     .stApp {
-        background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
-        color: white;
+        background-color: #0a0a0a;
+        color: #ffffff;
         font-family: 'Arial', sans-serif;
     }
+    /* Cores dos títulos */
+    h1, h2, h3 {
+        color: #00bfff;
+    }
+    /* Botões */
     .stButton>button {
-        background-color: #4CAF50;
-        color: white;
+        background-color: #00bfff;
+        color: #ffffff;
         font-weight: bold;
     }
+    /* Tabela */
     .stDataFrame th {
-        background-color: #1f3c52;
-        color: white;
+        background-color: #1f1f1f;
+        color: #ffffff;
+    }
+    .stDataFrame td {
+        background-color: #2c2c2c;
+        color: #ffffff;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
+# --- Imagem de topo ---
+st.image("https://images.unsplash.com/photo-1581091215365-9f3f07ff14df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHwxfHNlYXJjaHwxfHx0ZWNobm9sb2d5fGVufDB8fHx8MTY5OTM2MjgwMA&ixlib=rb-4.0.3&q=80&w=1080", use_column_width=True)
+
 # --- Título ---
-st.markdown("<h1 style='color:#00ffff;'>🚀 Bem-vindo ao IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
-st.markdown("<p style='color:#cccccc;'>Aprende a criar agentes com a melhor tecnologia do mercado!</p>", unsafe_allow_html=True)
+st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
+st.markdown("<p>Aprende a criar agentes com a melhor tecnologia do mercado!</p>", unsafe_allow_html=True)
 
 # --- Dados temporários em memória ---
 if "registos" not in st.session_state:
@@ -84,24 +98,35 @@ Data/Hora: {datahora}
 """
             enviar_email(email, assunto, mensagem)
 
+# --- Cancelamento apenas com email ---
 with st.expander("❌ Cancelamento de Presença"):
+    email_cancel = st.text_input("📧 Email para cancelar registo")
+
     if st.button("Cancelar Presença"):
-        if not all([nome, apelido, email, equipa]):
-            st.warning("Todos os campos são obrigatórios para cancelar a presença.")
+        if not email_cancel:
+            st.warning("O campo Email é obrigatório para cancelar a presença.")
         else:
-            mask = ~(st.session_state.registos["Email"] == email)
-            st.session_state.registos = st.session_state.registos[mask]
-            st.info(f"🛑 Registo cancelado para {email}")
-            
-            # Enviar email de cancelamento
-            assunto = "Cancelamento de registo no IBM Journey"
-            mensagem = f"""Olá {nome},
+            registro = st.session_state.registos[st.session_state.registos["Email"] == email_cancel]
+            if registro.empty:
+                st.info(f"⚠️ Nenhum registo encontrado para {email_cancel}.")
+            else:
+                # Pega nome e equipa antes de remover
+                nome_c = registro.iloc[0]["Nome"]
+                equipa_c = registro.iloc[0]["Equipa"]
+
+                # Remove o registo
+                st.session_state.registos = st.session_state.registos[st.session_state.registos["Email"] != email_cancel]
+                st.info(f"🛑 Registo cancelado para {email_cancel}")
+
+                # Enviar email de cancelamento
+                assunto = "Cancelamento de registo no IBM Journey"
+                mensagem = f"""Olá {nome_c},
 
 O teu registo no IBM Journey foi cancelado.
 
-Equipa: {equipa}
+Equipa: {equipa_c}
 """
-            enviar_email(email, assunto, mensagem)
+                enviar_email(email_cancel, assunto, mensagem)
 
 # --- Dashboard do professor ---
 with st.expander("📊 Dashboard do Professor", expanded=True):
