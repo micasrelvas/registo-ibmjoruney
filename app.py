@@ -13,11 +13,6 @@ if "registos" not in st.session_state:
 
 # --- Função para enviar email ---
 def enviar_email(destinatario, assunto, mensagem):
-    """
-    Envia email usando SMTP.
-    As credenciais devem estar nos Secrets do Streamlit Cloud:
-    EMAIL_REMETENTE e EMAIL_PASSWORD
-    """
     EMAIL_REMETENTE = st.secrets["EMAIL_REMETENTE"]
     EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
 
@@ -42,10 +37,13 @@ equipa = st.text_input("👥 Equipa")
 
 col1, col2 = st.columns(2)
 
-# Confirmar presença
+# --- Confirmar presença ---
 with col1:
     if st.button("✅ Confirmar Presença"):
-        if nome and apelido and email and equipa:
+        # Verificar campos obrigatórios
+        if not all([nome, apelido, email, equipa]):
+            st.warning("Todos os campos são obrigatórios para registar a presença.")
+        else:
             datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             st.session_state.registos.loc[len(st.session_state.registos)] = [nome, apelido, email, equipa, datahora]
             st.success(f"Presença registada para {nome} {apelido}!")
@@ -60,25 +58,27 @@ Equipa: {equipa}
 Data/Hora: {datahora}
 """
             enviar_email(email, assunto, mensagem)
-        else:
-            st.warning("Preenche todos os campos!")
 
-# Cancelar presença
+# --- Cancelar presença ---
 with col2:
     if st.button("❌ Cancelar Presença"):
-        mask = ~(st.session_state.registos["Email"] == email)
-        st.session_state.registos = st.session_state.registos[mask]
-        st.info(f"Registo cancelado para {email}")
+        # Verificar campos obrigatórios
+        if not all([nome, apelido, email, equipa]):
+            st.warning("Todos os campos são obrigatórios para cancelar a presença.")
+        else:
+            mask = ~(st.session_state.registos["Email"] == email)
+            st.session_state.registos = st.session_state.registos[mask]
+            st.info(f"Registo cancelado para {email}")
 
-        # Enviar email de cancelamento
-        assunto = "Cancelamento de registo no IBM Journey"
-        mensagem = f"""Olá {nome},
+            # Enviar email de cancelamento
+            assunto = "Cancelamento de registo no IBM Journey"
+            mensagem = f"""Olá {nome},
 
 O teu registo no IBM Journey foi cancelado.
 
 Equipa: {equipa}
 """
-        enviar_email(email, assunto, mensagem)
+            enviar_email(email, assunto, mensagem)
 
 # --- Mostrar tabela de registos ---
 st.subheader("📋 Registos atuais (em memória)")
