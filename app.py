@@ -11,7 +11,8 @@ st.title("📚 Registo de Presença - Aula (Teste)")
 if "registos" not in st.session_state:
     st.session_state.registos = pd.DataFrame(columns=["Aula", "Nome", "Apelido", "Email", "Equipa", "DataHora"])
 
-# --- Inputs ---
+# --- Inputs do aluno ---
+st.subheader("📝 Registo / Cancelamento de presença")
 nome = st.text_input("👤 Nome")
 apelido = st.text_input("👤 Apelido")
 email = st.text_input("📧 Email")
@@ -36,7 +37,6 @@ with col1:
             buf = BytesIO()
             img.save(buf)
             st.image(buf)
-
         else:
             st.warning("Preenche todos os campos!")
 
@@ -47,6 +47,21 @@ with col2:
         st.session_state.registos = st.session_state.registos[mask]
         st.info(f"Registo cancelado para {email} na aula {aula}")
 
-# --- Mostrar tabela ---
+# --- Mostrar tabela de registos ---
 st.subheader("📋 Registos atuais (em memória)")
 st.dataframe(st.session_state.registos)
+
+# --- Dashboard do professor ---
+st.subheader("📊 Dashboard do Professor")
+if not st.session_state.registos.empty:
+    st.write("**Número de alunos por aula:**")
+    count_aulas = st.session_state.registos.groupby("Aula")["Email"].count().reset_index()
+    count_aulas.columns = ["Aula", "Número de alunos"]
+    st.table(count_aulas)
+
+    st.write("**Número de alunos por equipa:**")
+    count_equipa = st.session_state.registos.groupby("Equipa")["Email"].count().reset_index()
+    count_equipa.columns = ["Equipa", "Número de alunos"]
+    st.table(count_equipa)
+else:
+    st.info("Ainda não há registos para mostrar no dashboard.")
