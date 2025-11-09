@@ -106,14 +106,13 @@ with st.expander("🏆 Prizes", expanded=False):
         st.markdown("""
 🥇 **Winning Team Experience**  
 A unique professional experience during the **last fortnight of June**.  
-Get hands-on exposure to real-world projects and accelerate your career in AI!
+Get hands-on exposure to real-world projects and accelerate your career!
 """)
 
     with col2:
         st.markdown("""
 🎖️ **Participation Rewards**  
-All participating teams receive a **Certificate of Participation** and **exclusive merchandising**,  
-celebrating your journey and achievements in innovation and AI.
+All participating teams receive a **Certificate of Participation** and **exclusive merchandising**, celebrating your journey and achievements in innovation and AI.
 """)
 
 
