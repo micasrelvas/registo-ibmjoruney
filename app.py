@@ -86,23 +86,23 @@ In preparation, explore these resources:
 
 
 # --- Challenge ---
-with st.expander("🚀 Challenge: Build the Next Generation of Agentic AI", expanded=False):
-    st.markdown("""
-Your challenge is to design and develop an AI agent powered by **IBM watsonx Orchestrate** that helps people and businesses achieve more with less effort. By combining digital skills, integrations, and workflow automation, participants will create agents that can act, decide, and collaborate in real-world scenarios.
+#with st.expander("🚀 Challenge: Build the Next Generation of Agentic AI", expanded=False):
+#    st.markdown("""
+#Your challenge is to design and develop an AI agent powered by **IBM watsonx Orchestrate** that helps people and businesses achieve more with less effort. By combining digital skills, integrations, and workflow automation, participants will create agents that can act, decide, and collaborate in real-world scenarios.
 
 ### What’s Expected?
-• **Harness watsonx Orchestrate:** Use its orchestration features, integrations, and digital skills to build agents that connect across apps, tools, and workflows.  
-• **Focus on Real-World Impact:** Create agents that solve common pain points in areas such as HR, sales, customer service, finance, or procurement.  
-• **Innovate for the Future of Work:** Demonstrate how agentic AI can augment human potential, reduce friction, and redefine productivity.
+#• **Harness watsonx Orchestrate:** Use its orchestration features, integrations, and digital skills to build agents that connect across apps, tools, and workflows.  
+#• **Focus on Real-World Impact:** Create agents that solve common pain points in areas such as HR, sales, customer service, finance, or procurement.  
+#• **Innovate for the Future of Work:** Demonstrate how agentic AI can augment human potential, reduce friction, and redefine productivity.
 
 ### Inspiration & Use Cases
-Explore how watsonx Orchestrate is already being applied:  
-• **Customer Service:** Deliver faster responses, automate ticket handling, and improve customer experiences.  
-• **Finance:** Streamline approvals, reporting, and risk analysis to enhance financial operations.  
-• **HR:** Simplify onboarding, manage employee requests, and improve HR efficiency.  
-• **Procurement:** Automate supplier management, purchase orders, and procurement cycles.  
-• **Sales:** Support sales teams with CRM updates, scheduling, and lead follow-up.
-""")
+#Explore how watsonx Orchestrate is already being applied:  
+#• **Customer Service:** Deliver faster responses, automate ticket handling, and improve customer experiences.  
+#• **Finance:** Streamline approvals, reporting, and risk analysis to enhance financial operations.  
+#• **HR:** Simplify onboarding, manage employee requests, and improve HR efficiency.  
+#• **Procurement:** Automate supplier management, purchase orders, and procurement cycles.  
+#• **Sales:** Support sales teams with CRM updates, scheduling, and lead follow-up.
+#""")
 
 # --- Prizes ---
 with st.expander("🏆 Prizes", expanded=False):
