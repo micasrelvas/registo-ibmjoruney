@@ -46,7 +46,6 @@ st.markdown("<p>Aprende a criar agentes com a melhor tecnologia do mercado!</p>"
 # -------------------------------------------------------
 # 🔗 GOOGLE SHEETS: AUTENTICAÇÃO
 # -------------------------------------------------------
-
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 creds = Credentials.from_service_account_info(
     st.secrets["GOOGLE_SERVICE_ACCOUNT"],
@@ -70,7 +69,6 @@ def guardar_registo(nome, apelido, email, equipa, datahora):
 
 def apagar_registo(email):
     registos = sheet.get_all_records()
-
     for i, reg in enumerate(registos, start=2):  # linha 1 = cabeçalho
         if reg["Email"] == email:
             sheet.delete_rows(i)
@@ -163,7 +161,7 @@ Certificate of Participation + exclusive merchandising!
 
 
 # -------------------------------------------------------
-# INSCRIÇÃO
+# INSCRIÇÃO COM PROTEÇÃO ANTI-DUPLICADOS
 # -------------------------------------------------------
 with st.expander("📝 Inscrição no Open Day", expanded=True):
     col1, col2 = st.columns(2)
@@ -178,19 +176,23 @@ with st.expander("📝 Inscrição no Open Day", expanded=True):
         if not all([nome, apelido, email, equipa]):
             st.warning("Todos os campos são obrigatórios para registar a inscrição.")
         else:
-            datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            guardar_registo(nome, apelido, email, equipa, datahora)
-            st.success(f"🤖 Confirmamos o registo no Open Day para {nome} {apelido}!")
+            df = carregar_registos()
+            if email in df["Email"].values:
+                st.warning(f"⚠️ O email {email} já está registado. Não é possível inscrever duas vezes.")
+            else:
+                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                guardar_registo(nome, apelido, email, equipa, datahora)
+                st.success(f"🤖 Confirmamos o registo no Open Day para {nome} {apelido}!")
 
-            assunto = "Confirmação de inscrição no IBM Journey"
-            mensagem = f"""Olá {nome},
+                assunto = "Confirmação de inscrição no IBM Journey"
+                mensagem = f"""Olá {nome},
 
 O teu registo no IBM Journey foi confirmado!
 
 Equipa: {equipa}
 Data/Hora: {datahora}
 """
-            enviar_email(email, assunto, mensagem)
+                enviar_email(email, assunto, mensagem)
 
 
 # -------------------------------------------------------
@@ -239,3 +241,4 @@ with st.expander("📊 Dashboard do Professor", expanded=True):
         st.bar_chart(count_equipa.set_index("Equipa"))
     else:
         st.info("Ainda não há inscrições.")
+
