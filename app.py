@@ -3,6 +3,8 @@ import pandas as pd
 from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
+import gspread
+from google.oauth2.service_account import Credentials
 
 # --- Página ---
 st.set_page_config(page_title="IBM Journey - Registo", layout="wide")
@@ -11,23 +13,19 @@ st.set_page_config(page_title="IBM Journey - Registo", layout="wide")
 st.markdown(
     """
     <style>
-    /* Fundo e cores principais */
     .stApp {
         background-color: #0a0a0a;
         color: #ffffff;
         font-family: 'Arial', sans-serif;
     }
-    /* Cores dos títulos */
     h1, h2, h3 {
         color: #00bfff;
     }
-    /* Botões */
     .stButton>button {
         background-color: #00bfff;
         color: #ffffff;
         font-weight: bold;
     }
-    /* Tabela */
     .stDataFrame th {
         background-color: #1f1f1f;
         color: #ffffff;
@@ -45,91 +43,44 @@ st.markdown(
 st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
 st.markdown("<p>Aprende a criar agentes com a melhor tecnologia do mercado!</p>", unsafe_allow_html=True)
 
-import streamlit as st
+# -------------------------------------------------------
+# 🔗 GOOGLE SHEETS: AUTENTICAÇÃO
+# -------------------------------------------------------
 
-# --- About IBM ---
-with st.expander("💡 About IBM", expanded=False):
-    st.markdown("""
-IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades. Their contributions span across various fields, including AI, cloud computing, and quantum computing. IBM's cutting-edge technology and research continue to drive advancements in multiple sectors:
-
-• **AI and Machine Learning:** Leading the charge in AI development with powerful tools and models.  
-• **Cloud Solutions:** Providing scalable and flexible cloud services.  
-• **Quantum Computing:** Pushing the boundaries of computing with quantum technology.  
-• **Research and Development:** Continuously advancing technology with extensive research and high-quality datasets.  
-• **Open-Source Commitment:** Promoting collaboration and innovation through open-source projects.
-""")
-
-# --- About Timestamp ---
-with st.expander("💡 About Timestamp", expanded=False):
-    st.markdown("""
-Timestamp, provide innovative solutions and services in both national and international markets. The Timestamp Group integrates several Portuguese-owned companies, built around the principles of **excellence** and **knowledge sharing**.
-
-They focus on **technological leadership**, based on quality, certifications, and continuous training, which is also reflected in the development and delivery of the innovative services we provide globally.
-
-Their operations rely on a **network of competencies** formed by their teams and a set of partnerships with other national and international companies.  
-Timestamp goal is to create an extended hub of highly specialized skills, allowing them to respond with quality and rigor to the challenges posed by each project and every organization they collaborate with.
-""")
-
-# --- Technology ---
-with st.expander("⚙️ Technology", expanded=False):
-    st.markdown("""
-The IBM Journey leverages cutting-edge technologies such as **watsonx Orchestrate** to develop agentic AI solutions that connect apps, tools, and workflows. Participants will explore automation, digital skills, integrations, and AI orchestration in real-world scenarios.
-
-### 📚 Resources to Explore
-In preparation, explore these resources:
-
-- [Product Overview](https://www.ibm.com/products/watsonx-orchestrate)  
-- [Demo Experience](https://www.ibm.com/products/watsonx-orchestrate/demos)  
-- [Integrations](https://www.ibm.com/products/watsonx-orchestrate/integrations)  
-- [Resources & Support](https://www.ibm.com/products/watsonx-orchestrate/resources)
-""")
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+creds = Credentials.from_service_account_info(
+    st.secrets["GOOGLE_SERVICE_ACCOUNT"],
+    scopes=SCOPES
+)
+client = gspread.authorize(creds)
+sheet = client.open_by_key(st.secrets["GOOGLE_SHEET_ID"]).sheet1
 
 
-# --- Challenge ---
-#with st.expander("🚀 Challenge: Build the Next Generation of Agentic AI", expanded=False):
-#    st.markdown("""
-#Your challenge is to design and develop an AI agent powered by **IBM watsonx Orchestrate** that helps people and businesses achieve more with less effort. By combining digital skills, integrations, and workflow automation, participants will create agents that can act, decide, and collaborate in real-world scenarios.
-
-### What’s Expected?
-#• **Harness watsonx Orchestrate:** Use its orchestration features, integrations, and digital skills to build agents that connect across apps, tools, and workflows.  
-#• **Focus on Real-World Impact:** Create agents that solve common pain points in areas such as HR, sales, customer service, finance, or procurement.  
-#• **Innovate for the Future of Work:** Demonstrate how agentic AI can augment human potential, reduce friction, and redefine productivity.
-
-### Inspiration & Use Cases
-#Explore how watsonx Orchestrate is already being applied:  
-#• **Customer Service:** Deliver faster responses, automate ticket handling, and improve customer experiences.  
-#• **Finance:** Streamline approvals, reporting, and risk analysis to enhance financial operations.  
-#• **HR:** Simplify onboarding, manage employee requests, and improve HR efficiency.  
-#• **Procurement:** Automate supplier management, purchase orders, and procurement cycles.  
-#• **Sales:** Support sales teams with CRM updates, scheduling, and lead follow-up.
-#""")
-
-# --- Prizes ---
-with st.expander("🏆 Prizes", expanded=False):
-    st.markdown("### What you can win!")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("""
-🥇 **Winning Team Experience**  
-A unique professional experience during the **last fortnight of June**.  
-Get hands-on exposure to real-world projects and accelerate your career!
-""")
-
-    with col2:
-        st.markdown("""
-🎖️ **Participation Rewards**  
-All participating teams receive a **Certificate of Participation** and **exclusive merchandising**, celebrating your journey and achievements in innovation and AI.
-""")
+# --- Funções Google Sheets ---
+def carregar_registos():
+    data = sheet.get_all_records()
+    if len(data) == 0:
+        return pd.DataFrame(columns=["Nome", "Apelido", "Email", "Equipa", "DataHora"])
+    return pd.DataFrame(data)
 
 
+def guardar_registo(nome, apelido, email, equipa, datahora):
+    sheet.append_row([nome, apelido, email, equipa, datahora])
 
-# --- Dados temporários em memória ---
-if "registos" not in st.session_state:
-    st.session_state.registos = pd.DataFrame(columns=["Nome", "Apelido", "Email", "Equipa", "DataHora"])
 
-# --- Função para enviar email ---
+def apagar_registo(email):
+    registos = sheet.get_all_records()
+
+    for i, reg in enumerate(registos, start=2):  # linha 1 = cabeçalho
+        if reg["Email"] == email:
+            sheet.delete_rows(i)
+            return reg
+    return None
+
+
+# -------------------------------------------------------
+# EMAIL
+# -------------------------------------------------------
 def enviar_email(destinatario, assunto, mensagem):
     EMAIL_REMETENTE = st.secrets["EMAIL_REMETENTE"]
     EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
@@ -146,7 +97,74 @@ def enviar_email(destinatario, assunto, mensagem):
     except Exception as e:
         st.warning(f"Não foi possível enviar email para {destinatario}: {e}")
 
-# --- Inputs em expansores ---
+
+# -------------------------------------------------------
+# ABOUT IBM
+# -------------------------------------------------------
+with st.expander("💡 About IBM", expanded=False):
+    st.markdown("""
+IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades.  
+Their contributions span across key fields such as AI, cloud computing, and quantum computing.
+
+• **AI and Machine Learning**  
+• **Cloud Solutions**  
+• **Quantum Computing**  
+• **Research and Development**  
+• **Open-Source Leadership**
+""")
+
+
+# -------------------------------------------------------
+# ABOUT TIMESTAMP
+# -------------------------------------------------------
+with st.expander("💡 About Timestamp", expanded=False):
+    st.markdown("""
+Timestamp provides innovative solutions and services in both national and international markets.  
+The Group integrates several Portuguese-owned companies built around excellence and knowledge sharing.
+
+They focus on technological leadership, certified quality, continuous training, and specialized teams.
+""")
+
+
+# -------------------------------------------------------
+# TECHNOLOGY
+# -------------------------------------------------------
+with st.expander("⚙️ Technology", expanded=False):
+    st.markdown("""
+Explore watsonx Orchestrate and learn how AI agents automate real workflows.
+
+### 📚 Resources
+- Product Overview  
+- Demo Experience  
+- Integrations  
+- Resources & Support
+""")
+
+
+# -------------------------------------------------------
+# PRIZES
+# -------------------------------------------------------
+with st.expander("🏆 Prizes", expanded=False):
+    st.markdown("### What you can win!")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+🥇 **Winning Team Experience**  
+A unique professional experience during the **last fortnight of June**.
+""")
+
+    with col2:
+        st.markdown("""
+🎖️ **Participation Rewards**  
+Certificate of Participation + exclusive merchandising!
+""")
+
+
+# -------------------------------------------------------
+# INSCRIÇÃO
+# -------------------------------------------------------
 with st.expander("📝 Inscrição no Open Day", expanded=True):
     col1, col2 = st.columns(2)
     with col1:
@@ -155,48 +173,47 @@ with st.expander("📝 Inscrição no Open Day", expanded=True):
     with col2:
         email = st.text_input("📧 Email")
         equipa = st.text_input("👥 Equipa")
-    
+
     if st.button("✅ Confirmar Inscrição"):
         if not all([nome, apelido, email, equipa]):
             st.warning("Todos os campos são obrigatórios para registar a inscrição.")
         else:
             datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            st.session_state.registos.loc[len(st.session_state.registos)] = [nome, apelido, email, equipa, datahora]
-            st.success(f"🤖 Confirmamos o registo no Open Day, dia 2 de Dezembro, para {nome} {apelido}!")
-            
-            # Enviar email de confirmação
+            guardar_registo(nome, apelido, email, equipa, datahora)
+            st.success(f"🤖 Confirmamos o registo no Open Day para {nome} {apelido}!")
+
             assunto = "Confirmação de inscrição no IBM Journey"
             mensagem = f"""Olá {nome},
 
-O teu registo no IBM Journey foi confirmado com sucesso!
+O teu registo no IBM Journey foi confirmado!
 
 Equipa: {equipa}
 Data/Hora: {datahora}
 """
             enviar_email(email, assunto, mensagem)
 
-# --- Cancelamento apenas com email ---
+
+# -------------------------------------------------------
+# CANCELAMENTO
+# -------------------------------------------------------
 with st.expander("❌ Cancelamento de Inscrição"):
     email_cancel = st.text_input("📧 Email para cancelar a inscrição")
 
     if st.button("Cancelar Presença"):
         if not email_cancel:
-            st.warning("O campo Email é obrigatório para cancelar a inscrição.")
+            st.warning("O campo Email é obrigatório para cancelar.")
         else:
-            registro = st.session_state.registos[st.session_state.registos["Email"] == email_cancel]
-            if registro.empty:
+            registro = apagar_registo(email_cancel)
+
+            if registro is None:
                 st.info(f"⚠️ Nenhum registo encontrado para {email_cancel}.")
             else:
-                # Pega nome e equipa antes de remover
-                nome_c = registro.iloc[0]["Nome"]
-                equipa_c = registro.iloc[0]["Equipa"]
+                nome_c = registro["Nome"]
+                equipa_c = registro["Equipa"]
 
-                # Remove o registo
-                st.session_state.registos = st.session_state.registos[st.session_state.registos["Email"] != email_cancel]
                 st.info(f"🛑 Inscrição cancelada para {email_cancel}")
 
-                # Enviar email de cancelamento
-                assunto = "Cancelamento de inscrição no Open Day, dia 3 de dezembro"
+                assunto = "Cancelamento de inscrição"
                 mensagem = f"""Olá {nome_c},
 
 A tua inscrição no Open Day foi cancelada.
@@ -205,15 +222,20 @@ Equipa: {equipa_c}
 """
                 enviar_email(email_cancel, assunto, mensagem)
 
-# --- Dashboard do professor ---
+
+# -------------------------------------------------------
+# DASHBOARD PROFESSOR
+# -------------------------------------------------------
 with st.expander("📊 Dashboard do Professor", expanded=True):
-    if not st.session_state.registos.empty:
+    df = carregar_registos()
+
+    if not df.empty:
         st.markdown("### 🤖 Alunos inscritos")
-        st.dataframe(st.session_state.registos[["Nome", "Apelido", "Equipa", "DataHora"]])
+        st.dataframe(df[["Nome", "Apelido", "Equipa", "DataHora"]])
 
         st.markdown("### 🚀 Número de alunos por equipa")
-        count_equipa = st.session_state.registos.groupby("Equipa")["Email"].count().reset_index()
+        count_equipa = df.groupby("Equipa")["Email"].count().reset_index()
         count_equipa.columns = ["Equipa", "Número de alunos"]
         st.bar_chart(count_equipa.set_index("Equipa"))
     else:
-        st.info("Ainda não há inscrições para mostrar no dashboard.")
+        st.info("Ainda não há inscrições.")
