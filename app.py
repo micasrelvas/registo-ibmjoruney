@@ -69,27 +69,43 @@ def enviar_email(destinatario, assunto, mensagem):
 # -------------------------------------------------------
 # REGISTO
 # -------------------------------------------------------
-with st.expander("📝 Inscrição no Open Day", expanded=True):
+with st.expander("📝 Inscrição no Open Day - 2 de dezembro", expanded=True):
     col1, col2 = st.columns(2)
     with col1:
         nome = st.text_input("👤 Nome")
         apelido = st.text_input("👤 Apelido")
     with col2:
         email = st.text_input("📧 Email")
-        equipa = st.text_input("👥 Equipa")
+        equipa = st.text_input("👥 Nome da Equipa")
+
+    # --- Normalizar o nome da equipa ---
+    if equipa:
+        equipa = (
+            equipa.strip()
+                  .lower()
+                  .replace("  ", " ")
+                  .title()
+        )
 
     if st.button("✅ Confirmar Inscrição"):
+        # Validar campos obrigatórios
         if not all([nome, apelido, email, equipa]):
             st.warning("Todos os campos são obrigatórios.")
         else:
             df = carregar_registos()
-            if email in [r["Email"] for r in df]:
+            
+            # Limite máximo 2 alunos por equipa
+            count_equipa = sum(1 for r in df if r["Equipa"].strip().lower() == equipa.lower())
+            if count_equipa >= 2:
+                st.error(f"⚠️ A equipa '{equipa}' já atingiu o limite de 2 alunos.")
+            elif email in [r["Email"] for r in df]:
                 st.warning(f"⚠️ O email {email} já está registado.")
             else:
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(nome, apelido, email, equipa, datahora)
                 st.success(f"🤖 Registo confirmado para {nome} {apelido}!")
 
+                # Enviar email de confirmação
                 assunto = "Confirmação de inscrição no IBM Journey"
                 mensagem = f"""Olá {nome},
 
@@ -116,12 +132,14 @@ with st.expander("❌ Cancelamento de Inscrição"):
             else:
                 st.info(f"🛑 Inscrição cancelada para {email_cancel}")
 
+                # Enviar email de cancelamento
                 assunto = "Cancelamento de inscrição"
                 mensagem = f"""Olá {registro['Nome']},
 
-A tua inscrição no Open Day foi cancelada.
+A tua inscrição no Open Day da IBM Journey Powered by Timestamp, no dia 2 de dezembro, foi cancelada.
 
-Equipa: {registro['Equipa']}
+Nome da Equipa: {registro['Equipa']}
 """
                 enviar_email(email_cancel, assunto, mensagem)
+
 
