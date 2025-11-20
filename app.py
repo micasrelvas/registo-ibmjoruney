@@ -103,10 +103,10 @@ with st.expander("📝 Inscrição no Open Day - 2 de dezembro", expanded=True):
             else:
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(nome, apelido, email, equipa, datahora)
-                st.success(f"🤖 Registo confirmado para {nome} {apelido}!")
+                st.success(f"{nome} , o teu registo está confirmado! Até ao dia 2 de dezembro!!")
 
                 # Enviar email de confirmação
-                assunto = "Confirmação de inscrição no IBM Journey"
+                assunto = "Confirmação de inscrição no IBM Journey powered by Timestamp | 02/12"
                 mensagem = f"""Olá {nome},
 
 O teu registo no Open Day do IBM Journey powered by Timestamp, no dia 2 de dezembro, foi confirmado!
@@ -132,7 +132,7 @@ with st.expander("❌ Cancelamento de Inscrição"):
                 st.info(f"🛑 Inscrição cancelada para {email_cancel}")
 
                 # Enviar email de cancelamento
-                assunto = "Cancelamento de inscrição"
+                assunto = ""Cancelamento de inscrição no IBM Journey powered by Timestamp | 02/12"
                 mensagem = f"""Olá {registro['Nome']},
 
 A tua inscrição no Open Day da IBM Journey Powered by Timestamp, no dia 2 de dezembro, foi cancelada.
