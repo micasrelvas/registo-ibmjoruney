@@ -122,7 +122,7 @@ Data/Hora: {datahora}
 with st.expander("❌ Cancelamento de Inscrição"):
     email_cancel = st.text_input("📧 Email para cancelar inscrição")
 
-    if st.button("Cancelar Presença"):
+    if st.button("Cancelar Inscrição"):
         if not email_cancel:
             st.warning("O campo Email é obrigatório.")
         else:
