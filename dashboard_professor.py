@@ -29,11 +29,19 @@ df = carregar_registos()
 # --- Mostrar dados ---
 if df.empty:
     st.info("Ainda não há inscrições para mostrar.")
+
 else:
     st.markdown("### 🤖 Alunos inscritos")
-    st.dataframe(df[["Nome","Apelido","Equipa","DataHora"]])
+    st.dataframe(df[["Nome", "Apelido", "Equipa", "DataHora"]])
 
     st.markdown("### 🚀 Número de alunos por equipa")
+
+    # Debug: see what columns exist
+    st.write("Columns in DF:", df.columns.tolist())
+    st.write(df.head())
+
+    # Group by Equipa
     count_equipa = df.groupby("Equipa")["Email"].count().reset_index()
     count_equipa.columns = ["Equipa", "Número de alunos"]
+
     st.bar_chart(count_equipa.set_index("Equipa"))
