@@ -95,7 +95,7 @@ with st.expander("📝 Inscrição no Open Day - 2 de dezembro", expanded=True):
             df = carregar_registos()
             
             # Limite máximo 2 alunos por equipa
-            count_equipa = sum(1 for r in df if r["Equipa"].strip().lower() == equipa.lower())
+            count_equipa = sum(1 for r in df if r["Nome da Equipa"].strip().lower() == equipa.lower())
             if count_equipa >= 2:
                 st.error(f"⚠️ A equipa '{equipa}' já atingiu o limite de 2 alunos.")
             elif email in [r["Email"] for r in df]:
@@ -109,10 +109,9 @@ with st.expander("📝 Inscrição no Open Day - 2 de dezembro", expanded=True):
                 assunto = "Confirmação de inscrição no IBM Journey"
                 mensagem = f"""Olá {nome},
 
-O teu registo no IBM Journey foi confirmado!
+O teu registo no Open Day do IBM Journey powered by Timestamp, no dia 2 de dezembro, foi confirmado!
 
-Equipa: {equipa}
-Data/Hora: {datahora}
+Nome da Equipa: {equipa}
 """
                 enviar_email(email, assunto, mensagem)
 
