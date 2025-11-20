@@ -56,4 +56,4 @@ else:
         st.write(over_limit)
 
     # Gráfico
-    st.bar_chart(count_equipa.set_index("Equipa"))
+    #st.bar_chart(count_equipa.set_index("Equipa"))
