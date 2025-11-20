@@ -32,12 +32,12 @@ if df.empty:
 
 else:
     st.markdown("### 🤖 Alunos inscritos")
-    st.dataframe(df[["Nome", "Apelido", "Equipa", "Email", "DataHora"]])
+    st.dataframe(df[["Nome", "Apelido", "Email", "Equipa", "DataHora"]])
 
     st.markdown("### 🚀 Número de alunos por equipa")
 
     # Mostrar nomes das colunas para debugging
-    st.write("📌 Colunas no DataFrame:", df.columns.tolist())
+    #st.write("📌 Colunas no DataFrame:", df.columns.tolist())
 
     # Agrupar e contar
     count_equipa = (
