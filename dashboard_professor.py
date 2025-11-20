@@ -32,16 +32,28 @@ if df.empty:
 
 else:
     st.markdown("### 🤖 Alunos inscritos")
-    st.dataframe(df[["Nome", "Apelido", "Equipa", "DataHora"]])
+    st.dataframe(df[["Nome", "Apelido", "Equipa", "Email", "DataHora"]])
 
     st.markdown("### 🚀 Número de alunos por equipa")
 
-    # Debug: see what columns exist
-    st.write("Columns in DF:", df.columns.tolist())
-    st.write(df.head())
+    # Mostrar nomes das colunas para debugging
+    st.write("📌 Colunas no DataFrame:", df.columns.tolist())
 
-    # Group by Equipa
-    count_equipa = df.groupby("Equipa")["Email"].count().reset_index()
-    count_equipa.columns = ["Equipa", "Número de alunos"]
+    # Agrupar e contar
+    count_equipa = (
+        df.groupby("Equipa")
+          .size()
+          .reset_index(name="Número de alunos")
+    )
 
+    st.markdown("### 📊 Tabela de equipas e contagem")
+    st.dataframe(count_equipa)
+
+    # Validar máximo de 2 alunos por equipa
+    over_limit = count_equipa[count_equipa["Número de alunos"] > 2]
+    if not over_limit.empty:
+        st.error("⚠️ Há equipas com mais de 2 alunos inscritos!")
+        st.write(over_limit)
+
+    # Gráfico
     st.bar_chart(count_equipa.set_index("Equipa"))
