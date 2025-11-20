@@ -20,7 +20,7 @@ sheet = client.open_by_key(st.secrets["GOOGLE_SHEET_ID"]).sheet1
 def carregar_registos():
     data = sheet.get_all_records()
     if len(data) == 0:
-        return pd.DataFrame(columns=["Nome","Apelido","Email","Equipa","DataHora"])
+        return pd.DataFrame(columns=["Nome","Apelido","Email","Nome da Equipa","DataHora"])
     return pd.DataFrame(data)
 
 # --- Carregar dados ---
@@ -32,7 +32,7 @@ if df.empty:
 
 else:
     st.markdown("### 🤖 Alunos inscritos")
-    st.dataframe(df[["Nome", "Apelido", "Email", "Equipa", "DataHora"]])
+    st.dataframe(df[["Nome", "Apelido", "Email", "Nome da Equipa", "DataHora"]])
 
     st.markdown("### 🚀 Número de alunos por equipa")
 
@@ -41,7 +41,7 @@ else:
 
     # Agrupar e contar
     count_equipa = (
-        df.groupby("Equipa")
+        df.groupby("Nome da Equipa")
           .size()
           .reset_index(name="Número de alunos")
     )
