@@ -132,7 +132,7 @@ with st.expander("❌ Cancelamento de Inscrição"):
                 st.info(f"🛑 Inscrição cancelada para {email_cancel}")
 
                 # Enviar email de cancelamento
-                assunto = ""Cancelamento de inscrição no IBM Journey powered by Timestamp | 02/12"
+                assunto = "Cancelamento de inscrição no IBM Journey powered by Timestamp | 02/12"
                 mensagem = f"""Olá {registro['Nome']},
 
 A tua inscrição no Open Day da IBM Journey Powered by Timestamp, no dia 2 de dezembro, foi cancelada.
