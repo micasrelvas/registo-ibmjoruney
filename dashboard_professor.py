@@ -5,8 +5,8 @@ import pandas as pd
 
 # --- Configuração da página ---
 st.set_page_config(page_title="IBM Journey - Dashboard", layout="wide")
-st.markdown("<h1>📊 IBM Journey - Dashboard do Professor</h1>", unsafe_allow_html=True)
-st.markdown("<p>Visualiza todas as inscrições e estatísticas das equipas.</p>", unsafe_allow_html=True)
+st.markdown("<h1>📊 IBM Journey Powered by Timestamp - Dashboard do Professor</h1>", unsafe_allow_html=True)
+st.markdown("<p>Visualize todas as inscrições para o Open Day, no dia 2 de dezembro.</p>", unsafe_allow_html=True)
 
 # --- Google Sheets ---
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
