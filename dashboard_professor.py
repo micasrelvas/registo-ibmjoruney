@@ -46,7 +46,7 @@ else:
           .reset_index(name="Número de alunos")
     )
 
-    st.markdown("### 📊 Tabela de equipas e contagem")
+    #st.markdown("### 📊 Tabela de equipas e contagem")
     st.dataframe(count_equipa)
 
     # Validar máximo de 2 alunos por equipa
