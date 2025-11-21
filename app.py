@@ -20,7 +20,7 @@ h1,h2,h3 { color: #00bfff; }
 """, unsafe_allow_html=True)
 
 st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
-st.markdown("<p>Aprende a criar agentes com a melhor tecnologia do mercado!</p>", unsafe_allow_html=True)
+#st.markdown("<p>Aprende a criar agentes com a melhor tecnologia do mercado!</p>", unsafe_allow_html=True)
 
 # -------------------------------------------------------
 # GOOGLE SHEETS
@@ -77,6 +77,7 @@ st.markdown("""
 No dia 2 de dezembro, junta-te a nós para um Open Day exclusivo nos escritórios da IBM, onde vais descobrir o futuro da AI e pôr mãos à obra!
 
 📌 **O que te espera?**
+
 ✔ Uma manhã dedicada à visão IBM-Timestamp e ao poder do watsonx, com introdução ao conceito inovador de Agentic AI.  
 ✔ Uma visita guiada aos escritórios da IBM para conheceres onde a tecnologia acontece.  
 ✔ Uma tarde prática para criar o teu próprio agente de IA, com acesso às ferramentas da IBM e apoio técnico especializado.  
