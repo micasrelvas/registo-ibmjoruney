@@ -74,22 +74,21 @@ def enviar_email(destinatario, assunto, mensagem):
 st.markdown("""
 🚀 **Estás pronto para levar a tua experiência com Inteligência Artificial a outro nível?**
 
-No dia 2 de dezembro, junta-te a nós para um Open Day exclusivo nos escritórios da IBM, onde vais descobrir o futuro da AI e pôr mãos à obra!
+📅 **Data:** 2 de dezembro | 🕙 10h – 17h30 | 📍 Edifício Lumnia (junto à Gare do Oriente)
 
-📌 **O que te espera?**
+No dia 2 de dezembro, junta-te a nós para um dia exclusivo nos escritórios da IBM, onde vais descobrir o futuro do AI e pôr mãos à obra!
 
+📌 **O que te espera?**  
 ✔ Uma manhã dedicada à visão IBM-Timestamp e ao poder do watsonx, com introdução ao conceito inovador de Agentic AI.  
 ✔ Uma visita guiada aos escritórios da IBM para conheceres onde a tecnologia acontece.  
 ✔ Uma tarde prática para criar o teu próprio agente de IA, com acesso às ferramentas da IBM e apoio técnico especializado.  
 ✔ O lançamento oficial do desafio, que vai testar a tua criatividade e competências analíticas.
 
 🎙️ **Oradores confirmados:**  
-Luís Gregório (IBM) | Pedro Dias | Mariana Relvas | Timestamp (TBC)
+Pedro Dias (IBM) | Mariana Relvas (IBM) | Timestamp (TBC)  
 
 💡 **Porquê participar?**  
 Porque esta é a tua oportunidade de aplicar conhecimento, trabalhar com tecnologia real e mostrar o teu talento — com possibilidade de reconhecimento e experiências futuras.
-
-📅 **Data:** 2 de dezembro | 🕙 10h – 17h30 | 📍 Edifício Lumnia (junto à Gare do Oriente)
 
 👇 **Inscreve já a tua equipa e garante o teu lugar nesta experiência única!**
 """, unsafe_allow_html=True)
