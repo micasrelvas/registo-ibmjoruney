@@ -78,7 +78,7 @@ Estás pronto para levar a tua experiência com Inteligência Artificial a outro
 
 Junta-te a nós para um dia exclusivo nos escritórios da IBM, onde vais descobrir o futuro do AI e pôr mãos à obra!
 
-📌 **O que te espera?**
+📌 **O que te espera?**  
 ✔ Uma manhã dedicada à visão IBM-Timestamp e ao poder do watsonx, com introdução ao conceito inovador de Agentic AI.  
 ✔ Uma visita guiada aos escritórios da IBM para conheceres onde a tecnologia acontece.  
 ✔ Uma tarde prática para criar o teu próprio agente de IA, com acesso às ferramentas da IBM e apoio técnico especializado.  
