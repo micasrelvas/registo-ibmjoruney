@@ -14,8 +14,8 @@ with loading_placeholder.container():
     st.markdown("""
     <div style="text-align:center; padding:50px;">
         <h2>⚡ A app está a acordar...</h2>
-        <p>Isso pode levar alguns segundos. Obrigado pela paciência!</p>
-        <p>⏳ Por favor, aguarde enquanto carregamos os dados do dashboard.</p>
+        <p> Pode demorar alguns segundos. Obrigada pela paciência!</p>
+        <p>⏳ Por favor, aguarde enquanto carregamos os dados das inscrições.</p>
     </div>
     """, unsafe_allow_html=True)
 
