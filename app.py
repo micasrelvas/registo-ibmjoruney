@@ -137,7 +137,7 @@ with st.expander("❌ Cancelamento de Inscrição"):
 
 A tua inscrição no Open Day da IBM Journey Powered by Timestamp, no dia 2 de dezembro, foi cancelada.
 
-Nome da Equipa: {registro['Equipa']}
+Nome da Equipa: {registro['Nome da Equipa']}
 """
                 enviar_email(email_cancel, assunto, mensagem)
 
