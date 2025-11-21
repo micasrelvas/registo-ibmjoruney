@@ -76,7 +76,7 @@ st.markdown("""
 
 📅 2 de dezembro | 🕙 10h – 17h30 | 📍 Edifício Lumnia (junto à Gare do Oriente)
 
-No dia 2 de dezembro, junta-te a nós para um dia exclusivo nos escritórios da IBM, onde vais descobrir o futuro do AI e pôr mãos à obra!
+Junta-te a nós para um dia exclusivo nos escritórios da IBM, onde vais descobrir o futuro do AI e pôr mãos à obra!
 
 📌 **O que te espera?**  
 ✔ Uma manhã dedicada à visão IBM-Timestamp e ao poder do watsonx, com introdução ao conceito inovador de Agentic AI.  
