@@ -129,7 +129,7 @@ with st.expander("❌ Cancelamento de Inscrição"):
             if registro is None:
                 st.info(f"⚠️ Não encontrei nenhum registo efetuado com o teu email.") #registo validado pelo email
             else:
-                st.info(f"🛑 {nome} , a tua inscrição foi cancelada") 
+                st.info(f"🛑 {nome} , a tua inscrição foi cancelada. Dentro de momentos, receberás um email a confirmar o cancelamento. Vamos sentir a tua falta!") 
 
                 # Enviar email de cancelamento
                 assunto = "Cancelamento de inscrição no IBM Journey powered by Timestamp | 02/12"
