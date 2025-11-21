@@ -74,7 +74,7 @@ def enviar_email(destinatario, assunto, mensagem):
 st.markdown("""
 🚀 **Estás pronto para levar a tua experiência com Inteligência Artificial a outro nível?**
 
-📅 **Data:** 2 de dezembro | 🕙 10h – 17h30 | 📍 Edifício Lumnia (junto à Gare do Oriente)
+📅 2 de dezembro | 🕙 10h – 17h30 | 📍 Edifício Lumnia (junto à Gare do Oriente)
 
 No dia 2 de dezembro, junta-te a nós para um dia exclusivo nos escritórios da IBM, onde vais descobrir o futuro do AI e pôr mãos à obra!
 
