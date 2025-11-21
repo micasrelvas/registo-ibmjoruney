@@ -8,6 +8,21 @@ st.set_page_config(page_title="IBM Journey - Dashboard", layout="wide")
 st.markdown("<h1>📊 IBM Journey Powered by Timestamp - Dashboard do Professor</h1>", unsafe_allow_html=True)
 st.markdown("<p>Visualize todas as inscrições para o Open Day, no dia 2 de dezembro.</p>", unsafe_allow_html=True)
 
+# --- TELA DE LOADING PERSONALIZADA ---
+loading_placeholder = st.empty()
+with loading_placeholder.container():
+    st.markdown("""
+    <div style="text-align:center; padding:50px;">
+        <h2>⚡ A app está a acordar...</h2>
+        <p>Isso pode levar alguns segundos. Obrigado pela paciência!</p>
+        <p>⏳ Por favor, aguarde enquanto carregamos os dados do dashboard.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+time.sleep(3)  # simula tempo de carregamento; pode ajustar ou remover
+
+loading_placeholder.empty()  # remove a tela de loading
+
 # --- Google Sheets ---
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 creds = Credentials.from_service_account_info(
