@@ -140,6 +140,9 @@ with st.expander("📝 Inscrição no Open Day - 2 de dezembro", expanded=True):
 O teu registo no Open Day do IBM Journey powered by Timestamp, no dia 2 de dezembro, foi confirmado!
 
 Nome da Equipa: {equipa}
+
+Se quiseres cancelar a tua inscrição, acede a este link: {st.secrets['APP_URL']}
+
 """
                 enviar_email(email, assunto, mensagem)
 
@@ -166,6 +169,8 @@ with st.expander("❌ Cancelamento de Inscrição"):
 A tua inscrição no Open Day da IBM Journey Powered by Timestamp, no dia 2 de dezembro, foi cancelada.
 
 Nome da Equipa: {registro['Nome da Equipa']}
+
+Se quiseres voltar a inscrever-te, acede a este link: {st.secrets['APP_URL']}
 """
                 enviar_email(email_cancel, assunto, mensagem)
 
