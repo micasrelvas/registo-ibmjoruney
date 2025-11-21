@@ -4,9 +4,24 @@ import smtplib
 from email.mime.text import MIMEText
 import gspread
 from google.oauth2.service_account import Credentials
+import time 
 
 # --- Página ---
 st.set_page_config(page_title="IBM Journey powered by Timestamp - Open Day - 02/12", layout="wide")
+
+# --- ALERTA DE HIBERNAÇÃO ---
+loading_placeholder = st.empty()
+with loading_placeholder.container():
+    st.markdown("""
+    <div style="text-align:center; padding:50px;">
+        <h2>⚡ A app está a acordar...</h2>
+        <p>Isso pode levar alguns segundos. Obrigado pela paciência!</p>
+        <p>⏳ Aguarde enquanto carregamos os dados e a página de registo.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+time.sleep(2)  # simula o tempo de carregamento; ajustar conforme necessário
+loading_placeholder.empty()
 
 # --- CSS personalizado ---
 st.markdown("""
