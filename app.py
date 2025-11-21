@@ -6,7 +6,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 
 # --- Página ---
-st.set_page_config(page_title="IBM Journey - Registo", layout="wide")
+st.set_page_config(page_title="IBM Journey powered by Timestamp - Open Day - 02/12", layout="wide")
 
 # --- CSS personalizado ---
 st.markdown("""
@@ -94,16 +94,16 @@ with st.expander("📝 Inscrição no Open Day - 2 de dezembro", expanded=True):
         else:
             df = carregar_registos()
             
-            # Limite máximo 2 alunos por equipa
+            # Limite máximo 2 alunos por equipa, validado pelos emails
             count_equipa = sum(1 for r in df if r["Nome da Equipa"].strip().lower() == equipa.lower())
             if count_equipa >= 2:
                 st.error(f"⚠️ A equipa '{equipa}' já atingiu o limite de 2 alunos.")
             elif email in [r["Email"] for r in df]:
-                st.warning(f"⚠️ O email {email} já está registado.")
+                st.warning(f"⚠️ {nome}, o teu email já está registado. Verifica se recebeste o email de confirmação do universityrelationsportugal@gmail.com.")
             else:
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(nome, apelido, email, equipa, datahora)
-                st.success(f"{nome} , o teu registo está confirmado! Até ao dia 2 de dezembro!!")
+                st.success(f"{nome} , o teu registo está confirmado! Dentro de momentos, receberás um email de confirmação. Até ao dia 2 de dezembro!!")
 
                 # Enviar email de confirmação
                 assunto = "Confirmação de inscrição no IBM Journey powered by Timestamp | 02/12"
@@ -127,9 +127,9 @@ with st.expander("❌ Cancelamento de Inscrição"):
         else:
             registro = apagar_registo(email_cancel)
             if registro is None:
-                st.info(f"⚠️ Nenhum registo encontrado para {email_cancel}.")
+                st.info(f"⚠️ Não encontrei nenhum registo efetuado com o teu email.") #registo validado pelo email
             else:
-                st.info(f"🛑 Inscrição cancelada para {email_cancel}")
+                st.info(f"🛑 {nome} , a tua inscrição foi cancelada") 
 
                 # Enviar email de cancelamento
                 assunto = "Cancelamento de inscrição no IBM Journey powered by Timestamp | 02/12"
