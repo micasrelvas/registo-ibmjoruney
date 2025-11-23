@@ -70,6 +70,10 @@ def enviar_email(destinatario, assunto, mensagem):
     except Exception as e:
         st.warning(f"Não foi possível enviar email para {destinatario}: {e}")
 
+# --- Nome da App ---
+st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Open Day - 2 de dezembro | Edifício Lumnia</p>", unsafe_allow_html=True)
+
 # --- Informação do evento sempre visível ---
 st.markdown("""
 **Estás pronto para levar a tua experiência com Inteligência Artificial a outro nível?**
