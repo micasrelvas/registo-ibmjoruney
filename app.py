@@ -9,6 +9,24 @@ import time
 # --- Configuração da página ---
 st.set_page_config(page_title="IBM Journey powered by Timestamp - Open Day", layout="wide")
 
+# --- CSS customizado para cores de expanders ---
+st.markdown("""
+<style>
+/* Fundo do expander quando fechado */
+[data-baseweb="expander"] .st-bv {
+    background-color: #00bfff !important; /* azul IBM quando fechado */
+    color: white !important;
+}
+
+/* Fundo do expander quando aberto */
+[data-baseweb="expander"][open] .st-bv {
+    background-color: white !important;
+    color: black !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 # --- ALERTA DE HIBERNAÇÃO ---
 loading_placeholder = st.empty()
 with loading_placeholder.container():
