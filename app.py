@@ -79,17 +79,12 @@ st.markdown("""
 Junta-te a nós para um dia exclusivo nos escritórios da IBM, onde vais descobrir o futuro do AI e pôr mãos à obra!
 """, unsafe_allow_html=True)
 
-# --- Tabs ---
-tabs = ["About IBM", "OpenDay Enroll", "Challenge", "Requirements Checklist", 
-        "Judging Criteria", "Technology", "OpenDay Unenroll"]
-selected_tab = st.radio("📌 Navegação", tabs, horizontal=True)
-
 # -------------------------------
-# 1) About IBM
+# 1️⃣ About IBM
 # -------------------------------
-if selected_tab == "About IBM":
+with st.expander("1️⃣ About IBM", expanded=True):
     st.markdown("""
-    **IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades. Their contributions span across various fields, including AI, cloud computing, and quantum computing. IBM's cutting-edge technology and research continue to drive advancements in multiple sectors:**
+    IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades. Their contributions span across various fields, including AI, cloud computing, and quantum computing. IBM's cutting-edge technology and research continue to drive advancements in multiple sectors:
 
     • **AI and Machine Learning** – Leading the charge in AI development with powerful tools and models.  
     • **Cloud Solutions** – Providing scalable and flexible cloud services.  
@@ -99,35 +94,34 @@ if selected_tab == "About IBM":
     """, unsafe_allow_html=True)
 
 # -------------------------------
-# 2) OpenDay Enroll
+# 2️⃣ OpenDay Enroll
 # -------------------------------
-elif selected_tab == "OpenDay Enroll":
-    with st.expander("📝 Inscrição no Open Day - 2 de dezembro", expanded=True):
-        col1, col2 = st.columns(2)
-        with col1:
-            nome = st.text_input("👤 Nome")
-            apelido = st.text_input("👤 Apelido")
-        with col2:
-            email = st.text_input("📧 Email")
-            equipa = st.text_input("👥 Nome da Equipa")
-        if equipa:
-            equipa = equipa.strip().lower().replace("  "," ").title()
-        if st.button("✅ Confirmar Inscrição"):
-            if not all([nome, apelido, email, equipa]):
-                st.warning("Todos os campos são obrigatórios.")
+with st.expander("2️⃣ OpenDay Enroll", expanded=False):
+    col1, col2 = st.columns(2)
+    with col1:
+        nome = st.text_input("👤 Nome")
+        apelido = st.text_input("👤 Apelido")
+    with col2:
+        email = st.text_input("📧 Email")
+        equipa = st.text_input("👥 Nome da Equipa")
+    if equipa:
+        equipa = equipa.strip().lower().replace("  "," ").title()
+    if st.button("✅ Confirmar Inscrição"):
+        if not all([nome, apelido, email, equipa]):
+            st.warning("Todos os campos são obrigatórios.")
+        else:
+            df = carregar_registos()
+            count_equipa = sum(1 for r in df if r["Nome da Equipa"].strip().lower() == equipa.lower())
+            if count_equipa >= 2:
+                st.error(f"⚠️ A equipa '{equipa}' já atingiu o limite de 2 alunos.")
+            elif email in [r["Email"] for r in df]:
+                st.warning(f"⚠️ {nome}, o teu email já está registado.")
             else:
-                df = carregar_registos()
-                count_equipa = sum(1 for r in df if r["Nome da Equipa"].strip().lower() == equipa.lower())
-                if count_equipa >= 2:
-                    st.error(f"⚠️ A equipa '{equipa}' já atingiu o limite de 2 alunos.")
-                elif email in [r["Email"] for r in df]:
-                    st.warning(f"⚠️ {nome}, o teu email já está registado.")
-                else:
-                    datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    guardar_registo(nome, apelido, email, equipa, datahora)
-                    st.success(f"{nome}, o teu registo está confirmado!")
-                    assunto = "Confirmação de inscrição no IBM Journey | 02/12"
-                    mensagem = f"""Olá {nome},
+                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                guardar_registo(nome, apelido, email, equipa, datahora)
+                st.success(f"{nome}, o teu registo está confirmado!")
+                assunto = "Confirmação de inscrição no IBM Journey | 02/12"
+                mensagem = f"""Olá {nome},
 
 O teu registo foi confirmado!
 
@@ -135,81 +129,56 @@ Nome da Equipa: {equipa}
 
 Se quiseres cancelar a tua inscrição, acede a este link: {st.secrets['APP_URL']}
 """
-                    enviar_email(email, assunto, mensagem)
+                enviar_email(email, assunto, mensagem)
 
 # -------------------------------
-# 3) Challenge
+# 3️⃣ Challenge
 # -------------------------------
-elif selected_tab == "Challenge":
+with st.expander("3️⃣ Challenge", expanded=False):
     st.markdown("""
-    # 🏁 The Challenge
-    **Your challenge:** Design an AI agent powered by IBM watsonx Orchestrate that helps people and businesses achieve more with less effort.
+    **The Challenge:** Design an AI agent powered by IBM watsonx Orchestrate that helps people and businesses achieve more with less effort.
 
-    ### What’s Expected?
-    - **Ideate with watsonx Orchestrate:** Design a solution concept with orchestration features, integrations, and digital skills.  
-    - **Focus on Real-World Impact:** Address challenges in HR, sales, customer service, finance, or procurement.  
-    - **Innovate for the Future of Work:** Enhance human potential and productivity.  
-    - **Reference IBM Technology:** Explain how watsonx Orchestrate’s features, skills, integrations, or workflows would be leveraged.
+    **What’s Expected?**
+    - Ideate with watsonx Orchestrate: Design a solution concept with orchestration features, integrations, and digital skills.  
+    - Focus on Real-World Impact: Address challenges in HR, sales, customer service, finance, or procurement.  
+    - Innovate for the Future of Work: Enhance human potential and productivity.  
+    - Reference IBM Technology: Explain how watsonx Orchestrate’s features, skills, integrations, or workflows would be leveraged.
 
-    ### Inspiration & Use Cases
-    - **Customer Service:** Faster responses, automate ticket handling.  
-    - **Finance:** Streamline approvals, reporting, risk analysis.  
-    - **HR:** Simplify onboarding, manage requests.  
-    - **Procurement:** Automate supplier management, purchase orders, cycles.  
-    - **Sales:** Support CRM updates, scheduling, lead follow-up.
+    **Inspiration & Use Cases**
+    - Customer Service: Faster responses, automate ticket handling.  
+    - Finance: Streamline approvals, reporting, risk analysis.  
+    - HR: Simplify onboarding, manage requests.  
+    - Procurement: Automate supplier management, purchase orders, cycles.  
+    - Sales: Support CRM updates, scheduling, lead follow-up.
     """, unsafe_allow_html=True)
 
 # -------------------------------
-# 4) Requirements Checklist
+# 4️⃣ Requirements Checklist
 # -------------------------------
-elif selected_tab == "Requirements Checklist":
+with st.expander("4️⃣ Requirements Checklist", expanded=False):
     st.markdown("""
-    # 📋 Requirements Checklist
-
-    ### 1 — Enroll in the tab "OpenDay Enrollment"
-    Complete your registration to participate.
-
-    ### 2 — Create your IBM ID
-    You must have an IBMid to access your IBM Cloud services.  
-    Create your IBMid using the same email address used to register.
-    👉 [Create your IBMid (3 min, free)](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776&target=https%3A%2F%2Flogin.ibm.com%2Foidc%2Fendpoint%2Fdefault%2Fauthorize%3FqsId%3Dd3536a32-17e1-4fcc-81df-f6df78fc6467%26client_id%3Dv18LoginProdCI)
-
-    ### 3 — Request Your Cloud Account
-    Follow the "Request your hackathon IBM Cloud account" instructions in the workshop guide. Includes:
-    - watsonx Orchestrate  
-    - Optional: watsonx.ai, NLU, Speech-to-Text, others  
-    🔹 Access enabled at workshop start.  
-    🔹 Some services support Orchestrate built-in functionality.
+    1 — Enroll in the tab "OpenDay Enrollment"  
+    2 — Create your IBM ID: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
+    3 — Request Your Cloud Account: Follow the workshop guide to set up watsonx Orchestrate and optional services.
     """, unsafe_allow_html=True)
 
 # -------------------------------
-# 5) Judging Criteria
+# 5️⃣ Judging Criteria
 # -------------------------------
-elif selected_tab == "Judging Criteria":
+with st.expander("5️⃣ Judging Criteria", expanded=False):
     st.markdown("""
-    # 🏆 Judging Criteria
-
-    **1️⃣ Application of Technology**  
-    How effectively the chosen model(s) are integrated into the solution.
-
-    **2️⃣ Presentation**  
-    The clarity and effectiveness of the project presentation.
-
-    **3️⃣ Business Value**  
-    The impact and practical value, considering how well it fits into business areas.
-
-    **4️⃣ Originality**  
-    The uniqueness & creativity of the solution, highlighting approaches and ability to demonstrate behaviors.
+    **1️⃣ Application of Technology**: How effectively the chosen model(s) are integrated into the solution.  
+    **2️⃣ Presentation**: The clarity and effectiveness of the project presentation.  
+    **3️⃣ Business Value**: The impact and practical value.  
+    **4️⃣ Originality**: The uniqueness & creativity of the solution.
     """, unsafe_allow_html=True)
 
 # -------------------------------
-# 6) Technology
+# 6️⃣ Technology
 # -------------------------------
-elif selected_tab == "Technology":
+with st.expander("6️⃣ Technology", expanded=False):
     st.markdown("""
-    # 🧩 Technology
-    ### Explore Before the Hackathon
-    Familiarize yourself with **watsonx Orchestrate**:
+    **Explore Before the Hackathon:** Familiarize with watsonx Orchestrate:
 
     - [Product Overview](https://www.ibm.com/products/watsonx-orchestrate)  
     - [Demo Experience](https://www.ibm.com/products/watsonx-orchestrate/demos)  
@@ -218,22 +187,21 @@ elif selected_tab == "Technology":
     """, unsafe_allow_html=True)
 
 # -------------------------------
-# 7) OpenDay Unenroll
+# 7️⃣ OpenDay Unenroll
 # -------------------------------
-elif selected_tab == "OpenDay Unenroll":
-    with st.expander("❌ Cancelamento de Inscrição"):
-        email_cancel = st.text_input("📧 Email para cancelar inscrição")
-        if st.button("Cancelar Inscrição"):
-            if not email_cancel:
-                st.warning("O campo Email é obrigatório.")
+with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
+    email_cancel = st.text_input("📧 Email para cancelar inscrição")
+    if st.button("Cancelar Inscrição"):
+        if not email_cancel:
+            st.warning("O campo Email é obrigatório.")
+        else:
+            registro = apagar_registo(email_cancel)
+            if registro is None:
+                st.info(f"⚠️ Nenhum registo encontrado com este email.") 
             else:
-                registro = apagar_registo(email_cancel)
-                if registro is None:
-                    st.info(f"⚠️ Não encontrei nenhum registo com este email.") 
-                else:
-                    st.info(f"🛑 A tua inscrição foi cancelada!")
-                    assunto = "Cancelamento de inscrição no IBM Journey | 02/12"
-                    mensagem = f"""Olá {registro['Nome']},
+                st.info(f"🛑 A tua inscrição foi cancelada!")
+                assunto = "Cancelamento de inscrição no IBM Journey | 02/12"
+                mensagem = f"""Olá {registro['Nome']},
 
 A tua inscrição foi cancelada.
 
@@ -241,5 +209,4 @@ Nome da Equipa: {registro['Nome da Equipa']}
 
 Se quiseres voltar a inscrever-te, acede a este link: {st.secrets['APP_URL']}
 """
-                    enviar_email(email_cancel, assunto, mensagem)
-
+                enviar_email(email_cancel, assunto, mensagem)
