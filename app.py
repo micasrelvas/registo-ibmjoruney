@@ -130,6 +130,27 @@ with st.expander("📝 Inscrição no Open Day - 2 de dezembro", expanded=True):
                   .title()
         )
 
+     # -------------------------
+    # ⭐ NOVA SECÇÃO AQUI
+    # -------------------------
+    st.markdown("""
+    ### 🏆 Judging Criteria
+
+    **1️⃣ Application of Technology**  
+    How effectively the chosen model(s) are integrated into the solution.
+
+    **2️⃣ Presentation**  
+    The clarity and effectiveness of the project presentation.
+
+    **3️⃣ Business Value**  
+    The impact and practical value, considering how well it fits into business areas.
+
+    **4️⃣ Originality**  
+    The uniqueness & creativity of the solution, highlighting approaches. 
+     """)
+        # and ability to demonstrate behaviors.
+   
+
     if st.button("✅ Confirmar Inscrição"):
         # Validar campos obrigatórios
         if not all([nome, apelido, email, equipa]):
