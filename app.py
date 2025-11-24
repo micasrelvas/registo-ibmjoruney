@@ -187,15 +187,21 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
             st.warning("All fields except team name are required.")
         else:
             df = carregar_registos()
+
             # Caso queira challenge → validar equipa
             if modo == "Attend Open Day + Participate in the Challenge":
                 if not equipa:
                     st.warning("Please enter a Team Name to join the Challenge.")
-                else:
-                    count_equipa = sum(1 for r in df if r["Nome da Equipa"].strip().lower() == equipa.lower())
-                    if count_equipa >= 2:
-                        st.error(f"⚠️ The team '{equipa}' has already reached the limit of 2 students.")
-                        st.stop()
+                    st.stop()
+
+                # Limite de 2 estudantes por equipa
+                count_equipa = sum(
+                    1 for r in df 
+                    if r["Nome da Equipa"].strip().lower() == equipa.lower()
+                )
+                if count_equipa >= 2:
+                    st.error(f"⚠️ The team '{equipa}' has already reached the limit of 2 students.")
+                    st.stop()
             else:
                 equipa = "—"  # marca que NÃO participa no challenge
 
@@ -204,7 +210,16 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                 st.warning(f"⚠️ {nome}, your email is already registered.")
             else:
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                guardar_registo(nome, apelido, email, equipa, datahora)
+
+                # CHAMADA CORRIGIDA DA FUNÇÃO guardar_registo
+                guardar_registo(
+                    nome,
+                    apelido,
+                    email,
+                    "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
+                    equipa,
+                    datahora
+                )
 
                 st.success(f"{nome}, your enrollment is confirmed!")
 
