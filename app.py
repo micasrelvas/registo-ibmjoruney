@@ -47,9 +47,9 @@ h1, h2, h3 {
 
 /* Expander aberto */
 [data-baseweb="expander"][open] .st-bv {
-    background-color: #ffffff !important;
-    color: black !important;
-    font-weight: normal;
+    background-color: #99ccff !important;  /* azul claro quando expandido */
+    color: #003366 !important;             /* texto azul escuro */
+    font-weight: bold;
 }
 
 /* Campos de input */
