@@ -37,27 +37,6 @@ h1, h2, h3 {
 /* DataFrames */
 .stDataFrame th { background-color: #e6f2ff; color: black; }
 .stDataFrame td { background-color: #ffffff; color: black; }
-/* Expander fechado */
-[data-baseweb="expander"] > div > div:first-child {
-    background-color: #00274c !important; /* azul escuro IBM */
-    color: white !important;               /* texto branco */
-    font-weight: bold;
-}
-
-/* Expander aberto */
-[data-baseweb="expander"][open] > div > div:first-child {
-    background-color: #99ccff !important; /* azul claro */
-    color: #003366 !important;            /* texto azul escuro */
-    font-weight: bold;
-}
-
-/* Hover sobre cabeçalho (qualquer estado) */
-[data-baseweb="expander"] > div > div:first-child:hover {
-    background-color: #3399ff !important; 
-    color: black !important;
-}
-
-
 
 /* Campos de input */
 div.stTextInput>div>div>input {
@@ -69,6 +48,26 @@ div.stTextInput>div>div>input {
 div.stTextInput>label {
     color: black !important;
     font-weight: normal;
+}
+
+/* Expander fechado */
+[data-baseweb="expander"] button {
+    background-color: #00274c !important; /* azul escuro IBM */
+    color: white !important;               /* texto branco */
+    font-weight: bold;
+}
+
+/* Expander aberto */
+[data-baseweb="expander"][open] button {
+    background-color: #99ccff !important; /* azul claro */
+    color: #003366 !important;            /* texto azul escuro */
+    font-weight: bold;
+}
+
+/* Hover sobre cabeçalho (qualquer estado) */
+[data-baseweb="expander"] button:hover {
+    background-color: #3399ff !important; 
+    color: white !important;
 }
 </style>
 """, unsafe_allow_html=True)
