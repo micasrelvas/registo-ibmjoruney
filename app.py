@@ -38,19 +38,25 @@ h1, h2, h3 {
 .stDataFrame th { background-color: #e6f2ff; color: black; }
 .stDataFrame td { background-color: #ffffff; color: black; }
 
-/* Expander fechado */
-[data-baseweb="expander"] .st-bv {
-    background-color: #00bfff !important;  /* azul IBM */
-    color: black !important;               /* texto legível */
+/* Estilo geral do expander */
+[data-baseweb="expander"] .st-bv button {
+    background-color: #00bfff !important; /* azul IBM */
+    color: black !important;
     font-weight: bold;
 }
 
 /* Expander aberto */
-[data-baseweb="expander"][open] .st-bv {
-    background-color: #99ccff !important;  /* azul claro quando expandido */
-    color: #003366 !important;             /* texto azul escuro */
-    font-weight: bold;
+[data-baseweb="expander"][open] .st-bv button {
+    background-color: #99ccff !important; /* azul claro */
+    color: #003366 !important;            /* texto azul escuro */
 }
+
+/* Hover sobre botão (qualquer estado) */
+[data-baseweb="expander"] .st-bv button:hover {
+    background-color: #3399ff !important;
+    color: black !important;
+}
+
 
 
 /* Campos de input */
