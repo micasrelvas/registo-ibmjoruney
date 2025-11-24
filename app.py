@@ -48,7 +48,6 @@ h1, h2, h3 {
     background-color: #00274c !important; /* azul escuro IBM */
     color: white !important;               /* texto branco */
     font-weight: bold;
-    font-family: 'IBM Plex Sans', Arial, sans-serif;
 }
 
 /* Expander aberto */
@@ -56,15 +55,14 @@ h1, h2, h3 {
     background-color: #99ccff !important; /* azul claro */
     color: #003366 !important;            /* texto azul escuro */
     font-weight: bold;
-    font-family: 'IBM Plex Sans', Arial, sans-serif;
 }
 
 /* Hover sobre cabeçalho (qualquer estado) */
 [data-baseweb="expander"] > div > div:first-child:hover {
     background-color: #3399ff !important; 
     color: black !important;
-    font-family: 'IBM Plex Sans', Arial, sans-serif;
 }
+
 
 /* Campos de input */
 div.stTextInput>div>div>input {
