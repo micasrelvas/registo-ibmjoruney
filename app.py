@@ -13,14 +13,14 @@ st.markdown("""
 <style>
 /* Fundo geral da app */
 .stApp {
-    background-color: #cce6ff;  /* azul claro */
+    background-color: #cce6ff;  
     color: black;
     font-family: 'Arial', sans-serif;
 }
 
 /* Títulos da app */
 h1, h2, h3 {
-    color: #003366;  /* azul escuro */
+    color: #003366;
     text-align: center;
     background-color: #cce6ff;
     padding: 10px;
@@ -29,7 +29,7 @@ h1, h2, h3 {
 
 /* Botões */
 .stButton>button {
-    background-color: #0059b3;  /* azul médio */
+    background-color: #0059b3;  
     color: white;
     font-weight: bold;
 }
@@ -38,36 +38,14 @@ h1, h2, h3 {
 .stDataFrame th { background-color: #e6f2ff; color: black; }
 .stDataFrame td { background-color: #ffffff; color: black; }
 
-/* Campos de input */
-div.stTextInput>div>div>input {
-    background-color: white !important;
-    color: black !important;
-}
-
-/* Labels dos inputs */
-div.stTextInput>label {
-    color: black !important;
-    font-weight: normal;
-}
-
-/* Expander fechado */
-[data-baseweb="expander"] button {
-    background-color: #00274c !important; /* azul escuro IBM */
-    color: white !important;               /* texto branco */
+/* Aqui adiciona o CSS para avisos */
+.css-1avcm0n.edgvbvh3 {
+    background-color: #ff9900 !important;  /* laranja forte */
+    color: #000000 !important;             /* texto preto */
     font-weight: bold;
-}
-
-/* Expander aberto */
-[data-baseweb="expander"][open] button {
-    background-color: #99ccff !important; /* azul claro */
-    color: #003366 !important;            /* texto azul escuro */
-    font-weight: bold;
-}
-
-/* Hover sobre cabeçalho (qualquer estado) */
-[data-baseweb="expander"] button:hover {
-    background-color: #3399ff !important; 
-    color: white !important;
+    border-left: 4px solid #ff6600;
+    border-radius: 5px;
+    padding: 8px;
 }
 </style>
 """, unsafe_allow_html=True)
