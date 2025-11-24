@@ -136,15 +136,22 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
         else:
             df = carregar_registos()
             registro_existente = next((r for r in df if r["Email"].strip().lower() == email.strip().lower()), None)
-
-          if registro_existente:
+            
+     if registro_existente:
     modo_atual = "Open Day + Challenge" if registro_existente["Participa Challenge"].strip().lower() == "sim" else "Open Day only"
     st.info(f"⚠️ Your email is already registered for '{modo_atual}' mode.")
 
     # Perguntar ao usuário se quer atualizar
     if st.button("Update to new selected mode?"):
+        # Variáveis devem ser definidas antes
+        email = registro_existente["Email"]
+        nome = registro_existente["Nome"]
+        apelido = registro_existente["Apelido"]
+        equipa = registro_existente["Nome da Equipa"] if registro_existente["Participa Challenge"].strip().lower() == "sim" else "—"
+
         apagar_registo(email)
         datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # aqui 'modo' precisa estar definido pelo usuário (radio, etc.)
         guardar_registo(
             nome,
             apelido,
