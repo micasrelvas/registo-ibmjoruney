@@ -87,11 +87,10 @@ def enviar_email(destinatario, assunto, mensagem):
     except Exception as e:
         st.warning(f"Não foi possível enviar email para {destinatario}: {e}")
 
-# --- Nome da App ---
+# --- Cabeçalho ---
 st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center;'>Open Day - December 2nd | Edifício Lumnia</p>", unsafe_allow_html=True)
 
-# --- Informação do evento ---
 st.markdown("""
 **Are you ready to take your experience with Artificial Intelligence to the next level?**
 
@@ -105,14 +104,13 @@ Join us for an exclusive day at IBM's offices, where you'll discover the future 
 # -------------------------------
 with st.expander("1️⃣ About IBM", expanded=False):
     st.markdown("""
-IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades. Their contributions span across various fields, including AI, cloud computing, and quantum computing. IBM's cutting-edge technology and research continue to drive advancements in multiple sectors.
+IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades. Their contributions span across various fields, including AI, cloud computing, and quantum computing.
 """, unsafe_allow_html=True)
 
 # -------------------------------
 # 2️⃣ OpenDay Enroll
 # -------------------------------
 with st.expander("2️⃣ OpenDay Enroll", expanded=False):
-
     st.markdown("### Choose your participation mode:")
     modo = st.radio(
         "Select one option:",
@@ -121,14 +119,14 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 
     col1, col2 = st.columns(2)
     with col1:
-        nome = st.text_input("👤 Name")
-        apelido = st.text_input("👤 Surname")
+        nome = st.text_input("👤 Name", key="enroll_nome")
+        apelido = st.text_input("👤 Surname", key="enroll_apelido")
     with col2:
-        email = st.text_input("📧 Email")
+        email = st.text_input("📧 Email", key="enroll_email")
 
     equipa = ""
     if modo == "Attend Open Day + Participate in the Challenge":
-        equipa = st.text_input("👥 Team Name (required for Challenge)")
+        equipa = st.text_input("👥 Team Name (required for Challenge)", key="enroll_equipe")
         if equipa:
             equipa = equipa.strip().lower().replace("  "," ").title()
 
@@ -137,16 +135,13 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
             st.warning("All fields except team name are required.")
         else:
             df = carregar_registos()
-            # Verificar email duplicado
             registro_existente = next((r for r in df if r["Email"].strip().lower() == email.strip().lower()), None)
 
             if registro_existente:
                 modo_atual = "Open Day + Challenge" if registro_existente["Participa Challenge"].strip().lower() == "sim" else "Open Day only"
                 st.info(f"⚠️ Your email is already registered for '{modo_atual}' mode.")
                 if st.confirm("Do you want to update to the new selected mode?"):
-                    # Apagar antigo registro
                     apagar_registo(email)
-                    # Guardar novo registro
                     datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     guardar_registo(
                         nome,
@@ -158,7 +153,6 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                     )
                     novo_modo = "Open Day + Challenge" if modo == "Attend Open Day + Participate in the Challenge" else "Open Day only"
                     st.success(f"✅ Your registration has been successfully changed to '{novo_modo}' mode!")
-                    # E-mail automático
                     assunto = "IBM Journey registration updated | 02/12"
                     mensagem = f"""Olá {nome},
 
@@ -172,7 +166,6 @@ Thank you!
 """
                     enviar_email(email, assunto, mensagem)
             else:
-                # Novo registro
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(
                     nome,
@@ -183,7 +176,6 @@ Thank you!
                     datahora
                 )
                 st.success(f"{nome}, your enrollment is confirmed!")
-                # E-mail automático
                 assunto = "Confirmação de inscrição no IBM Journey | 02/12"
                 mensagem = f"""Olá {nome},
 
@@ -197,7 +189,52 @@ If you wish to cancel or update your registration, use: {st.secrets['APP_URL']}
                 enviar_email(email, assunto, mensagem)
 
 # -------------------------------
-# 7️⃣ OpenDay Unenroll / Update
+# 3️⃣ Challenge
+# -------------------------------
+with st.expander("3️⃣ Challenge", expanded=False):
+    st.markdown("""
+**The Challenge:** Design an AI agent powered by IBM watsonx Orchestrate.
+
+**What’s Expected?**
+- Ideate with watsonx Orchestrate  
+- Focus on Real-World Impact  
+- Innovate for the Future of Work  
+- Reference IBM Technology
+""", unsafe_allow_html=True)
+
+# -------------------------------
+# 4️⃣ Requirements Checklist
+# -------------------------------
+with st.expander("4️⃣ Requirements Checklist", expanded=False):
+    st.markdown("""
+✅ Enroll in "OpenDay Enroll"  
+✅ Create your IBM ID: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)
+""", unsafe_allow_html=True)
+
+# -------------------------------
+# 5️⃣ Judging Criteria
+# -------------------------------
+with st.expander("5️⃣ Judging Criteria", expanded=False):
+    st.markdown("""
+**👉 Application of Technology**  
+**👉 Presentation**  
+**👉 Business Value**  
+**👉 Originality**
+""", unsafe_allow_html=True)
+
+# -------------------------------
+# 6️⃣ Technology
+# -------------------------------
+with st.expander("6️⃣ Technology", expanded=False):
+    st.markdown("""
+- [Product Overview](https://www.ibm.com/products/watsonx-orchestrate)  
+- [Demo Experience](https://www.ibm.com/products/watsonx-orchestrate/demos)  
+- [Integrations](https://www.ibm.com/products/watsonx-orchestrate/integrations)  
+- [Resources & Support](https://www.ibm.com/products/watsonx-orchestrate/resources)
+""", unsafe_allow_html=True)
+
+# -------------------------------
+# 7️⃣ OpenDay Unenroll / Update Mode
 # -------------------------------
 with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
     email_cancel = st.text_input("📧 Enter your email to cancel or update registration", key="unenroll_email")
@@ -206,7 +243,6 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
         if not email_cancel:
             st.warning("The Email field is required.")
         else:
-            # Buscar registro
             registos = carregar_registos()
             registro = next((r for r in registos if r["Email"].strip().lower() == email_cancel.strip().lower()), None)
 
@@ -216,7 +252,6 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
                 modo_atual = "Open Day + Challenge" if registro["Participa Challenge"].strip().lower() == "sim" else "Open Day only"
                 st.success(f"✅ Registration found! Current mode: {modo_atual}")
 
-                # Opções
                 opcao = st.radio("Choose an action:", ["Cancel registration", "Update mode"], key="unenroll_opcao")
 
                 if opcao == "Cancel registration":
@@ -240,7 +275,6 @@ If you wish to register again, please use the enrollment form: {st.secrets['APP_
                         if novo_modo == modo_atual:
                             st.info("⚠️ The selected mode is the same as current mode. No changes made.")
                         else:
-                            # Atualizar registro no Sheet
                             for i, r in enumerate(registos, start=2):
                                 if r["Email"].strip().lower() == email_cancel.strip().lower():
                                     if novo_modo == "Open Day only":
@@ -248,7 +282,6 @@ If you wish to register again, please use the enrollment form: {st.secrets['APP_
                                         sheet.update(f"E{i}", "—")
                                     else:
                                         sheet.update(f"D{i}", "Sim")
-                                        # Atualizar equipe se necessário
                                     break
                             st.success(f"✅ Your registration has been successfully changed to '{novo_modo}' mode!")
                             assunto = "IBM Journey Registration Mode Updated | 02/12"
@@ -262,5 +295,3 @@ New mode: {novo_modo}
 If you wish to make further changes, please use the enrollment form: {st.secrets['APP_URL']}
 """
                             enviar_email(email_cancel, assunto, mensagem)
-
-
