@@ -208,7 +208,7 @@ with st.expander("3️⃣ Challenge", expanded=True):
 # -------------------------------
 with st.expander("4️⃣ Requirements Checklist", expanded=True):
     st.markdown("""
-1 — Enroll in the tab "OpenDay Enrollment"  
+1 — Enroll in the tab "OpenDay Enroll"  
 2 — Create your IBM ID: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
 3 — Request Your Cloud Account: Follow the workshop guide to set up watsonx Orchestrate and optional services.
 """, unsafe_allow_html=True)
@@ -229,7 +229,7 @@ with st.expander("5️⃣ Judging Criteria", expanded=True):
 # -------------------------------
 with st.expander("6️⃣ Technology", expanded=True):
     st.markdown("""
-**Explore Before the Hackathon:** Familiarize with watsonx Orchestrate:
+**Explore Before the OpenDay:** Familiarize with watsonx Orchestrate.
 
 - [Product Overview](https://www.ibm.com/products/watsonx-orchestrate)  
 - [Demo Experience](https://www.ibm.com/products/watsonx-orchestrate/demos)  
