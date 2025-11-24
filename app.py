@@ -37,15 +37,14 @@ h1, h2, h3 {
 /* DataFrames */
 .stDataFrame th { background-color: #e6f2ff; color: black; }
 .stDataFrame td { background-color: #ffffff; color: black; }
-
-/* Fundo do expander quando fechado */
+/* Expander fechado */
 [data-baseweb="expander"] > div > div:first-child {
-    background-color: #00bfff !important; /* azul IBM */
-    color: black !important;               /* texto preto */
+    background-color: #00274c !important; /* azul escuro IBM */
+    color: white !important;               /* texto branco */
     font-weight: bold;
 }
 
-/* Fundo do expander quando aberto */
+/* Expander aberto */
 [data-baseweb="expander"][open] > div > div:first-child {
     background-color: #99ccff !important; /* azul claro */
     color: #003366 !important;            /* texto azul escuro */
@@ -57,7 +56,6 @@ h1, h2, h3 {
     background-color: #3399ff !important; 
     color: black !important;
 }
-
 
 
 
