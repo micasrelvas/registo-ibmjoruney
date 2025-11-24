@@ -38,24 +38,26 @@ h1, h2, h3 {
 .stDataFrame th { background-color: #e6f2ff; color: black; }
 .stDataFrame td { background-color: #ffffff; color: black; }
 
-/* Estilo geral do expander */
-[data-baseweb="expander"] .st-bv button {
+/* Fundo do expander quando fechado */
+[data-baseweb="expander"] > div > div:first-child {
     background-color: #00bfff !important; /* azul IBM */
-    color: black !important;
+    color: black !important;               /* texto preto */
     font-weight: bold;
 }
 
-/* Expander aberto */
-[data-baseweb="expander"][open] .st-bv button {
+/* Fundo do expander quando aberto */
+[data-baseweb="expander"][open] > div > div:first-child {
     background-color: #99ccff !important; /* azul claro */
     color: #003366 !important;            /* texto azul escuro */
+    font-weight: bold;
 }
 
-/* Hover sobre botão (qualquer estado) */
-[data-baseweb="expander"] .st-bv button:hover {
-    background-color: #3399ff !important;
+/* Hover sobre cabeçalho (qualquer estado) */
+[data-baseweb="expander"] > div > div:first-child:hover {
+    background-color: #3399ff !important; 
     color: black !important;
 }
+
 
 
 
