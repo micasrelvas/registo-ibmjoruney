@@ -215,9 +215,9 @@ with st.expander("3️⃣ Challenge", expanded=True):
 # -------------------------------
 with st.expander("4️⃣ Requirements Checklist", expanded=True):
     st.markdown("""
-1 — Enroll in the tab "OpenDay Enroll"  
-2 — Create your IBM ID: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
-3 — Request Your Cloud Account: Follow the workshop guide to set up watsonx Orchestrate and optional services.
+✅ Enroll in the tab "OpenDay Enroll"  
+✅ Create your IBM ID: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
+✅ Request Your Cloud Account: Follow the workshop guide to set up watsonx Orchestrate and optional services.
 """, unsafe_allow_html=True)
 
 # -------------------------------
@@ -225,10 +225,10 @@ with st.expander("4️⃣ Requirements Checklist", expanded=True):
 # -------------------------------
 with st.expander("5️⃣ Judging Criteria", expanded=True):
     st.markdown("""
-**1️⃣ Application of Technology**: How effectively the chosen model(s) are integrated into the solution.  
-**2️⃣ Presentation**: The clarity and effectiveness of the project presentation.  
-**3️⃣ Business Value**: The impact and practical value.  
-**4️⃣ Originality**: The uniqueness & creativity of the solution.
+**👉 Application of Technology**: How effectively the chosen model(s) are integrated into the solution.  
+**👉 Presentation**: The clarity and effectiveness of the project presentation.  
+**👉 Business Value**: The impact and practical value.  
+**👉 Originality**: The uniqueness & creativity of the solution.
 """, unsafe_allow_html=True)
 
 # -------------------------------
