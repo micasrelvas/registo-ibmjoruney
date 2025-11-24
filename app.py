@@ -179,11 +179,11 @@ with st.expander("3️⃣ Challenge", expanded=True):
 - Reference IBM Technology: Explain how watsonx Orchestrate’s features, skills, integrations, or workflows would be leveraged.
 
 **Inspiration & Use Cases**
-- Customer Service (https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-customer-service): Faster responses, automate ticket handling.  
-- Finance (https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-finance): Streamline approvals, reporting, risk analysis.  
-- HR (https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-hr): Simplify onboarding, manage requests.  
-- Procurement (https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-procurement): Automate supplier management, purchase orders, cycles.  
-- Sales (https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-sales): Support CRM updates, scheduling, lead follow-up.
+- [Customer Service](https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-customer-service): Faster responses, automate ticket handling.  
+- [Finance](https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-finance): Streamline approvals, reporting, risk analysis.  
+- [HR](https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-hr): Simplify onboarding, manage requests.  
+- [Procurement](https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-procurement): Automate supplier management, purchase orders, cycles.  
+- [Sales] (https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-sales): Support CRM updates, scheduling, lead follow-up.
 """, unsafe_allow_html=True)
 
 # -------------------------------
@@ -227,11 +227,11 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=True):
     email_cancel = st.text_input("📧 Email to unenroll")
     if st.button("OpenDay Unenroll"):
         if not email_cancel:
-            st.warning("O campo Email é obrigatório.")
+            st.warning("The Email field is required.")
         else:
             registro = apagar_registo(email_cancel)
             if registro is None:
-                st.info(f"⚠️ Nenhum registo encontrado com este email.") 
+                st.info(f"⚠️ No records found with this email address.") 
             else:
                 st.info(f"🛑 Your enrollment has been canceled!")
                 assunto = "Cancelamento de inscrição no IBM Journey | 02/12"
