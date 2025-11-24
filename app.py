@@ -11,41 +11,73 @@ st.set_page_config(page_title="🚀 IBM Journey powered by Timestamp - Open Day"
 
 st.markdown("""
 <style>
+/* Fonte IBM Plex Sans */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap');
+
 /* Fundo geral da app */
 .stApp {
-    background-color: #cce6ff;  
+    background-color: #cce6ff;  /* azul claro */
     color: black;
-    font-family: 'Arial', sans-serif;
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
 }
 
 /* Títulos da app */
 h1, h2, h3 {
-    color: #003366;
+    color: #003366;  /* azul escuro */
     text-align: center;
     background-color: #cce6ff;
     padding: 10px;
     border-radius: 8px;
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
 }
 
 /* Botões */
 .stButton>button {
-    background-color: #0059b3;  
+    background-color: #0059b3;  /* azul médio */
     color: white;
     font-weight: bold;
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
 }
 
 /* DataFrames */
-.stDataFrame th { background-color: #e6f2ff; color: black; }
-.stDataFrame td { background-color: #ffffff; color: black; }
+.stDataFrame th { background-color: #e6f2ff; color: black; font-family: 'IBM Plex Sans', Arial, sans-serif; }
+.stDataFrame td { background-color: #ffffff; color: black; font-family: 'IBM Plex Sans', Arial, sans-serif; }
 
-/* Aqui adiciona o CSS para avisos */
-.css-1avcm0n.edgvbvh3 {
-    background-color: #ff9900 !important;  /* laranja forte */
-    color: #000000 !important;             /* texto preto */
+/* Expander fechado */
+[data-baseweb="expander"] > div > div:first-child {
+    background-color: #00274c !important; /* azul escuro IBM */
+    color: white !important;               /* texto branco */
     font-weight: bold;
-    border-left: 4px solid #ff6600;
-    border-radius: 5px;
-    padding: 8px;
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
+}
+
+/* Expander aberto */
+[data-baseweb="expander"][open] > div > div:first-child {
+    background-color: #99ccff !important; /* azul claro */
+    color: #003366 !important;            /* texto azul escuro */
+    font-weight: bold;
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
+}
+
+/* Hover sobre cabeçalho (qualquer estado) */
+[data-baseweb="expander"] > div > div:first-child:hover {
+    background-color: #3399ff !important; 
+    color: black !important;
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
+}
+
+/* Campos de input */
+div.stTextInput>div>div>input {
+    background-color: white !important;
+    color: black !important;
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
+}
+
+/* Labels dos inputs */
+div.stTextInput>label {
+    color: black !important;
+    font-weight: normal;
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
 }
 </style>
 """, unsafe_allow_html=True)
