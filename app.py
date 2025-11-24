@@ -180,96 +180,101 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
     if modo == "Attend Open Day + Participate in the Challenge":
         equipa = st.text_input("👥 Team Name (required for Challenge)")
         if equipa:
-            equipa = equipa.strip().lower().replace("  ", " ").title()
+            equipa = equipa.strip().lower().replace("  "," ").title()
 
     if st.button("✅ Confirm enrollment"):
-        # Campos obrigatórios
         if not all([nome, apelido, email]):
-            st.warning("All fields except Team Name are required.")
+            st.warning("All fields except team name are required.")
         else:
             df = carregar_registos()
-            # Verifica se o email já está registado
-            registro_existente = next((r for r in df if r["Email"] == email), None)
+            email_registado = [r for r in df if r["Email"] == email]
 
-            if registro_existente:
-                modo_atual = "Open Day + Challenge" if registro_existente["Participa Challenge"] == "Sim" else "Open Day only"
-                st.warning(f"⚠️ {nome}, your email is already registered for '{modo_atual}'.")
+            # Se o email já está registado
+            if email_registado:
+                registro_atual = email_registado[0]
+                modo_atual = ("Open Day + Challenge" 
+                             if registro_atual["Participa Challenge"] == "Sim" 
+                             else "Open Day only")
+                st.warning(f"⚠️ {nome}, your email is already registered for mode: {modo_atual}")
 
-                st.markdown("Do you want to update your registration to the new selected mode?")
-                atualizar = st.button("✅ Update to new mode")
-
-                if atualizar:
-                    # Apagar registro antigo
+                if st.button("🔄 Update to new selected mode"):
+                    # Apagar o registro antigo
                     apagar_registo(email)
 
-                    # Validar equipa se for para Challenge
-                    if modo == "Attend Open Day + Participate in the Challenge" and not equipa:
-                        st.warning("Please enter a Team Name to join the Challenge.")
-                        st.stop()
-                    elif modo == "Attend Open Day + Participate in the Challenge":
-                        # Limite de 2 estudantes por equipa
-                        count_equipa = sum(
-                            1 for r in df if r["Nome da Equipa"].strip().lower() == equipa.lower()
-                        )
-                        if count_equipa >= 2:
-                            st.error(f"⚠️ The team '{equipa}' has already reached the limit of 2 students.")
+                    # Validar equipe se selecionou Challenge
+                    if modo == "Attend Open Day + Participate in the Challenge":
+                        if not equipa:
+                            st.warning("Please enter a Team Name to join the Challenge.")
                             st.stop()
 
+                    else:
+                        equipa = "—"
+
                     # Guardar novo registro
+                    datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     guardar_registo(
                         nome,
                         apelido,
                         email,
                         "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
-                        equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
-                        datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        equipa,
+                        datahora
                     )
-                    st.success(f"{nome}, your registration has been updated to '{modo}'!")
 
-                    # Envio de email de atualização
-                    assunto = "Update of registration in IBM Journey | 02/12"
+                    st.success("✅ Your registration has been updated to the new mode!")
+
+                    # Enviar email de confirmação do novo modo
+                    assunto = "IBM Journey registration updated | 02/12"
                     mensagem = f"""Olá {nome},
 
-Your registration has been updated!
+Your registration has been updated.
 
-Participação: {modo}
-Equipa: {equipa if equipa else "—"}
+New mode: { 'Open Day + Challenge' if modo == "Attend Open Day + Participate in the Challenge" else 'Open Day only' }
+Team Name: {equipa}
 
+Thank you!
 """
                     enviar_email(email, assunto, mensagem)
+
+            # Se o email ainda não está registado
             else:
-                # Validar equipa se for para Challenge
-                if modo == "Attend Open Day + Participate in the Challenge" and not equipa:
-                    st.warning("Please enter a Team Name to join the Challenge.")
-                    st.stop()
-                elif modo == "Attend Open Day + Participate in the Challenge":
-                    # Limite de 2 estudantes por equipa
+                # Validar equipe se escolheu Challenge
+                if modo == "Attend Open Day + Participate in the Challenge":
+                    if not equipa:
+                        st.warning("Please enter a Team Name to join the Challenge.")
+                        st.stop()
+                    # Limite de 2 estudantes por equipe
                     count_equipa = sum(
-                        1 for r in df if r["Nome da Equipa"].strip().lower() == equipa.lower()
+                        1 for r in df 
+                        if r["Nome da Equipa"].strip().lower() == equipa.lower()
                     )
                     if count_equipa >= 2:
                         st.error(f"⚠️ The team '{equipa}' has already reached the limit of 2 students.")
                         st.stop()
+                else:
+                    equipa = "—"
 
-                # Guardar novo registro
+                # Guardar registro
+                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(
                     nome,
                     apelido,
                     email,
                     "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
-                    equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
-                    datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    equipa,
+                    datahora
                 )
+
                 st.success(f"{nome}, your enrollment is confirmed!")
 
-                # Envio de email de confirmação
+                # E-mail automático
                 assunto = "Confirmação de inscrição no IBM Journey | 02/12"
                 mensagem = f"""Olá {nome},
 
 O teu registo foi confirmado!
 
-Participação: {modo}
-Equipa: {equipa if equipa else "—"}
+Participação: { 'Open Day + Challenge' if modo == "Attend Open Day + Participate in the Challenge" else 'Open Day only' }
+Equipa: {equipa}
 
 Se quiseres cancelar a tua inscrição, acede a este link: {st.secrets['APP_URL']}
 """
