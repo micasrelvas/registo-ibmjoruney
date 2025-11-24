@@ -140,7 +140,7 @@ Join us for an exclusive day at IBM's offices, where you'll discover the future 
 # -------------------------------
 # 1️⃣ About IBM
 # -------------------------------
-with st.expander("1️⃣ About IBM", expanded=True):
+with st.expander("1️⃣ About IBM", expanded=False):
     st.markdown("""
 IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades. Their contributions span across various fields, including AI, cloud computing, and quantum computing. IBM's cutting-edge technology and research continue to drive advancements in multiple sectors:
 
@@ -154,7 +154,7 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 # -------------------------------
 # 2️⃣ OpenDay Enroll
 # -------------------------------
-with st.expander("2️⃣ OpenDay Enroll", expanded=True):
+with st.expander("2️⃣ OpenDay Enroll", expanded=False):
     col1, col2 = st.columns(2)
     with col1:
         nome = st.text_input("👤 Name")
@@ -192,7 +192,7 @@ Se quiseres cancelar a tua inscrição, acede a este link: {st.secrets['APP_URL'
 # -------------------------------
 # 3️⃣ Challenge
 # -------------------------------
-with st.expander("3️⃣ Challenge", expanded=True):
+with st.expander("3️⃣ Challenge", expanded=False):
     st.markdown("""
 **The Challenge:** Design an AI agent powered by IBM watsonx Orchestrate that helps people and businesses achieve more with less effort.
 
@@ -213,7 +213,7 @@ with st.expander("3️⃣ Challenge", expanded=True):
 # -------------------------------
 # 4️⃣ Requirements Checklist
 # -------------------------------
-with st.expander("4️⃣ Requirements Checklist", expanded=True):
+with st.expander("4️⃣ Requirements Checklist", expanded=False):
     st.markdown("""
 ✅ Enroll in the tab "OpenDay Enroll"  
 ✅ Create your IBM ID: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
@@ -223,7 +223,7 @@ with st.expander("4️⃣ Requirements Checklist", expanded=True):
 # -------------------------------
 # 5️⃣ Judging Criteria
 # -------------------------------
-with st.expander("5️⃣ Judging Criteria", expanded=True):
+with st.expander("5️⃣ Judging Criteria", expanded=False):
     st.markdown("""
 **👉 Application of Technology**: How effectively the chosen model(s) are integrated into the solution.  
 **👉 Presentation**: The clarity and effectiveness of the project presentation.  
@@ -234,7 +234,7 @@ with st.expander("5️⃣ Judging Criteria", expanded=True):
 # -------------------------------
 # 6️⃣ Technology
 # -------------------------------
-with st.expander("6️⃣ Technology", expanded=True):
+with st.expander("6️⃣ Technology", expanded=False):
     st.markdown("""
 **Explore Before the OpenDay:** Familiarize with watsonx Orchestrate.
 
@@ -247,7 +247,7 @@ with st.expander("6️⃣ Technology", expanded=True):
 # -------------------------------
 # 7️⃣ OpenDay Unenroll
 # -------------------------------
-with st.expander("7️⃣ OpenDay Unenroll", expanded=True):
+with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
     email_cancel = st.text_input("📧 Email to unenroll")
     if st.button("OpenDay Unenroll"):
         if not email_cancel:
