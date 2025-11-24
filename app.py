@@ -137,24 +137,27 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
             df = carregar_registos()
             registro_existente = next((r for r in df if r["Email"].strip().lower() == email.strip().lower()), None)
 
-            if registro_existente:
-                modo_atual = "Open Day + Challenge" if registro_existente["Participa Challenge"].strip().lower() == "sim" else "Open Day only"
-                st.info(f"⚠️ Your email is already registered for '{modo_atual}' mode.")
-                if st.confirm("Do you want to update to the new selected mode?"):
-                    apagar_registo(email)
-                    datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    guardar_registo(
-                        nome,
-                        apelido,
-                        email,
-                        "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
-                        equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
-                        datahora
-                    )
-                    novo_modo = "Open Day + Challenge" if modo == "Attend Open Day + Participate in the Challenge" else "Open Day only"
-                    st.success(f"✅ Your registration has been successfully changed to '{novo_modo}' mode!")
-                    assunto = "IBM Journey registration updated | 02/12"
-                    mensagem = f"""Olá {nome},
+          if registro_existente:
+    modo_atual = "Open Day + Challenge" if registro_existente["Participa Challenge"].strip().lower() == "sim" else "Open Day only"
+    st.info(f"⚠️ Your email is already registered for '{modo_atual}' mode.")
+
+    # Perguntar ao usuário se quer atualizar
+    if st.button("Update to new selected mode?"):
+        apagar_registo(email)
+        datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        guardar_registo(
+            nome,
+            apelido,
+            email,
+            "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
+            equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
+            datahora
+        )
+        novo_modo = "Open Day + Challenge" if modo == "Attend Open Day + Participate in the Challenge" else "Open Day only"
+        st.success(f"✅ Your registration has been successfully changed to '{novo_modo}' mode!")
+
+        assunto = "IBM Journey registration updated | 02/12"
+        mensagem = f"""Olá {nome},
 
 Your registration has been updated.
 
@@ -164,7 +167,8 @@ Team Name: {equipa if equipa else '—'}
 
 Thank you!
 """
-                    enviar_email(email, assunto, mensagem)
+        enviar_email(email, assunto, mensagem)
+
             else:
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(
