@@ -14,38 +14,40 @@ st.markdown("""
 <style>
 /* Fundo geral da app */
 .stApp {
-    background-color: #00274c;
-    color: #ffffff;
+    background-color: #cce6ff;  /* azul claro */
+    color: black;
     font-family: 'Arial', sans-serif;
 }
 
 /* Títulos */
 h1, h2, h3 {
-    color: #00bfff;
+    color: #003366;  /* azul escuro */
     text-align: center;
 }
 
 /* Botões */
 .stButton>button {
-    background-color: #00bfff;
-    color: #ffffff;
+    background-color: #0059b3;  /* azul médio */
+    color: white;
     font-weight: bold;
 }
 
 /* DataFrames */
-.stDataFrame th { background-color: #1f1f1f; color: #ffffff; }
-.stDataFrame td { background-color: #2c2c2c; color: #ffffff; }
+.stDataFrame th { background-color: #e6f2ff; color: black; }
+.stDataFrame td { background-color: #ffffff; color: black; }
 
 /* Expander fechado */
 [data-baseweb="expander"] .st-bv {
-    background-color: #00bfff !important;
-    color: white !important;
+    background-color: #99ccff !important;  /* azul claro */
+    color: black !important;
+    font-weight: bold;
 }
 
 /* Expander aberto */
 [data-baseweb="expander"][open] .st-bv {
-    background-color: white !important;
+    background-color: #ffffff !important;
     color: black !important;
+    font-weight: normal;
 }
 </style>
 """, unsafe_allow_html=True)
