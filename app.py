@@ -9,7 +9,6 @@ import time
 # --- Configuração da página ---
 st.set_page_config(page_title="🚀 IBM Journey powered by Timestamp - Open Day", layout="wide")
 
-# --- CSS customizado para cores de expanders e fundo ---
 st.markdown("""
 <style>
 /* Fundo geral da app */
@@ -19,10 +18,13 @@ st.markdown("""
     font-family: 'Arial', sans-serif;
 }
 
-/* Títulos */
+/* Títulos da app */
 h1, h2, h3 {
     color: #003366;  /* azul escuro */
     text-align: center;
+    background-color: #cce6ff;
+    padding: 10px;
+    border-radius: 8px;
 }
 
 /* Botões */
@@ -49,8 +51,21 @@ h1, h2, h3 {
     color: black !important;
     font-weight: normal;
 }
+
+/* Campos de input */
+div.stTextInput>div>div>input {
+    background-color: white !important;
+    color: black !important;
+}
+
+/* Labels dos inputs */
+div.stTextInput>label {
+    color: black !important;
+    font-weight: normal;
+}
 </style>
 """, unsafe_allow_html=True)
+
 
 # --- ALERTA DE HIBERNAÇÃO ---
 loading_placeholder = st.empty()
