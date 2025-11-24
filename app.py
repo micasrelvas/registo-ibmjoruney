@@ -259,6 +259,8 @@ Your registration has been updated.
 Previous mode: {modo_atual}
 New mode: {novo_modo}
 
-If you wish to make further changes, please use the enrollment form: {st.
+If you wish to make further changes, please use the enrollment form: {st.secrets['APP_URL']}
+"""
+                            enviar_email(email_cancel, assunto, mensagem)
 
 
