@@ -111,96 +111,117 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 # 2️⃣ OpenDay Enroll
 # -------------------------------
 with st.expander("2️⃣ OpenDay Enroll", expanded=False):
-    st.markdown("### Choose your participation mode:")
 
-    if "update_mode_click" not in st.session_state:
-        st.session_state.update_mode_click = False
+    st.markdown("### Choose your participation mode:")
 
     modo = st.radio(
         "Select one option:",
         ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
-        key="enroll_modo"
+        key="modo_escolhido"
     )
 
     col1, col2 = st.columns(2)
     with col1:
-        nome = st.text_input("👤 Name", key="enroll_nome")
-        apelido = st.text_input("👤 Surname", key="enroll_apelido")
+        nome = st.text_input("👤 Name")
+        apelido = st.text_input("👤 Surname")
     with col2:
-        email = st.text_input("📧 Email", key="enroll_email")
+        email = st.text_input("📧 Email")
 
     equipa = ""
     if modo == "Attend Open Day + Participate in the Challenge":
-        equipa = st.text_input("👥 Team Name (required for Challenge)", key="enroll_equipe")
+        equipa = st.text_input("👥 Team Name (required for Challenge)")
         if equipa:
-            equipa = equipa.strip().lower().replace("  "," ").title()
+            equipa = equipa.strip().lower().replace("  ", " ").title()
 
+    # --- CONFIRMAR INSCRIÇÃO ---
     if st.button("✅ Confirm enrollment"):
+
         if not all([nome, apelido, email]):
             st.warning("All fields except team name are required.")
-        else:
-            df = carregar_registos()
-            registro_existente = next((r for r in df if r["Email"].strip().lower() == email.strip().lower()), None)
+            st.stop()
 
-            if registro_existente:
-                modo_atual = "Open Day + Challenge" if registro_existente["Participa Challenge"].strip().lower() == "sim" else "Open Day only"
-                st.info(f"⚠️ Your email is already registered for '{modo_atual}' mode.")
+        df = carregar_registos()
 
-                # Armazena no session_state que queremos atualizar
-                st.session_state.update_mode_click = True
+        # Procurar email
+        registro_existente = next(
+            (r for r in df if r["Email"].strip().lower() == email.strip().lower()),
+            None
+        )
 
-            else:
-                # Novo registro
-                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                guardar_registo(
-                    nome,
-                    apelido,
-                    email,
-                    "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
-                    equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
-                    datahora
-                )
-                st.success(f"{nome}, your enrollment is confirmed!")
+        # ========================================
+        #   CASO 1 — REGISTO NOVO
+        # ========================================
+        if registro_existente is None:
 
-                # Email automático
-                assunto = "Confirmação de inscrição no IBM Journey | 02/12"
-                mensagem = f"""Olá {nome},
+            datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            guardar_registo(
+                nome,
+                apelido,
+                email,
+                "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
+                equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
+                datahora
+            )
+
+            st.success(f"{nome}, your enrollment is confirmed!")
+
+            assunto = "Confirmação de inscrição no IBM Journey | 02/12"
+            mensagem = f"""Olá {nome},
 
 Your registration has been confirmed!
 
-Participation: {modo}
+Mode: {modo}
 Team Name: {equipa if equipa else '—'}
 
-If you wish to cancel or update your registration, use: {st.secrets['APP_URL']}
+If you wish to cancel or update your registration, visit: {st.secrets['APP_URL']}
 """
-                enviar_email(email, assunto, mensagem)
+            enviar_email(email, assunto, mensagem)
+            st.stop()
 
-    # -----------------------
-    # Fluxo de atualização
-    # -----------------------
-    if st.session_state.update_mode_click:
-        st.info("You can update your registration to a different mode.")
-        novo_modo = st.radio("Select new mode:", ["Open Day only", "Open Day + Challenge"], key="update_novo_modo")
-        if st.button("Confirm Mode Update"):
-            # Atualiza o registro existente no Sheet
-            for i, r in enumerate(df, start=2):
-                if r["Email"].strip().lower() == email.strip().lower():
-                    if novo_modo == "Open Day only":
-                        sheet.update(f"D{i}", "Não")  # Coluna "Participa Challenge"
-                        sheet.update(f"E{i}", "—")   # Coluna "Nome da Equipa"
-                    else:
-                        sheet.update(f"D{i}", "Sim")
-                        if equipa:
-                            sheet.update(f"E{i}", equipa)
-                    break
+        # ========================================
+        #   CASO 2 — EMAIL JÁ EXISTE
+        # ========================================
 
-            st.success(f"✅ Your registration has been successfully changed to '{novo_modo}' mode!")
+        modo_atual = (
+            "Attend Open Day + Participate in the Challenge"
+            if registro_existente["Participa Challenge"].strip().lower() == "sim"
+            else "Attend Open Day only"
+        )
 
-            # Email de atualização
+        st.warning(f"⚠️ Your email is already registered for: **{modo_atual}**")
+
+        novo_modo = modo
+
+        if novo_modo == modo_atual:
+            st.info("No changes needed — selected mode is the same as the current one.")
+            st.stop()
+
+        st.info(f"Do you want to update your registration to: **{novo_modo}** ?")
+
+        # --- BOTÃO DE CONFIRMAR UPDATE ---
+        if st.button("🔄 Confirm update"):
+
+            # Apagar registo antigo
+            apagar_registo(email)
+
+            datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            guardar_registo(
+                nome,
+                apelido,
+                email,
+                "Sim" if novo_modo == "Attend Open Day + Participate in the Challenge" else "Não",
+                equipa if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
+                datahora
+            )
+
+            st.success(f"✅ Your registration has been updated to **{novo_modo}**!")
+
             assunto = "IBM Journey registration updated | 02/12"
             mensagem = f"""Olá {nome},
 
-Your registration has been updated.
+Your registration has been successfully updated.
 
 Previous mode: {modo_atual}
 New mode: {novo_modo}
@@ -209,9 +230,6 @@ Team Name: {equipa if equipa else '—'}
 Thank you!
 """
             enviar_email(email, assunto, mensagem)
-
-            # Reset da flag
-            st.session_state.update_mode_click = False
 
 # -------------------------------
 # 3️⃣ Challenge
