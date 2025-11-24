@@ -136,35 +136,30 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
         else:
             df = carregar_registos()
             registro_existente = next((r for r in df if r["Email"].strip().lower() == email.strip().lower()), None)
-            
-     if registro_existente:
-    modo_atual = "Open Day + Challenge" if registro_existente["Participa Challenge"].strip().lower() == "sim" else "Open Day only"
-    st.info(f"⚠️ Your email is already registered for '{modo_atual}' mode.")
 
-    # Perguntar ao usuário se quer atualizar
-    if st.button("Update to new selected mode?"):
-        # Variáveis devem ser definidas antes
-        email = registro_existente["Email"]
-        nome = registro_existente["Nome"]
-        apelido = registro_existente["Apelido"]
-        equipa = registro_existente["Nome da Equipa"] if registro_existente["Participa Challenge"].strip().lower() == "sim" else "—"
+            if registro_existente:
+                modo_atual = "Open Day + Challenge" if registro_existente["Participa Challenge"].strip().lower() == "sim" else "Open Day only"
+                st.info(f"⚠️ Your email is already registered for '{modo_atual}' mode.")
 
-        apagar_registo(email)
-        datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        # aqui 'modo' precisa estar definido pelo usuário (radio, etc.)
-        guardar_registo(
-            nome,
-            apelido,
-            email,
-            "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
-            equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
-            datahora
-        )
-        novo_modo = "Open Day + Challenge" if modo == "Attend Open Day + Participate in the Challenge" else "Open Day only"
-        st.success(f"✅ Your registration has been successfully changed to '{novo_modo}' mode!")
+                # Perguntar ao usuário se quer atualizar
+                if st.button("Update to new selected mode?"):
+                    # Atualizar registro
+                    apagar_registo(email)
+                    datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    guardar_registo(
+                        nome,
+                        apelido,
+                        email,
+                        "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
+                        equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
+                        datahora
+                    )
+                    novo_modo = "Open Day + Challenge" if modo == "Attend Open Day + Participate in the Challenge" else "Open Day only"
+                    st.success(f"✅ Your registration has been successfully changed to '{novo_modo}' mode!")
 
-        assunto = "IBM Journey registration updated | 02/12"
-        mensagem = f"""Olá {nome},
+                    # Envio de email
+                    assunto = "IBM Journey registration updated | 02/12"
+                    mensagem = f"""Olá {nome},
 
 Your registration has been updated.
 
@@ -174,9 +169,10 @@ Team Name: {equipa if equipa else '—'}
 
 Thank you!
 """
-        enviar_email(email, assunto, mensagem)
+                    enviar_email(email, assunto, mensagem)
 
             else:
+                # Registro novo
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(
                     nome,
