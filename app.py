@@ -179,68 +179,66 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
     equipa = ""
     if modo == "Attend Open Day + Participate in the Challenge":
         equipa = st.text_input("👥 Team Name (required for Challenge)")
-
         if equipa:
-            equipa = equipa.strip().lower().replace("  ", " ").title()
+            equipa = equipa.strip().lower().replace("  "," ").title()
 
     if st.button("✅ Confirm enrollment"):
         if not all([nome, apelido, email]):
-            st.warning("All fields except team name are required.")
+            st.warning("All fields except Team Name are required.")
         else:
             df = carregar_registos()
+            registro_existente = next((r for r in df if r["Email"] == email), None)
 
-            # Caso queira challenge → validar equipa
+            if registro_existente:
+                modo_atual = "Open Day + Challenge" if registro_existente["Participa Challenge"] == "Sim" else "Open Day only"
+                st.info(f"⚠️ This email address is already registered to: {modo_atual}")
+                if st.confirm("Would you like to update to the new selected mode?"):
+                    # Apaga o registo antigo
+                    apagar_registo(email)
+                else:
+                    st.stop()
+
+            # Validação da equipa para Challenge
             if modo == "Attend Open Day + Participate in the Challenge":
-
                 if not equipa:
                     st.warning("Please enter a Team Name to join the Challenge.")
                     st.stop()
-
-                # Limite de 2 estudantes por equipa (evita erros em células vazias)
+                # Limite de 2 estudantes por equipa
                 count_equipa = sum(
-                    1 for r in df
-                    if r["Nome da Equipa"] 
-                    and r["Nome da Equipa"].strip().lower() == equipa.lower()
+                    1 for r in df 
+                    if r["Nome da Equipa"].strip().lower() == equipa.lower()
                 )
-
                 if count_equipa >= 2:
                     st.error(f"⚠️ The team '{equipa}' has already reached the limit of 2 students.")
                     st.stop()
-
             else:
                 equipa = "—"  # marca que NÃO participa no challenge
 
-            # Verificar email duplicado
-            if email in [r["Email"] for r in df]:
-                st.warning(f"⚠️ {nome}, your email is already registered.")
-            else:
-                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            # Guardar novo registo
+            datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            guardar_registo(
+                nome,
+                apelido,
+                email,
+                "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
+                equipa,
+                datahora
+            )
 
-                guardar_registo(
-                    nome,
-                    apelido,
-                    email,
-                    "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
-                    equipa,
-                    datahora
-                )
+            st.success(f"{nome}, your enrollment is confirmed!")
 
-                st.success(f"{nome}, your enrollment is confirmed!")
-
-                # E-mail automático
-                assunto = "Confirmação de inscrição no IBM Journey | 02/12"
-                mensagem = f"""Olá {nome},
+            # Email automático
+            assunto = "Confirmação de inscrição no IBM Journey | 02/12"
+            mensagem = f"""Olá {nome},
 
 O teu registo foi confirmado!
 
-Participação: { "Open Day + Challenge" if modo == "Attend Open Day + Participate in the Challenge" else "Open Day only" }
+Participação: { 'Open Day + Challenge' if modo == 'Attend Open Day + Participate in the Challenge' else 'Open Day only' }
 Equipa: {equipa}
 
 Se quiseres cancelar a tua inscrição, acede a este link: {st.secrets['APP_URL']}
 """
-
-                enviar_email(email, assunto, mensagem)
-
+            enviar_email(email, assunto, mensagem)
 
 
 # -------------------------------
@@ -303,27 +301,25 @@ with st.expander("6️⃣ Technology", expanded=False):
 # -------------------------------
 with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
     email_cancel = st.text_input("📧 Email to unenroll")
-
-    if st.button("OpenDay Unenroll"):
+    if st.button("Cancel Enrollment"):
         if not email_cancel:
             st.warning("The Email field is required.")
         else:
             registro = apagar_registo(email_cancel)
-
             if registro is None:
-                st.info("⚠️ No records found with this email address.") 
+                st.info(f"⚠️ No records found with this email address.") 
             else:
-                st.info("🛑 Your enrollment has been canceled!")
+                modo_cancelado = "Open Day + Challenge" if registro["Participa Challenge"] == "Sim" else "Open Day only"
+                st.info(f"🛑 Your enrollment for '{modo_cancelado}' has been canceled!")
 
+                # E-mail automático
                 assunto = "Cancelamento de inscrição no IBM Journey | 02/12"
                 mensagem = f"""Olá {registro['Nome']},
 
 A tua inscrição foi cancelada.
 
-Participação no Challenge: {registro['Participa Challenge']}
-Nome da Equipa: {registro['Nome da Equipa']}
+Participação: {modo_cancelado}
+Equipa: {registro['Nome da Equipa']}
 
 Se quiseres voltar a inscrever-te, acede a este link: {st.secrets['APP_URL']}
 """
-
-                enviar_email(email_cancel, assunto, mensagem)
