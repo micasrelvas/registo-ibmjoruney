@@ -166,7 +166,7 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
     st.markdown("### Choose your participation mode:")
     modo = st.radio(
         "Select one option:",
-        ["🔵 Attend Open Day only", "🟢 Attend Open Day + Participate in the Challenge"]
+        ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"]
     )
 
     col1, col2 = st.columns(2)
@@ -177,7 +177,7 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
         email = st.text_input("📧 Email")
 
     equipa = ""
-    if modo == "🟢 Attend Open Day + Participate in the Challenge":
+    if modo == "Attend Open Day + Participate in the Challenge":
         equipa = st.text_input("👥 Team Name (required for Challenge)")
         if equipa:
             equipa = equipa.strip().lower().replace("  "," ").title()
@@ -188,7 +188,7 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
         else:
             df = carregar_registos()
             # Caso queira challenge → validar equipa
-            if modo == "🟢 Attend Open Day + Participate in the Challenge":
+            if modo == "Attend Open Day + Participate in the Challenge":
                 if not equipa:
                     st.warning("Please enter a Team Name to join the Challenge.")
                 else:
@@ -214,7 +214,7 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 
 O teu registo foi confirmado!
 
-Participação: { "Open Day + Challenge" if modo == "🟢 Attend Open Day + Participate in the Challenge" else "Open Day only" }
+Participação: { "Open Day + Challenge" if modo == "Attend Open Day + Participate in the Challenge" else "Open Day only" }
 Equipa: {equipa}
 
 Se quiseres cancelar a tua inscrição, acede a este link: {st.secrets['APP_URL']}
