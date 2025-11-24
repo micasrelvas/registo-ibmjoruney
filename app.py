@@ -40,16 +40,27 @@ h1, h2, h3 {
 
 /* Expander fechado */
 [data-baseweb="expander"] .st-bv {
-    background-color: #99ccff !important;  /* azul claro */
+    background-color: #00bfff !important; /* azul IBM */
     color: black !important;
     font-weight: bold;
+
+/* Expander fechado - hover */
+[data-baseweb="expander"] .st-bv:hover {
+    background-color: #3399ff !important;
+    color: black !important;
 }
 
 /* Expander aberto */
 [data-baseweb="expander"][open] .st-bv {
-    background-color: #99ccff !important;  /* azul claro quando expandido */
-    color: #003366 !important;             /* texto azul escuro */
+    background-color: #99ccff !important; /* azul claro */
+    color: #003366 !important;            /* texto azul escuro */
     font-weight: bold;
+}
+
+/* Expander aberto - hover */
+[data-baseweb="expander"][open] .st-bv:hover {
+    background-color: #99ccff !important; /* manter azul claro */
+    color: #003366 !important;            /* manter texto legível */
 }
 
 /* Campos de input */
