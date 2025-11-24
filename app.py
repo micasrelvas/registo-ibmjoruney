@@ -183,7 +183,7 @@ with st.expander("3️⃣ Challenge", expanded=True):
 - [Finance](https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-finance): Streamline approvals, reporting, risk analysis.  
 - [HR](https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-hr): Simplify onboarding, manage requests.  
 - [Procurement](https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-procurement): Automate supplier management, purchase orders, cycles.  
-- [Sales] (https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-sales): Support CRM updates, scheduling, lead follow-up.
+- [Sales](https://www.ibm.com/products/watsonx-orchestrate/ai-agent-for-sales): Support CRM updates, scheduling, lead follow-up.
 """, unsafe_allow_html=True)
 
 # -------------------------------
