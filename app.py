@@ -106,8 +106,8 @@ def carregar_registos():
         return []
     return data
 
-def guardar_registo(nome, apelido, email, equipa, datahora):
-    sheet.append_row([nome, apelido, email, equipa, datahora])
+def guardar_registo(nome, apelido, email, participa, equipa, datahora):
+    sheet.append_row([nome, apelido, email, participa, equipa, datahora])
 
 def apagar_registo(email):
     registos = sheet.get_all_records()
@@ -162,39 +162,65 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 # 2️⃣ OpenDay Enroll
 # -------------------------------
 with st.expander("2️⃣ OpenDay Enroll", expanded=False):
+
+    st.markdown("### Choose your participation mode:")
+    modo = st.radio(
+        "Select one option:",
+        ["🔵 Attend Open Day only", "🟢 Attend Open Day + Participate in the Challenge"]
+    )
+
     col1, col2 = st.columns(2)
     with col1:
         nome = st.text_input("👤 Name")
         apelido = st.text_input("👤 Surname")
     with col2:
         email = st.text_input("📧 Email")
-        equipa = st.text_input("👥 Team's Name")
-    if equipa:
-        equipa = equipa.strip().lower().replace("  "," ").title()
+
+    equipa = ""
+    if modo == "🟢 Attend Open Day + Participate in the Challenge":
+        equipa = st.text_input("👥 Team Name (required for Challenge)")
+        if equipa:
+            equipa = equipa.strip().lower().replace("  "," ").title()
+
     if st.button("✅ Confirm enrollment"):
-        if not all([nome, apelido, email, equipa]):
-            st.warning("All fields are required.")
+        if not all([nome, apelido, email]):
+            st.warning("All fields except team name are required.")
         else:
             df = carregar_registos()
-            count_equipa = sum(1 for r in df if r["Nome da Equipa"].strip().lower() == equipa.lower())
-            if count_equipa >= 2:
-                st.error(f"⚠️ The team '{equipa}' has already reached the limit of 2 students.")
-            elif email in [r["Email"] for r in df]:
+            # Caso queira challenge → validar equipa
+            if modo == "🟢 Attend Open Day + Participate in the Challenge":
+                if not equipa:
+                    st.warning("Please enter a Team Name to join the Challenge.")
+                else:
+                    count_equipa = sum(1 for r in df if r["Nome da Equipa"].strip().lower() == equipa.lower())
+                    if count_equipa >= 2:
+                        st.error(f"⚠️ The team '{equipa}' has already reached the limit of 2 students.")
+                        st.stop()
+            else:
+                equipa = "—"  # marca que NÃO participa no challenge
+
+            # Verificar email duplicado
+            if email in [r["Email"] for r in df]:
                 st.warning(f"⚠️ {nome}, your email is already registered.")
             else:
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(nome, apelido, email, equipa, datahora)
+
                 st.success(f"{nome}, your enrollment is confirmed!")
+
+                # E-mail automático
                 assunto = "Confirmação de inscrição no IBM Journey | 02/12"
                 mensagem = f"""Olá {nome},
 
 O teu registo foi confirmado!
 
-Nome da Equipa: {equipa}
+Participação: { "Open Day + Challenge" if modo == "🟢 Attend Open Day + Participate in the Challenge" else "Open Day only" }
+Equipa: {equipa}
 
 Se quiseres cancelar a tua inscrição, acede a este link: {st.secrets['APP_URL']}
 """
                 enviar_email(email, assunto, mensagem)
+
 
 # -------------------------------
 # 3️⃣ Challenge
