@@ -226,8 +226,8 @@ with st.expander("4️⃣ Requirements Checklist", expanded=False):
     st.markdown("""
 ✅ Enroll in the tab "OpenDay Enroll"  
 ✅ Create your IBM ID: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
-✅ Request Your Cloud Account: Follow the workshop guide to set up watsonx Orchestrate and optional services.
 """, unsafe_allow_html=True)
+#✅ Request Your Cloud Account: Follow the workshop guide to set up watsonx Orchestrate and optional services.
 
 # -------------------------------
 # 5️⃣ Judging Criteria
