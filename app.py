@@ -280,6 +280,7 @@ Se quiseres cancelar a tua inscrição, acede a este link: {st.secrets['APP_URL'
 """
                 enviar_email(email, assunto, mensagem)
 
+
 # -------------------------------
 # 3️⃣ Challenge
 # -------------------------------
