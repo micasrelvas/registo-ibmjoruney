@@ -135,7 +135,7 @@ if st.session_state.email_checked:
             nome = st.text_input("Nome", key="nome")
             apelido = st.text_input("Apelido", key="apelido")
         with col2:
-            email_display = st.text_input("Email", value=email_val, disabled=True)
+            st.text_input("Email", value=email_val, disabled=True)
 
         equipa = ""
         if modo == "Attend Open Day + Participate in the Challenge":
@@ -151,8 +151,6 @@ if st.session_state.email_checked:
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(nome, apelido, email_val, "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não", equipa if equipa else "—", datahora)
                 st.success(f"{nome}, a tua inscrição foi confirmada! Mode: {modo}")
-
-                # Enviar email
                 enviar_email(
                     email_val,
                     "IBM Journey | Confirmação de inscrição",
@@ -200,3 +198,54 @@ if st.session_state.email_checked:
                         f"Olá {nome},\n\nA tua inscrição foi atualizada.\nPrevious mode: {modo_atual}\nNew mode: Attend Open Day only\nTeam: —"
                     )
                     st.stop()
+
+# ========================
+# Outras tabs / expanders
+# ========================
+
+with st.expander("1️⃣ About IBM", expanded=False):
+    st.markdown("""
+IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades. Their contributions span across various fields, including AI, cloud computing, and quantum computing.
+
+• **AI and Machine Learning** – Leading the charge in AI development.  
+• **Cloud Solutions** – Scalable and flexible cloud services.  
+• **Quantum Computing** – Pushing the boundaries of computing.  
+• **Research & Open Source** – R&D and collaboration.
+""", unsafe_allow_html=True)
+
+with st.expander("3️⃣ Challenge", expanded=False):
+    st.markdown("""
+**The Challenge:** Design an AI agent powered by IBM watsonx Orchestrate that helps people and businesses achieve more with less effort.
+
+**What’s Expected?**
+- Ideate with watsonx Orchestrate: Design a solution concept with orchestration features, integrations, and digital skills.  
+- Focus on Real-World Impact: Address challenges in HR, sales, customer service, finance, or procurement.  
+- Innovate for the Future of Work: Enhance human potential and productivity.  
+- Reference IBM Technology: Explain how watsonx Orchestrate’s features, skills, integrations, or workflows would be leveraged.
+""", unsafe_allow_html=True)
+
+with st.expander("4️⃣ Requirements Checklist", expanded=False):
+    st.markdown("""
+1 — Enroll in the tab "OpenDay Enroll"  
+2 — Create your IBM ID: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
+3 — Request Your Cloud Account following the workshop guide (includes watsonx Orchestrate).
+""", unsafe_allow_html=True)
+
+with st.expander("5️⃣ Judging Criteria", expanded=False):
+    st.markdown("""
+**1️⃣ Application of Technology** — How effectively the chosen model(s) are integrated.  
+**2️⃣ Presentation** — Clarity and effectiveness of the solution presentation.  
+**3️⃣ Business Value** — Practical impact and alignment with business needs.  
+**4️⃣ Originality** — Uniqueness and creativity of the solution.
+""", unsafe_allow_html=True)
+
+with st.expander("6️⃣ Technology", expanded=False):
+    st.markdown("""
+**Explore Before the OpenDay:** Familiarize yourself with watsonx Orchestrate:
+
+- [Product Overview](https://www.ibm.com/products/watsonx-orchestrate)  
+- [Demo Experience](https://www.ibm.com/products/watsonx-orchestrate/demos)  
+- [Integrations](https://www.ibm.com/products/watsonx-orchestrate/integrations)  
+- [Resources & Support](https://www.ibm.com/products/watsonx-orchestrate/resources)
+""", unsafe_allow_html=True)
+
