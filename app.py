@@ -124,6 +124,10 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 • **Quantum Computing** – Pushing the boundaries of computing.  
 • **Research & Open Source** – R&D and collaboration.
 """, unsafe_allow_html=True)
+
+# -------------------------------
+#  Openday Enro
+# -------------------------------
     
 with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 
