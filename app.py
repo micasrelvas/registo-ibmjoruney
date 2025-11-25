@@ -125,39 +125,32 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 • **Research & Open Source** – R&D and collaboration.
 """, unsafe_allow_html=True)
     
-# Função utilitária para contar membros de uma equipa
-def contar_membros_equipa(equipa_nome):
-    registros = carregar_registos()
-    equipa_nome = equipa_nome.strip().title()
-    membros = [r for r in registros if str(r.get("Equipa","")).strip().title() == equipa_nome]
-    return len(membros)
-
 # -------------------------------
-# 2️⃣ OpenDay Enroll (com limite de 2 membros por equipa)
+# 2️⃣ OpenDay Enroll (Atualizado)
 # -------------------------------
 with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 
     email = st.text_input("📧 Introduz o teu Email", key="en_email")
-    
+
     if st.button("🔍 Verificar email"):
         if not email.strip():
             st.warning("O campo Email é obrigatório.")
-            st.stop()
-        
-        registros = carregar_registos()
-        registro_existente = next(
-            (r for r in registros if str(r.get("Email","")).strip().lower() == email.strip().lower()),
-            None
-        )
-
-        st.session_state.email_verificado = True
-        st.session_state.registro_existente = registro_existente
+        else:
+            registros = carregar_registos()
+            registro_existente = next(
+                (r for r in registros if str(r.get("Email","")).strip().lower() == email.strip().lower()),
+                None
+            )
+            st.session_state.email_verificado = True
+            st.session_state.registro_existente = registro_existente
 
     if st.session_state.get("email_verificado"):
 
         registro_existente = st.session_state.get("registro_existente")
 
+        # --------------------------------------------------
         # Novo registo
+        # --------------------------------------------------
         if registro_existente is None:
             st.success("✔️ Este email não está registado. Continua a inscrição:")
 
@@ -178,90 +171,89 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                     equipa = equipa.strip().title() if equipa else ""
 
             if st.button("✅ Confirmar inscrição"):
+                # validações
                 if not nome or not apelido:
                     st.warning("Nome e Apelido são obrigatórios.")
-                    st.stop()
+                elif modo == "Attend Open Day + Participate in the Challenge" and not equipa:
+                    st.warning("Nome da Equipa é obrigatório para o Challenge.")
+                else:
+                    # Verificar limite de 2 pessoas na equipa
+                    registros = carregar_registos()
+                    count_equipe = sum(1 for r in registros 
+                                       if str(r.get("Participa Challenge","")).strip().lower() == "sim" 
+                                       and r.get("Equipa","").strip().title() == equipa)
+                    if count_equipe >= 2:
+                        st.warning(f"A equipa **{equipa}** já tem 2 participantes. Escolhe outro nome de equipa.")
+                    else:
+                        datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        guardar_registo(
+                            nome, apelido, email,
+                            "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
+                            equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
+                            datahora
+                        )
+                        st.success(f"{nome}, a tua inscrição foi confirmada!")
+                        enviar_email(
+                            email,
+                            "IBM Journey | Confirmação de inscrição",
+                            f"Olá {nome},\n\nA tua inscrição foi confirmada.\nModo: {modo}\nEquipa: {equipa if equipa else '—'}\n\nSe quiseres cancelar ou atualizar a inscrição, acede: {st.secrets['APP_URL']}"
+                        )
+                        # limpar estado de verificação
+                        st.session_state.email_verificado = False
+                        st.session_state.registro_existente = None
 
-                if modo == "Attend Open Day + Participate in the Challenge":
-                    if not equipa:
-                        st.warning("Nome da Equipa é obrigatório para o Challenge.")
-                        st.stop()
-                    if contar_membros_equipa(equipa) >= 2:
-                        st.warning(f"A equipa **{equipa}** já tem 2 membros. Não é possível adicionar mais participantes.")
-                        st.stop()
-
-                # Guardar registo
-                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                guardar_registo(
-                    nome,
-                    apelido,
-                    email,
-                    "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
-                    equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
-                    datahora
-                )
-
-                st.success(f"✔️ {nome}, a tua inscrição foi confirmada!")
-                enviar_email(
-                    email,
-                    "IBM Journey | Confirmação de inscrição",
-                    f"Olá {nome},\n\nA tua inscrição foi confirmada.\nMode: {modo}\nTeam: {equipa if equipa else '—'}"
-                )
-
-                # Reset session_state
-                st.session_state.email_verificado = False
-                st.session_state.registro_existente = None
-                st.rerun()
-
-        # Email já existe → atualização
+        # --------------------------------------------------
+        # Email já existe → mostrar aviso
+        # --------------------------------------------------
         else:
-            participa = str(registro_existente.get("Participa Challenge","")).strip().lower()
-            modo_atual = "Attend Open Day + Participate in the Challenge" if participa == "sim" else "Attend Open Day only"
+            participa_challenge = str(registro_existente.get("Participa Challenge","")).strip().lower() == "sim"
+            modo_atual = "Open Day + Challenge" if participa_challenge else "Open Day only"
 
-            st.warning(f"⚠️ Este email já está inscrito no modo: **{modo_atual}**")
+            if participa_challenge:
+                st.warning("⚠️ Este email já está inscrito no Open Day e no Desafio. Queres mudar para participar só no Open Day?")
+            else:
+                st.warning("⚠️ Este email já está inscrito no Open Day. Queres também participar no Desafio?")
 
-            novo_modo = st.radio(
-                "Seleciona o novo modo:",
-                ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
-                key="update_modo"
-            )
+            # Definir novo modo
+            novo_modo = "Open Day only" if participa_challenge else "Open Day + Challenge"
 
             equipa_nova = ""
-            if novo_modo == "Attend Open Day + Participate in the Challenge":
-                equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="update_equipa")
+            if novo_modo == "Open Day + Challenge":
+                equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="alt_equipa")
                 equipa_nova = equipa_nova.strip().title() if equipa_nova else ""
 
             if st.button("🔄 Atualizar inscrição"):
-                if novo_modo == "Attend Open Day + Participate in the Challenge":
-                    if not equipa_nova:
-                        st.warning("Nome da Equipa é obrigatório para o Challenge.")
-                        st.stop()
-                    if contar_membros_equipa(equipa_nova) >= 2 and (registro_existente.get("Equipa","").strip().title() != equipa_nova):
-                        st.warning(f"A equipa **{equipa_nova}** já tem 2 membros. Não é possível adicionar mais participantes.")
-                        st.stop()
+                # validações
+                if novo_modo == "Open Day + Challenge" and not equipa_nova:
+                    st.warning("Nome da Equipa é obrigatório para o Challenge.")
+                else:
+                    # Verificar limite de 2 pessoas na equipa
+                    registros = carregar_registos()
+                    count_equipe = sum(1 for r in registros 
+                                       if str(r.get("Participa Challenge","")).strip().lower() == "sim"
+                                       and r.get("Equipa","").strip().title() == equipa_nova)
+                    if count_equipe >= 2:
+                        st.warning(f"A equipa **{equipa_nova}** já tem 2 participantes. Escolhe outro nome de equipa.")
+                    else:
+                        apagar_registo(email)
+                        datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        guardar_registo(
+                            registro_existente.get("Nome",""),
+                            registro_existente.get("Apelido",""),
+                            email,
+                            "Sim" if novo_modo == "Open Day + Challenge" else "Não",
+                            equipa_nova if novo_modo == "Open Day + Challenge" else "—",
+                            datahora
+                        )
+                        st.success(f"✔️ Inscrição atualizada para **{novo_modo}**")
+                        enviar_email(
+                            email,
+                            "IBM Journey | Inscrição atualizada",
+                            f"Olá {registro_existente.get('Nome','')},\n\nA tua inscrição foi atualizada.\nModo anterior: {modo_atual}\nNovo modo: {novo_modo}\nEquipa: {equipa_nova if equipa_nova else '—'}"
+                        )
+                        st.session_state.email_verificado = False
+                        st.session_state.registro_existente = None
 
-                # Apagar antigo e guardar novo
-                apagar_registo(email)
-                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                guardar_registo(
-                    registro_existente.get("Nome",""),
-                    registro_existente.get("Apelido",""),
-                    email,
-                    "Sim" if novo_modo == "Attend Open Day + Participate in the Challenge" else "Não",
-                    equipa_nova if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
-                    datahora
-                )
-
-                st.success(f"✔️ Inscrição atualizada para **{novo_modo}**")
-                enviar_email(
-                    email,
-                    "IBM Journey | Inscrição atualizada",
-                    f"Olá {registro_existente.get('Nome','')},\n\nA tua inscrição foi atualizada.\nModo anterior: {modo_atual}\nNovo modo: {novo_modo}\nTeam: {equipa_nova if equipa_nova else '—'}"
-                )
-
-                st.session_state.email_verificado = False
-                st.session_state.registro_existente = None
-                st.rerun()
 
 # -------------------------------
 # 3️⃣ Challenge
@@ -312,7 +304,7 @@ with st.expander("6️⃣ Technology", expanded=False):
 """, unsafe_allow_html=True)
 
 # -------------------------------
-# 7️⃣ OpenDay Unenroll (Cancelamento simples com mensagens personalizadas)
+# 7️⃣ OpenDay Unenroll (Cancelamento com confirmação)
 # -------------------------------
 with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
 
@@ -331,30 +323,43 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
             if registro is None:
                 st.info("⚠️ Não foi encontrada nenhuma inscrição associada a este email.")
             else:
+                # Guardar na sessão
                 st.session_state.unenroll_registro = registro
                 st.session_state.unenroll_email_checked = email_cancel
 
-    # Mostrar confirmação de cancelamento
+    # Se encontrou registo, pedir confirmação
     if "unenroll_registro" in st.session_state:
+
         registro = st.session_state.unenroll_registro
         email_cancel = st.session_state.unenroll_email_checked
+
         participa_challenge = str(registro.get("Participa Challenge","")).strip().lower() == "sim"
         modo_atual = "Open Day + Challenge" if participa_challenge else "Open Day only"
+
         st.success(f"✅ Inscrição encontrada em modo: **{modo_atual}**")
 
+        # Mensagem personalizada
         if participa_challenge:
             st.warning("⚠️ Estás inscrito no Open Day e no Desafio. Tens a certeza que queres cancelar a inscrição?")
         else:
             st.warning("⚠️ Estás apenas inscrito no Open Day. Tens a certeza que queres cancelar a inscrição?")
 
-        if st.button("🛑 Confirmar cancelamento definitivo"):
+        if st.button("🛑 Confirmar cancelamento"):
             apagar_registo(email_cancel)
+
             st.success("🛑 A tua inscrição foi cancelada com sucesso!")
+
+            # Enviar email de cancelamento
             enviar_email(
                 email_cancel,
                 "IBM Journey | Inscrição cancelada",
-                f"Olá {registro.get('Nome','')},\n\nA tua inscrição foi cancelada.\nModo anterior: {modo_atual}\n\nSe quiseres voltar a inscrever-te, usa o link: {st.secrets['APP_URL']}"
+                f"Olá {registro.get('Nome','')},\n\n"
+                f"A tua inscrição foi cancelada.\n"
+                f"Modo anterior: {modo_atual}\n\n"
+                f"Se quiseres voltar a inscrever-te, usa o link: {st.secrets['APP_URL']}"
             )
+
+            # limpar sessão
             del st.session_state.unenroll_registro
             del st.session_state.unenroll_email_checked
 
