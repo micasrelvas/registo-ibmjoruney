@@ -14,15 +14,19 @@ st.set_page_config(page_title="🚀 IBM Journey powered by Timestamp - Open Day"
 # -------------------------
 # Inicializar session_state (evita AttributeError)
 # -------------------------
-for key, val in {
-    "update_clicked": False,
-    "update_email": "",
-    "update_nome": "",
-    "update_apelido": "",
-    "update_equipe": ""
-}.items():
-    if key not in st.session_state:
-        st.session_state[key] = val
+initial_keys = {
+    "en_nome": "",
+    "en_apelido": "",
+    "en_email": "",
+    "en_equipa": "",
+    "modo_escolhido": "Attend Open Day only",
+    "pending_enroll": None,          # dict with pending enroll details (used after first click)
+    "encontrado": None,              # used by unenroll block
+    "email_encontrado": "",
+}
+for k, v in initial_keys.items():
+    if k not in st.session_state:
+        st.session_state[k] = v
 
 # -------------------------
 # CSS / Fonte
@@ -110,7 +114,7 @@ with loading_placeholder.container():
         <p>Pode demorar alguns segundos. Obrigado pela paciência!</p>
     </div>
     """, unsafe_allow_html=True)
-time.sleep(1.5)
+time.sleep(1.2)
 loading_placeholder.empty()
 
 # -------------------------
@@ -136,13 +140,73 @@ def guardar_registo(nome, apelido, email, participa, equipa, datahora):
     sheet.append_row([nome, apelido, email, participa, equipa, datahora])
 
 def apagar_registo(email):
-    """Apaga a primeira ocorrência com o email (case-insensitive). Retorna o registo apagado ou None."""
-    registos = sheet.get_all_records()
-    for i, reg in enumerate(registos, start=2):  # sheet rows start at 1, header row is 1
-        if str(reg.get("Email", "")).strip().lower() == str(email).strip().lower():
-            sheet.delete_rows(i)
-            return reg
-    return None
+    """Apaga todas as ocorrências com o email (case-insensitive).
+    Usa findall() para obter linhas reais e apaga de trás para a frente.
+    Retorna True se apagou >=1 linha, False caso contrário.
+    """
+    try:
+        # localizar todas as células que correspondem ao email (case-insensitive not supported by findall,
+        # so verificamos manualmente cada match's cell value)
+        matches = sheet.findall(email)
+        if not matches:
+            # tentativa alternativa: procurar por versões lowercase (procurar emails pode ser exato)
+            # vamos também procurar células que, após strip/lower, igualem email
+            all_cells = []
+            # percorre coluna "Email" para localizar correspondências robustas
+            header = sheet.row_values(1)
+            if "Email" in header:
+                col_idx = header.index("Email") + 1
+                col_cells = sheet.col_values(col_idx)
+                # col_values inclui header; iterar com index
+                rows_to_delete = []
+                for r_idx, val in enumerate(col_cells, start=1):
+                    if str(val).strip().lower() == str(email).strip().lower():
+                        rows_to_delete.append(r_idx)
+                if not rows_to_delete:
+                    return False
+                # delete in reverse order
+                for r in sorted(rows_to_delete, reverse=True):
+                    sheet.delete_rows(r)
+                return True
+            return False
+
+        # gather unique row numbers that truly match (case-insensitive)
+        header = sheet.row_values(1)
+        if "Email" in header:
+            col_email_index = header.index("Email") + 1
+        else:
+            # if header mismatch, fallback to using the cell's column
+            col_email_index = None
+
+        rows_to_delete = set()
+        for cell in matches:
+            # confirm that the matched cell is indeed in the Email column (if possible)
+            if col_email_index is None or cell.col == col_email_index:
+                # extra check on the cell content
+                cell_val = sheet.cell(cell.row, cell.col).value
+                if str(cell_val).strip().lower() == str(email).strip().lower():
+                    rows_to_delete.add(cell.row)
+
+        if not rows_to_delete:
+            return False
+
+        for r in sorted(rows_to_delete, reverse=True):
+            sheet.delete_rows(r)
+
+        return True
+    except Exception as e:
+        st.error(f"Erro ao apagar registo: {e}")
+        return False
+
+def contar_por_equipa(equipa_name):
+    """Conta quantos registos com Participa Challenge == 'Sim' existem para uma equipa."""
+    registos = carregar_registos()
+    cnt = sum(
+        1 for r in registos
+        if str(r.get("Participa Challenge","")).strip().lower() == "sim"
+        and str(r.get("Nome da Equipa","")).strip().lower() == str(equipa_name).strip().lower()
+    )
+    return cnt
 
 def enviar_email(destinatario, assunto, mensagem):
     """Envia um e-mail simples por SMTP (GMail)."""
@@ -193,12 +257,14 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 
     st.markdown("### Choose your participation mode:")
 
+    # radio with session_state
     modo = st.radio(
         "Select one option:",
         ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
         key="modo_escolhido"
     )
 
+    # inputs bound to session_state keys (prevents losing values on re-renders)
     col1, col2 = st.columns(2)
     with col1:
         nome = st.text_input("👤 Nome", key="en_nome")
@@ -215,15 +281,24 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
     if st.button("✅ Confirm enrollment"):
 
         # validação campos
-        if not all([nome, apelido, email]):
+        if not all([st.session_state.en_nome, st.session_state.en_apelido, st.session_state.en_email]):
             st.warning("Todos os campos exceto Nome da Equipa são obrigatórios.")
             st.stop()
+
+        # salvar pending_enroll no session_state (para preservar valores entre cliques)
+        st.session_state.pending_enroll = {
+            "nome": st.session_state.en_nome,
+            "apelido": st.session_state.en_apelido,
+            "email": st.session_state.en_email.strip().lower(),
+            "modo": modo,
+            "equipa": equipa.strip() if equipa else ""
+        }
 
         df = carregar_registos()
 
         # procura registo pelo email (case-insensitive)
         registro_existente = next(
-            (r for r in df if str(r.get("Email","")).strip().lower() == email.strip().lower()),
+            (r for r in df if str(r.get("Email","")).strip().lower() == st.session_state.pending_enroll["email"]),
             None
         )
 
@@ -232,28 +307,41 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
         # -----------------------
         if registro_existente is None:
 
-            if modo == "Attend Open Day + Participate in the Challenge" and not equipa:
-                st.warning("Nome da Equipa é obrigatório para participar no Challenge.")
-                st.stop()
+            # se for challenge, validar equipa e limite
+            if st.session_state.pending_enroll["modo"] == "Attend Open Day + Participate in the Challenge":
+                if not st.session_state.pending_enroll["equipa"]:
+                    st.warning("Nome da Equipa é obrigatório para participar no Challenge.")
+                    st.stop()
+                # valida limite 2
+                if contar_por_equipa(st.session_state.pending_enroll["equipa"]) >= 2:
+                    st.error(f"⚠️ A equipa '{st.session_state.pending_enroll['equipa']}' já atingiu o limite de 2 alunos.")
+                    st.stop()
 
             datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
             guardar_registo(
-                nome,
-                apelido,
-                email,
-                "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
-                equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
+                st.session_state.pending_enroll["nome"],
+                st.session_state.pending_enroll["apelido"],
+                st.session_state.pending_enroll["email"],
+                "Sim" if st.session_state.pending_enroll["modo"] == "Attend Open Day + Participate in the Challenge" else "Não",
+                st.session_state.pending_enroll["equipa"] if st.session_state.pending_enroll["modo"] == "Attend Open Day + Participate in the Challenge" else "—",
                 datahora
             )
 
-            st.success(f"{nome}, a tua inscrição foi confirmada! (Mode: {modo})")
+            st.success(f"{st.session_state.pending_enroll['nome']}, a tua inscrição foi confirmada! (Mode: {st.session_state.pending_enroll['modo']})")
 
             enviar_email(
-                email,
+                st.session_state.pending_enroll["email"],
                 "IBM Journey | Confirmação de inscrição",
-                f"Olá {nome},\n\nA tua inscrição foi confirmada.\nMode: {modo}\nTeam: {equipa if equipa else '—'}\n\nSe quiseres cancelar ou atualizar a inscrição, acede: {st.secrets['APP_URL']}"
+                f"Olá {st.session_state.pending_enroll['nome']},\n\nA tua inscrição foi confirmada.\nMode: {st.session_state.pending_enroll['modo']}\nTeam: {st.session_state.pending_enroll['equipa'] if st.session_state.pending_enroll['equipa'] else '—'}\n\nSe quiseres cancelar ou atualizar a inscrição, acede: {st.secrets['APP_URL']}"
             )
+
+            # limpar pending
+            st.session_state.pending_enroll = None
+            # limpar inputs
+            st.session_state.en_nome = ""
+            st.session_state.en_apelido = ""
+            st.session_state.en_email = ""
+            st.session_state.en_equipa = ""
             st.stop()
 
         # -----------------------
@@ -269,42 +357,51 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
         # se o modo escolhido for igual ao atual, nada a fazer
         if modo == modo_atual:
             st.info("Não há alterações: selecionaste o mesmo modo que já tinhas.")
+            # limpar pending
+            st.session_state.pending_enroll = None
             st.stop()
 
         # Se chegou aqui, o usuário pediu um modo diferente — pedir confirmação e atualizar
         st.info(f"Queres atualizar a inscrição para **{modo}**? (Isto substituirá o registo anterior.)")
 
-        if modo == "Attend Open Day only":
-            equipa = "—"
-        else:
-            # equipa já está capturada do input acima; valida
-            if not equipa:
+        # Se for para mudar para Challenge, valida equipa e limite antes de permitir update
+        if modo == "Attend Open Day + Participate in the Challenge":
+            if not st.session_state.pending_enroll["equipa"]:
                 st.warning("Nome da Equipa é obrigatório para o Challenge.")
+                st.stop()
+            if contar_por_equipa(st.session_state.pending_enroll["equipa"]) >= 2:
+                st.error(f"⚠️ A equipa '{st.session_state.pending_enroll['equipa']}' já atingiu o limite de 2 alunos.")
                 st.stop()
 
         if st.button("🔄 Confirm update"):
-
             # apagar registo antigo
-            apagado = apagar_registo(email)  # retorna o registo apagado (ou None)
+            apagado = apagar_registo(st.session_state.pending_enroll["email"])
 
             # gravar novo registo (substitui)
             datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             guardar_registo(
-                nome,
-                apelido,
-                email,
-                "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
-                equipa,
+                st.session_state.pending_enroll["nome"],
+                st.session_state.pending_enroll["apelido"],
+                st.session_state.pending_enroll["email"],
+                "Sim" if st.session_state.pending_enroll["modo"] == "Attend Open Day + Participate in the Challenge" else "Não",
+                st.session_state.pending_enroll["equipa"] if st.session_state.pending_enroll["modo"] == "Attend Open Day + Participate in the Challenge" else "—",
                 datahora
             )
 
-            st.success(f"✅ A tua inscrição foi atualizada para **{modo}**!")
+            st.success(f"✅ A tua inscrição foi atualizada para **{st.session_state.pending_enroll['modo']}**!")
 
             enviar_email(
-                email,
+                st.session_state.pending_enroll["email"],
                 "IBM Journey | Inscrição atualizada",
-                f"Olá {nome},\n\nA tua inscrição foi atualizada.\nPrevious mode: {modo_atual}\nNew mode: {modo}\nTeam: {equipa if equipa else '—'}\n\nObrigado!"
+                f"Olá {st.session_state.pending_enroll['nome']},\n\nA tua inscrição foi atualizada.\nPrevious mode: {modo_atual}\nNew mode: {st.session_state.pending_enroll['modo']}\nTeam: {st.session_state.pending_enroll['equipa'] if st.session_state.pending_enroll['equipa'] else '—'}\n\nObrigado!"
             )
+
+            # limpar pending e inputs
+            st.session_state.pending_enroll = None
+            st.session_state.en_nome = ""
+            st.session_state.en_apelido = ""
+            st.session_state.en_email = ""
+            st.session_state.en_equipa = ""
             st.stop()
 
 # -------------------------------
@@ -360,11 +457,10 @@ with st.expander("6️⃣ Technology", expanded=False):
 # -------------------------------
 with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
 
-    # guardar email de pesquisa
+    # mostrar o email de pesquisa ligado ao session_state (preserva)
     email_cancel = st.text_input("📧 Introduz o email para cancelar/atualizar", key="unenroll_email")
 
     if st.button("🔍 Search registration"):
-
         if not email_cancel:
             st.warning("O campo Email é obrigatório.")
             st.stop()
@@ -381,10 +477,10 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
 
         # guardar registo na sessão
         st.session_state.encontrado = registro
-        st.session_state.email_encontrado = email_cancel
+        st.session_state.email_encontrado = email_cancel.strip().lower()
 
     # só mostra ações se já foi feita a pesquisa
-    if "encontrado" in st.session_state:
+    if st.session_state.encontrado:
 
         registro = st.session_state.encontrado
         email_cancel = st.session_state.email_encontrado
@@ -407,9 +503,11 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
         if acao == "Cancelar inscrição":
 
             if st.button("🛑 Confirmar cancelamento"):
-                apagar_registo(email_cancel)
-
-                st.info("🛑 A tua inscrição foi cancelada.")
+                apagado = apagar_registo(email_cancel)
+                if apagado:
+                    st.info("🛑 A tua inscrição foi cancelada.")
+                else:
+                    st.warning("Ocorreu um problema ao apagar o registo (não encontrado).")
 
                 enviar_email(
                     email_cancel,
@@ -418,9 +516,9 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
                 )
 
                 # limpar estado
-                del st.session_state.encontrado
-                del st.session_state.email_encontrado
-
+                st.session_state.encontrado = None
+                st.session_state.email_encontrado = ""
+                st.session_state.unenroll_email = ""
                 st.stop()
 
         # ---- ATUALIZAR MODO ----
@@ -440,15 +538,20 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
             if st.button("🔄 Confirmar atualização de modo"):
 
                 if novo_modo == modo_atual:
-                    st.info("⚠️ O novo modo é igual ao atual. Nada foi alterado.")
+                    st.info("⚠️ O modo selecionado é igual ao modo atual. Nenhuma alteração foi feita.")
                     st.stop()
 
-                if novo_modo == "Attend Open Day + Participate in the Challenge" and not equipa_nova:
-                    st.warning("Nome da Equipa é obrigatório para o Challenge.")
-                    st.stop()
+                # se mudar para challenge, validar equipa e limite
+                if novo_modo == "Attend Open Day + Participate in the Challenge":
+                    if not equipa_nova:
+                        st.warning("Nome da Equipa é obrigatório para o Challenge.")
+                        st.stop()
+                    if contar_por_equipa(equipa_nova) >= 2:
+                        st.error(f"⚠️ A equipa '{equipa_nova}' já atingiu o limite de 2 alunos.")
+                        st.stop()
 
-                apagar_registo(email_cancel)
-
+                # apagar e guardar novo
+                apagado = apagar_registo(email_cancel)
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(
                     registro.get("Nome",""),
@@ -467,7 +570,7 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
                     f"Olá {registro.get('Nome','')},\n\nA tua inscrição foi atualizada.\nPrevious mode: {modo_atual}\nNew mode: {novo_modo}\nTeam: {equipa_nova if equipa_nova else '—'}"
                 )
 
-                del st.session_state.encontrado
-                del st.session_state.email_encontrado
-
+                # limpar estado
+                st.session_state.encontrado = None
+                st.session_state.email_encontrado = ""
                 st.stop()
