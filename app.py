@@ -145,6 +145,26 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
         st.session_state.email_verificado = True
         st.session_state.registro_existente = registro_existente
 
+modo_atual = (
+    "Attend Open Day + Participate in the Challenge"
+    if str(registro_existente.get("Participa Challenge","")).strip().lower() == "sim"
+    else "Attend Open Day only"
+)
+
+    # Aviso personalizado dependendo do modo atual
+    if modo_atual == "Attend Open Day + Participate in the Challenge":
+        st.warning("⚠️ Este email já está inscrito no Open Day e no Desafio. Queres mudar para participar só no Open Day?")
+    else:
+        st.warning("⚠️ Este email já está inscrito no Open Day. Queres também participar no Desafio?")
+    
+    # se o modo escolhido for igual ao atual, nada a fazer
+    if modo == modo_atual:
+        st.info("Não há alterações: selecionaste o mesmo modo que já tinhas.")
+        st.stop()
+    
+    # Se chegou aqui, o usuário pediu um modo diferente — pedir confirmação e atualizar
+    st.info(f"Queres atualizar a inscrição para **{modo}**? (Isto substituirá o registo anterior.)")
+        
     # Se já clicou em "Verificar email", mostrar formulário apropriado
     if st.session_state.get("email_verificado", False):
         registro_existente = st.session_state.get("registro_existente", None)
