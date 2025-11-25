@@ -152,17 +152,24 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 
     # Função para verificar se a equipa já tem 2 membros
     def equipe_cheia(nome_equipa, email_atual=None):
-        if not nome_equipa:
-            return False
-        registros = carregar_registos()
-        nome_equipa_normalizado = nome_equipa.strip().title()
-        membros = [
-            r for r in registros
-            if str(r.get("Participa Challenge","")).strip().lower() == "sim"
-               and str(r.get("Equipa","")).strip().title() == nome_equipa_normalizado
-               and (email_atual is None or str(r.get("Email","")).strip().lower() != email_atual.lower())
-        ]
-        return len(membros) >= 2
+    """
+    Verifica se a equipa já tem 2 ou mais membros.
+    email_atual: opcional, ignora este email na contagem (para updates)
+    """
+    if not nome_equipa:
+        return False
+
+    nome_equipa_norm = nome_equipa.strip().lower()
+    registros = carregar_registos()
+    
+    membros = [
+        r for r in registros
+        if str(r.get("Participa Challenge","")).strip().lower() == "sim"
+           and str(r.get("Equipa","")).strip().lower() == nome_equipa_norm
+           and (email_atual is None or str(r.get("Email","")).strip().lower() != email_atual.lower())
+    ]
+    
+    return len(membros) >= 2
 
     # Se email foi verificado
     if st.session_state.get("email_verificado"):
