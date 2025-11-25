@@ -326,17 +326,19 @@ with st.expander("6️⃣ Technology", expanded=False):
 # -------------------------------
 with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
 
-    email_cancel = st.text_input("📧 Introduz o email para cancelar inscrição", key="unenroll_email")
+    email_input = st.text_input("📧 Introduz o email para cancelar inscrição", key="unenroll_email_input")
 
     if st.button("🔍 Verificar inscrição"):
-        
-        if not email_cancel.strip():
+
+        email_cancel = email_input.strip()
+
+        if not email_cancel:
             st.warning("O campo Email é obrigatório.")
             st.stop()
 
         registros = carregar_registos()
         registro = next(
-            (r for r in registros if str(r.get("Email","")).strip().lower() == email_cancel.strip().lower()),
+            (r for r in registros if str(r.get("Email","")).strip().lower() == email_cancel.lower()),
             None
         )
 
@@ -344,15 +346,15 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
             st.info("⚠️ Não foi encontrada nenhuma inscrição associada a este email.")
             st.stop()
 
-        # Guardar na sessão
+        # Guardar na sessão — AGORA SEM COLISÕES
         st.session_state.unenroll_registro = registro
-        st.session_state.unenroll_email = email_cancel
+        st.session_state.unenroll_email_checked = email_cancel
 
     # Se encontrou registo, pedir confirmação
     if "unenroll_registro" in st.session_state:
 
         registro = st.session_state.unenroll_registro
-        email_cancel = st.session_state.unenroll_email
+        email_cancel = st.session_state.unenroll_email_checked
 
         modo_atual = (
             "Open Day + Challenge" 
@@ -365,7 +367,7 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
         st.warning(f"⚠️ Tens a certeza que queres cancelar a inscrição no modo **{modo_atual}**?")
 
         if st.button("🛑 Confirmar cancelamento definitivo"):
-            
+
             apagar_registo(email_cancel)
 
             st.success("🛑 A tua inscrição foi cancelada com sucesso!")
@@ -380,8 +382,9 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
                 f"Se quiseres voltar a inscrever-te, usa o link: {st.secrets['APP_URL']}"
             )
 
-            # Limpar sessão
+            # limpar
             del st.session_state.unenroll_registro
-            del st.session_state.unenroll_email
+            del st.session_state.unenroll_email_checked
 
             st.stop()
+
