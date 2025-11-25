@@ -176,6 +176,16 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                 elif modo == "Attend Open Day + Participate in the Challenge" and not equipa:
                     st.warning("Nome da Equipa é obrigatório para o Challenge.")
                 else:
+                    # Verificar limite de 2 alunos por equipa (case-insensitive)
+                    if modo == "Attend Open Day + Participate in the Challenge" and equipa:
+                        membros_equipa = [
+                            r for r in carregar_registos() 
+                            if str(r.get("Equipa","")).strip().lower() == equipa.lower()
+                        ]
+                        if len(membros_equipa) >= 2:
+                            st.warning(f"⚠️ A equipa '{equipa}' já tem 2 membros. Escolhe outro nome de equipa ou participa apenas no Open Day.")
+                            st.stop()  # interrompe o fluxo
+                    # Guardar registo
                     datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     guardar_registo(
                         nome,
@@ -222,6 +232,17 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                 if novo_modo == "Attend Open Day + Participate in the Challenge" and not equipa_nova:
                     st.warning("Nome da Equipa é obrigatório para o Challenge.")
                 else:
+                    # Verificar limite de 2 alunos por equipa (case-insensitive)
+                    if novo_modo == "Attend Open Day + Participate in the Challenge" and equipa_nova:
+                        membros_equipa = [
+                            r for r in carregar_registos() 
+                            if str(r.get("Equipa","")).strip().lower() == equipa_nova.lower()
+                            and r.get("Email","").strip().lower() != email.lower()
+                        ]
+                        if len(membros_equipa) >= 2:
+                            st.warning(f"⚠️ A equipa '{equipa_nova}' já tem 2 membros. Escolhe outro nome de equipa ou participa apenas no Open Day.")
+                            st.stop()  # interrompe o fluxo
+
                     apagar_registo(email)
                     datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     guardar_registo(
