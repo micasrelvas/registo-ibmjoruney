@@ -124,32 +124,45 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 • **Quantum Computing** – Pushing the boundaries of computing.  
 • **Research & Open Source** – R&D and collaboration.
 """, unsafe_allow_html=True)
+    
 # -------------------------------
-# Função utilitária para salvar inscrição de forma segura
+# Função segura para salvar inscrição
 # -------------------------------
 def salvar_inscricao_segura(nome, apelido, email, modo, equipa=None, atualizar=False):
     """
-    Salva inscrição garantindo no máximo 2 membros por equipa.
+    Salva inscrição garantindo no máximo 2 membros por equipa (case-insensitive).
+    Lê a lista de membros imediatamente antes de gravar.
     Se atualizar=True, considera que o email já está na equipa (para não contar ele mesmo).
     """
-    registros = carregar_registos()
     equipa_lower = (equipa or "").strip().lower()
-    
-    # Contar membros da equipa
+
+    # 1️⃣ Verificação inicial
+    registros = carregar_registos()
     membros = [
         r for r in registros
         if str(r.get("Equipa","")).strip().lower() == equipa_lower
         and (not atualizar or r.get("Email","").strip().lower() != email.lower())
     ]
-    
     if modo == "Attend Open Day + Participate in the Challenge" and equipa and len(membros) >= 2:
         st.warning(f"⚠️ A equipa '{equipa}' já tem 2 membros. Escolhe outro nome de equipa ou participa apenas no Open Day.")
-        st.stop()  # interrompe imediatamente
-    
-    # Apagar registro antigo se atualizar
+        st.stop()
+
+    # 2️⃣ Apagar registro antigo se atualizar
     if atualizar:
         apagar_registo(email)
-    
+
+    # 3️⃣ Verificação final antes de gravar
+    registros = carregar_registos()
+    membros = [
+        r for r in registros
+        if str(r.get("Equipa","")).strip().lower() == equipa_lower
+        and (not atualizar or r.get("Email","").strip().lower() != email.lower())
+    ]
+    if modo == "Attend Open Day + Participate in the Challenge" and len(membros) >= 2:
+        st.warning(f"⚠️ A equipa '{equipa}' já tem 2 membros (após verificação final). Escolhe outro nome de equipa.")
+        st.stop()
+
+    # 4️⃣ Gravar inscrição
     datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     guardar_registo(
         nome,
@@ -165,10 +178,8 @@ def salvar_inscricao_segura(nome, apelido, email, modo, equipa=None, atualizar=F
 # -------------------------------
 with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 
-    # Input de email
     email = st.text_input("📧 Introduz o teu Email", key="en_email")
 
-    # Verificar email
     if st.button("🔍 Verificar email"):
         if not email.strip():
             st.warning("O campo Email é obrigatório.")
@@ -181,7 +192,6 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
             st.session_state.email_verificado = True
             st.session_state.registro_existente = registro_existente
 
-    # Se email verificado
     if st.session_state.get("email_verificado"):
         registro_existente = st.session_state.get("registro_existente")
 
@@ -231,14 +241,12 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
             else:
                 st.warning("⚠️ Este email já está inscrito no Open Day. Queres também participar no Desafio?")
 
-            # Definir novo modo
             novo_modo = (
                 "Attend Open Day only"
                 if modo_atual == "Attend Open Day + Participate in the Challenge"
                 else "Attend Open Day + Participate in the Challenge"
             )
 
-            # Campo equipa se necessário
             equipa_nova = ""
             if novo_modo == "Attend Open Day + Participate in the Challenge":
                 equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="alt_equipa")
@@ -264,6 +272,7 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                     )
                     st.session_state.email_verificado = False
                     st.session_state.registro_existente = None
+
 
 # -------------------------------
 # 3️⃣ Challenge
