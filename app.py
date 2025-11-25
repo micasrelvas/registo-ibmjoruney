@@ -1,5 +1,7 @@
 import streamlit as st
 from datetime import datetime
+import smtplib
+from email.mime.text import MIMEText
 import gspread
 from google.oauth2.service_account import Credentials
 import time
@@ -12,18 +14,15 @@ st.set_page_config(page_title="🚀 IBM Journey powered by Timestamp - Open Day"
 # -------------------------
 # Inicializar session_state
 # -------------------------
-for key, default in {
-    "email_checked": False,
-    "email": "",
-    "existing_user": None,
-    "action": "idle",
-    "modo_escolhido": "",
-    "nome": "",
-    "apelido": "",
-    "equipa": "",
+for key, val in {
+    "update_clicked": False,
+    "update_email": "",
+    "update_nome": "",
+    "update_apelido": "",
+    "update_equipe": ""
 }.items():
     if key not in st.session_state:
-        st.session_state[key] = default
+        st.session_state[key] = val
 
 # -------------------------
 # CSS / Fonte
@@ -31,10 +30,18 @@ for key, default in {
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap');
+
+/* Geral */
 .stApp { background-color: #cce6ff; color: black; font-family: 'IBM Plex Sans', Arial, sans-serif; padding-top: 10px; }
-h1,h2,h3 { color:#003366; text-align:center; background-color:#cce6ff; padding:6px 12px; border-radius:6px; margin:6px 0; }
-.stButton>button { background-color: #0059b3 !important; color:white !important; font-weight:600; }
-div.stTextInput>label, label { color:#003366 !important; font-weight:600; }
+h1, h2, h3 { color: #003366; text-align: center; background-color: #cce6ff; padding: 6px 12px; border-radius: 6px; margin: 6px 0; font-family: 'IBM Plex Sans', Arial, sans-serif; }
+.stButton>button { background-color: #0059b3 !important; color: white !important; font-weight: 600; font-family: 'IBM Plex Sans', Arial, sans-serif; }
+.stDataFrame th { background-color: #e6f2ff; color: black; font-family: 'IBM Plex Sans', Arial, sans-serif; }
+.stDataFrame td { background-color: #ffffff; color: black; font-family: 'IBM Plex Sans', Arial, sans-serif; }
+[data-baseweb="expander"] > div > div:first-child { background-color: #00274c !important; color: white !important; font-weight: 600; border-radius: 6px; }
+[data-baseweb="expander"][open] > div > div:first-child { background-color: #99ccff !important; color: #003366 !important; font-weight: 600; }
+[data-baseweb="expander"] > div > div:first-child:hover { background-color: #3399ff !important; color: black !important; }
+div.stTextInput>div>div>input, div.stTextArea>div>div>textarea { background-color: white !important; color: black !important; font-family: 'IBM Plex Sans', Arial, sans-serif; }
+div.stTextInput>label, label { color: #003366 !important; font-weight: 600; font-family: 'IBM Plex Sans', Arial, sans-serif; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -43,7 +50,12 @@ div.stTextInput>label, label { color:#003366 !important; font-weight:600; }
 # -------------------------
 loading_placeholder = st.empty()
 with loading_placeholder.container():
-    st.markdown("<div style='text-align:center; padding:30px;'><h2>⚡ A app está a acordar...</h2><p>Pode demorar alguns segundos.</p></div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style="text-align:center; padding:30px;">
+        <h2>⚡ A app está a acordar...</h2>
+        <p>Pode demorar alguns segundos. Obrigado pela paciência!</p>
+    </div>
+    """, unsafe_allow_html=True)
 time.sleep(1.5)
 loading_placeholder.empty()
 
@@ -59,7 +71,8 @@ sheet = client.open_by_key(st.secrets["GOOGLE_SHEET_ID"]).sheet1
 # Funções utilitárias
 # -------------------------
 def carregar_registos():
-    return sheet.get_all_records() or []
+    data = sheet.get_all_records()
+    return data if data else []
 
 def guardar_registo(nome, apelido, email, participa, equipa, datahora):
     sheet.append_row([nome, apelido, email, participa, equipa, datahora])
@@ -67,15 +80,12 @@ def guardar_registo(nome, apelido, email, participa, equipa, datahora):
 def apagar_registo(email):
     registros = sheet.get_all_records()
     for i, reg in enumerate(registros, start=2):
-        if str(reg.get("Email","")).strip().lower() == email.strip().lower():
+        if str(reg.get("Email","")).strip().lower() == str(email).strip().lower():
             sheet.delete_rows(i)
             return reg
     return None
 
 def enviar_email(destinatario, assunto, mensagem):
-    """Email já configurado no Streamlit Secrets, não precisa de inserir aqui credenciais."""
-    import smtplib
-    from email.mime.text import MIMEText
     EMAIL_REMETENTE = st.secrets["EMAIL_REMETENTE"]
     EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
     msg = MIMEText(mensagem)
@@ -90,119 +100,21 @@ def enviar_email(destinatario, assunto, mensagem):
         st.warning(f"Não foi possível enviar email para {destinatario}: {e}")
 
 # -------------------------
-# Cabeçalho
+# Cabeçalho fixo
 # -------------------------
 st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center;'>Open Day - 2 de dezembro | Edifício Lumnia</p>", unsafe_allow_html=True)
+st.markdown("""
+**Estás pronto para levar a tua experiência com Inteligência Artificial a outro nível?**
 
-# ========================
-# BLOCOS DE INSCRIÇÃO
-# ========================
+📅 **2 de dezembro | 🕙 10h – 17h30 | 📍 Edifício Lumnia (junto à Gare do Oriente)**
 
-st.subheader("📧 Primeiro passo: verifica o teu email")
+Junta-te a nós para um dia exclusivo nos escritórios da IBM, onde vais descobrir o futuro do AI e pôr mãos à obra!
+""", unsafe_allow_html=True)
 
-email_input = st.text_input("Email", value=st.session_state.email, key="input_email")
-verifica = st.button("Verificar email")
-
-if verifica:
-    email_val = email_input.strip()
-    if not email_val:
-        st.warning("Por favor insere um email válido.")
-    else:
-        st.session_state.email = email_val
-        registros = carregar_registos()
-        existente = next((r for r in registros if str(r.get("Email","")).strip().lower() == email_val.lower()), None)
-        st.session_state.existing_user = existente
-        st.session_state.email_checked = True
-        st.session_state.action = "update" if existente else "new"
-        st.experimental_rerun()
-
-# ========================
-# Fluxo após verificação do email
-# ========================
-if st.session_state.email_checked:
-    existente = st.session_state.existing_user
-    email_val = st.session_state.email
-
-    if st.session_state.action == "new":
-        st.success("Email não registado. Preenche os dados para inscrição.")
-
-        modo = st.radio("Seleciona o modo de participação:", ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"], key="modo_escolhido")
-        st.session_state.modo_escolhido = modo
-
-        col1, col2 = st.columns(2)
-        with col1:
-            nome = st.text_input("Nome", key="nome")
-            apelido = st.text_input("Apelido", key="apelido")
-        with col2:
-            st.text_input("Email", value=email_val, disabled=True)
-
-        equipa = ""
-        if modo == "Attend Open Day + Participate in the Challenge":
-            equipa = st.text_input("Nome da Equipa (obrigatório)", key="equipa")
-            equipa = equipa.strip().title() if equipa else ""
-
-        if st.button("✅ Confirmar inscrição"):
-            if not all([nome, apelido]):
-                st.warning("Nome e Apelido são obrigatórios.")
-            elif modo == "Attend Open Day + Participate in the Challenge" and not equipa:
-                st.warning("Nome da Equipa é obrigatório para o Challenge.")
-            else:
-                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                guardar_registo(nome, apelido, email_val, "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não", equipa if equipa else "—", datahora)
-                st.success(f"{nome}, a tua inscrição foi confirmada! Mode: {modo}")
-                enviar_email(
-                    email_val,
-                    "IBM Journey | Confirmação de inscrição",
-                    f"Olá {nome},\n\nA tua inscrição foi confirmada.\nMode: {modo}\nTeam: {equipa if equipa else '—'}\n\nSe quiseres cancelar ou atualizar a inscrição, acede: {st.secrets['APP_URL']}"
-                )
-                st.stop()
-
-    else:
-        # Email já registado -> update
-        nome = existente.get("Nome","")
-        apelido = existente.get("Apelido","")
-        modo_atual = "Attend Open Day + Participate in the Challenge" if str(existente.get("Participa Challenge","")).strip().lower() == "sim" else "Attend Open Day only"
-        st.info(f"⚠️ Este email já está registado. Modo atual: {modo_atual}")
-
-        atualizar = st.radio("Queres atualizar a inscrição para o outro modo?", ["Não", "Sim"], key="update_radio")
-        if atualizar == "Sim":
-            if modo_atual == "Attend Open Day only":
-                # Passa para Challenge -> pedir apenas nome da equipa
-                equipa = st.text_input("Nome da Equipa (obrigatório)", key="equipa_update")
-                equipa = equipa.strip().title() if equipa else ""
-                if st.button("🔄 Confirmar atualização"):
-                    if not equipa:
-                        st.warning("Nome da Equipa é obrigatório para o Challenge.")
-                    else:
-                        apagar_registo(email_val)
-                        datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                        guardar_registo(nome, apelido, email_val, "Sim", equipa, datahora)
-                        st.success(f"✅ A tua inscrição foi atualizada para **Attend Open Day + Challenge**")
-                        enviar_email(
-                            email_val,
-                            "IBM Journey | Inscrição atualizada",
-                            f"Olá {nome},\n\nA tua inscrição foi atualizada.\nPrevious mode: {modo_atual}\nNew mode: Attend Open Day + Challenge\nTeam: {equipa}"
-                        )
-                        st.stop()
-            else:
-                # Passa de Challenge -> Open Day only -> não precisa de campos adicionais
-                if st.button("🔄 Confirmar atualização"):
-                    apagar_registo(email_val)
-                    datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    guardar_registo(nome, apelido, email_val, "Não", "—", datahora)
-                    st.success(f"✅ A tua inscrição foi atualizada para **Attend Open Day only**")
-                    enviar_email(
-                        email_val,
-                        "IBM Journey | Inscrição atualizada",
-                        f"Olá {nome},\n\nA tua inscrição foi atualizada.\nPrevious mode: {modo_atual}\nNew mode: Attend Open Day only\nTeam: —"
-                    )
-                    st.stop()
-
-# ========================
-# Outras tabs / expanders
-# ========================
-
+# -------------------------------
+# 1️⃣ About IBM
+# -------------------------------
 with st.expander("1️⃣ About IBM", expanded=False):
     st.markdown("""
 IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades. Their contributions span across various fields, including AI, cloud computing, and quantum computing.
@@ -213,6 +125,96 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 • **Research & Open Source** – R&D and collaboration.
 """, unsafe_allow_html=True)
 
+# -------------------------------
+# 2️⃣ OpenDay Enroll
+# -------------------------------
+with st.expander("2️⃣ OpenDay Enroll", expanded=False):
+    email = st.text_input("📧 Introduz o teu Email", key="en_email")
+
+    if email and st.button("🔍 Verificar email"):
+        registros = carregar_registos()
+        registro_existente = next(
+            (r for r in registros if str(r.get("Email","")).strip().lower() == email.strip().lower()), None
+        )
+
+        if registro_existente is None:
+            # Novo registo
+            st.info("💡 Email não registado. Preenche os dados para a inscrição.")
+
+            modo = st.radio(
+                "Select one option:",
+                ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
+                key="modo_escolhido"
+            )
+
+            col1, col2 = st.columns(2)
+            with col1:
+                nome = st.text_input("👤 Nome", key="en_nome")
+                apelido = st.text_input("👤 Apelido", key="en_apelido")
+            with col2:
+                equipa = ""
+                if modo == "Attend Open Day + Participate in the Challenge":
+                    equipa = st.text_input("👥 Nome da Equipa (obrigatório)", key="en_equipa")
+                    equipa = equipa.strip().title() if equipa else ""
+
+            if st.button("✅ Confirm enrollment"):
+                if not all([nome, apelido]):
+                    st.warning("Todos os campos exceto Nome da Equipa são obrigatórios.")
+                    st.stop()
+                if modo == "Attend Open Day + Participate in the Challenge" and not equipa:
+                    st.warning("Nome da Equipa é obrigatório para o Challenge.")
+                    st.stop()
+                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                guardar_registo(
+                    nome,
+                    apelido,
+                    email,
+                    "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
+                    equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
+                    datahora
+                )
+                st.success(f"{nome}, a tua inscrição foi confirmada! (Mode: {modo})")
+                enviar_email(
+                    email,
+                    "IBM Journey | Confirmação de inscrição",
+                    f"Olá {nome},\n\nA tua inscrição foi confirmada.\nMode: {modo}\nTeam: {equipa if equipa else '—'}\n\nSe quiseres cancelar ou atualizar a inscrição, acede: {st.secrets['APP_URL']}"
+                )
+        else:
+            # Email já existe
+            modo_atual = "Attend Open Day + Participate in the Challenge" if str(registro_existente.get("Participa Challenge","")).strip().lower() == "sim" else "Attend Open Day only"
+            st.warning(f"⚠️ O email já está registado para **{modo_atual}**.")
+            st.info(f"Queres atualizar a inscrição para o outro modo?")
+
+            novo_modo = "Attend Open Day only" if modo_atual == "Attend Open Day + Participate in the Challenge" else "Attend Open Day + Participate in the Challenge"
+            equipa_nova = ""
+            if novo_modo == "Attend Open Day + Participate in the Challenge":
+                equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="update_team")
+                equipa_nova = equipa_nova.strip().title() if equipa_nova else ""
+
+            if st.button("🔄 Confirm update"):
+                if novo_modo == "Attend Open Day + Participate in the Challenge" and not equipa_nova:
+                    st.warning("Nome da Equipa é obrigatório para o Challenge.")
+                    st.stop()
+                apagar_registo(email)
+                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                guardar_registo(
+                    registro_existente.get("Nome",""),
+                    registro_existente.get("Apelido",""),
+                    email,
+                    "Sim" if novo_modo == "Attend Open Day + Participate in the Challenge" else "Não",
+                    equipa_nova if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
+                    datahora
+                )
+                st.success(f"✅ A tua inscrição foi atualizada para **{novo_modo}**")
+                enviar_email(
+                    email,
+                    "IBM Journey | Inscrição atualizada",
+                    f"Olá {registro_existente.get('Nome','')},\n\nA tua inscrição foi atualizada.\nPrevious mode: {modo_atual}\nNew mode: {novo_modo}\nTeam: {equipa_nova if equipa_nova else '—'}"
+                )
+
+# -------------------------------
+# 3️⃣ Challenge
+# -------------------------------
 with st.expander("3️⃣ Challenge", expanded=False):
     st.markdown("""
 **The Challenge:** Design an AI agent powered by IBM watsonx Orchestrate that helps people and businesses achieve more with less effort.
@@ -224,6 +226,9 @@ with st.expander("3️⃣ Challenge", expanded=False):
 - Reference IBM Technology: Explain how watsonx Orchestrate’s features, skills, integrations, or workflows would be leveraged.
 """, unsafe_allow_html=True)
 
+# -------------------------------
+# 4️⃣ Requirements Checklist
+# -------------------------------
 with st.expander("4️⃣ Requirements Checklist", expanded=False):
     st.markdown("""
 1 — Enroll in the tab "OpenDay Enroll"  
@@ -231,6 +236,9 @@ with st.expander("4️⃣ Requirements Checklist", expanded=False):
 3 — Request Your Cloud Account following the workshop guide (includes watsonx Orchestrate).
 """, unsafe_allow_html=True)
 
+# -------------------------------
+# 5️⃣ Judging Criteria
+# -------------------------------
 with st.expander("5️⃣ Judging Criteria", expanded=False):
     st.markdown("""
 **1️⃣ Application of Technology** — How effectively the chosen model(s) are integrated.  
@@ -239,6 +247,9 @@ with st.expander("5️⃣ Judging Criteria", expanded=False):
 **4️⃣ Originality** — Uniqueness and creativity of the solution.
 """, unsafe_allow_html=True)
 
+# -------------------------------
+# 6️⃣ Technology
+# -------------------------------
 with st.expander("6️⃣ Technology", expanded=False):
     st.markdown("""
 **Explore Before the OpenDay:** Familiarize yourself with watsonx Orchestrate:
@@ -248,4 +259,96 @@ with st.expander("6️⃣ Technology", expanded=False):
 - [Integrations](https://www.ibm.com/products/watsonx-orchestrate/integrations)  
 - [Resources & Support](https://www.ibm.com/products/watsonx-orchestrate/resources)
 """, unsafe_allow_html=True)
+
+# -------------------------------
+# 7️⃣ OpenDay Unenroll / Update Mode
+# -------------------------------
+with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
+
+    email_cancel = st.text_input("📧 Introduz o email para cancelar/atualizar", key="unenroll_email")
+    
+    if st.button("🔍 Verificar email para Unenroll/Update"):
+
+        if not email_cancel.strip():
+            st.warning("O campo Email é obrigatório.")
+            st.stop()
+
+        registros = carregar_registos()
+        registro = next(
+            (r for r in registros if str(r.get("Email","")).strip().lower() == email_cancel.strip().lower()),
+            None
+        )
+
+        if registro is None:
+            st.info("⚠️ Não foi encontrado nenhum registo com esse email.")
+            st.stop()
+
+        st.session_state.encontrado_unenroll = registro
+        st.session_state.email_encontrado_unenroll = email_cancel
+
+    if "encontrado_unenroll" in st.session_state:
+
+        registro = st.session_state.encontrado_unenroll
+        email_cancel = st.session_state.email_encontrado_unenroll
+        modo_atual = "Attend Open Day + Participate in the Challenge" if str(registro.get("Participa Challenge","")).strip().lower() == "sim" else "Attend Open Day only"
+        st.success(f"✅ Registo encontrado! Modo atual: **{modo_atual}**")
+
+        acao = st.radio("Escolhe uma ação:", ["Cancelar inscrição", "Atualizar modo"], key="acao_unenroll")
+
+        if acao == "Cancelar inscrição":
+            if st.button("🛑 Confirmar cancelamento"):
+                apagar_registo(email_cancel)
+                st.info("🛑 A tua inscrição foi cancelada.")
+                enviar_email(
+                    email_cancel,
+                    "IBM Journey | Inscrição cancelada",
+                    f"Olá {registro.get('Nome','')},\n\nA tua inscrição foi cancelada.\nPrevious mode: {modo_atual}\n\nSe quiseres voltar a inscrever-te: {st.secrets['APP_URL']}"
+                )
+                del st.session_state.encontrado_unenroll
+                del st.session_state.email_encontrado_unenroll
+                st.stop()
+
+        if acao == "Atualizar modo":
+            novo_modo = st.radio(
+                "Seleciona o novo modo:",
+                ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
+                key="novo_modo_unenroll"
+            )
+
+            equipa_nova = ""
+            if novo_modo == "Attend Open Day + Participate in the Challenge":
+                equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="unenroll_team")
+                equipa_nova = equipa_nova.strip().title() if equipa_nova else ""
+
+            if st.button("🔄 Confirmar atualização de modo"):
+
+                if novo_modo == modo_atual:
+                    st.info("⚠️ O novo modo é igual ao atual. Nada foi alterado.")
+                    st.stop()
+
+                if novo_modo == "Attend Open Day + Participate in the Challenge" and not equipa_nova:
+                    st.warning("Nome da Equipa é obrigatório para o Challenge.")
+                    st.stop()
+
+                apagar_registo(email_cancel)
+                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                guardar_registo(
+                    registro.get("Nome",""),
+                    registro.get("Apelido",""),
+                    email_cancel,
+                    "Sim" if novo_modo == "Attend Open Day + Participate in the Challenge" else "Não",
+                    equipa_nova if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
+                    datahora
+                )
+
+                st.success(f"✅ A tua inscrição foi atualizada para **{novo_modo}**")
+                enviar_email(
+                    email_cancel,
+                    "IBM Journey | Inscrição atualizada",
+                    f"Olá {registro.get('Nome','')},\n\nA tua inscrição foi atualizada.\nPrevious mode: {modo_atual}\nNew mode: {novo_modo}\nTeam: {equipa_nova if equipa_nova else '—'}"
+                )
+
+                del st.session_state.encontrado_unenroll
+                del st.session_state.email_encontrado_unenroll
+                st.stop()
 
