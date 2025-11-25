@@ -360,6 +360,7 @@ with st.expander("6️⃣ Technology", expanded=False):
 # -------------------------------
 with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
 
+    # guardar email de pesquisa
     email_cancel = st.text_input("📧 Introduz o email para cancelar/atualizar", key="unenroll_email")
 
     if st.button("🔍 Search registration"):
@@ -378,6 +379,16 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
             st.info("⚠️ Não foi encontrado nenhum registo com esse email.")
             st.stop()
 
+        # guardar registo na sessão
+        st.session_state.encontrado = registro
+        st.session_state.email_encontrado = email_cancel
+
+    # só mostra ações se já foi feita a pesquisa
+    if "encontrado" in st.session_state:
+
+        registro = st.session_state.encontrado
+        email_cancel = st.session_state.email_encontrado
+
         modo_atual = (
             "Attend Open Day + Participate in the Challenge"
             if str(registro.get("Participa Challenge","")).strip().lower() == "sim"
@@ -392,20 +403,29 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
             key="acao_unenroll"
         )
 
-        # Cancelar inscrição
+        # ---- CANCELAR INSCRIÇÃO ----
         if acao == "Cancelar inscrição":
+
             if st.button("🛑 Confirmar cancelamento"):
                 apagar_registo(email_cancel)
+
                 st.info("🛑 A tua inscrição foi cancelada.")
+
                 enviar_email(
                     email_cancel,
                     "IBM Journey | Inscrição cancelada",
                     f"Olá {registro.get('Nome','')},\n\nA tua inscrição foi cancelada.\nPrevious mode: {modo_atual}\n\nSe quiseres voltar a inscrever-te: {st.secrets['APP_URL']}"
                 )
+
+                # limpar estado
+                del st.session_state.encontrado
+                del st.session_state.email_encontrado
+
                 st.stop()
 
-        # Atualizar modo
-        else:
+        # ---- ATUALIZAR MODO ----
+        if acao == "Atualizar modo":
+
             novo_modo = st.radio(
                 "Seleciona o novo modo:",
                 ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
@@ -414,21 +434,21 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
 
             equipa_nova = ""
             if novo_modo == "Attend Open Day + Participate in the Challenge":
-                equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="unenroll_equipe")
+                equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="unenroll_team")
                 equipa_nova = equipa_nova.strip().title() if equipa_nova else ""
 
             if st.button("🔄 Confirmar atualização de modo"):
 
                 if novo_modo == modo_atual:
-                    st.info("⚠️ O modo selecionado é igual ao modo atual. Nenhuma alteração foi feita.")
+                    st.info("⚠️ O novo modo é igual ao atual. Nada foi alterado.")
                     st.stop()
 
                 if novo_modo == "Attend Open Day + Participate in the Challenge" and not equipa_nova:
                     st.warning("Nome da Equipa é obrigatório para o Challenge.")
                     st.stop()
 
-                # apagar e guardar novo
                 apagar_registo(email_cancel)
+
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(
                     registro.get("Nome",""),
@@ -440,10 +460,14 @@ with st.expander("7️⃣ OpenDay Unenroll / Update Mode", expanded=False):
                 )
 
                 st.success(f"✅ A tua inscrição foi atualizada para **{novo_modo}**")
+
                 enviar_email(
                     email_cancel,
                     "IBM Journey | Inscrição atualizada",
                     f"Olá {registro.get('Nome','')},\n\nA tua inscrição foi atualizada.\nPrevious mode: {modo_atual}\nNew mode: {novo_modo}\nTeam: {equipa_nova if equipa_nova else '—'}"
                 )
-                st.stop()
 
+                del st.session_state.encontrado
+                del st.session_state.email_encontrado
+
+                st.stop()
