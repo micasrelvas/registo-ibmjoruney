@@ -242,17 +242,21 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 
             datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            guardar_registo(
-                registro_existente.get("Nome",""),
-                registro_existente.get("Apelido",""),
-                email,
-                "Sim" if novo_modo == "Attend Open Day + Participate in the Challenge" else "Não",
-                equipa_nova if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
-                datahora
-            )
-
-            st.success(f"Inscrição atualizada para **{novo_modo}**!")
-
+           guardar_registo(
+    registro_existente.get("Nome",""),
+    registro_existente.get("Apelido",""),
+    email,
+    "Sim" if novo_modo == "Attend Open Day + Participate in the Challenge" else "Não",
+    equipa_nova if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
+    datahora
+    )
+    
+    # 🔔 Mensagem personalizada, como pediste
+    if novo_modo == "Attend Open Day + Participate in the Challenge":
+        st.success("✔️ Inscrição atualizada para **Open Day e Desafio**.")
+    else:
+        st.success("✔️ Inscrição atualizada **apenas para o Open Day**.")
+        
             enviar_email(
                 email,
                 "IBM Journey | Inscrição atualizada",
