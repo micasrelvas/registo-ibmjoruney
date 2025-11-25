@@ -346,7 +346,7 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
             st.info("⚠️ Não foi encontrada nenhuma inscrição associada a este email.")
             st.stop()
 
-        # Guardar na sessão — AGORA SEM COLISÕES
+        # Guardar na sessão — sem colisões
         st.session_state.unenroll_registro = registro
         st.session_state.unenroll_email_checked = email_cancel
 
@@ -356,15 +356,16 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
         registro = st.session_state.unenroll_registro
         email_cancel = st.session_state.unenroll_email_checked
 
-        modo_atual = (
-            "Open Day + Challenge" 
-            if str(registro.get("Participa Challenge","")).strip().lower() == "sim" 
-            else "Open Day only"
-        )
+        participa_challenge = str(registro.get("Participa Challenge","")).strip().lower() == "sim"
+        modo_atual = "Open Day + Challenge" if participa_challenge else "Open Day only"
 
         st.success(f"✅ Inscrição encontrada em modo: **{modo_atual}**")
 
-        st.warning(f"⚠️ Tens a certeza que queres cancelar a inscrição no modo **{modo_atual}**?")
+        # Mensagem personalizada
+        if participa_challenge:
+            st.warning("⚠️ Estás inscrito no Open Day e no Desafio. Tens a certeza que queres cancelar a inscrição?")
+        else:
+            st.warning("⚠️ Estás apenas inscrito no Open Day. Tens a certeza que queres cancelar a inscrição?")
 
         if st.button("🛑 Confirmar cancelamento definitivo"):
 
@@ -382,7 +383,7 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
                 f"Se quiseres voltar a inscrever-te, usa o link: {st.secrets['APP_URL']}"
             )
 
-            # limpar
+            # limpar sessão
             del st.session_state.unenroll_registro
             del st.session_state.unenroll_email_checked
 
