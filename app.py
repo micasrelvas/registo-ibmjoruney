@@ -208,72 +208,73 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 
             st.stop()  # impede que o resto execute
 
-       # -------------------------------------------------------------------
-# 🟥 CASO 2 — Email JÁ EXISTE → mostrar AVISO personalizado
-# -------------------------------------------------------------------
+        # -------------------------------------------------------------------
+        # 🟥 CASO 2 — Email JÁ EXISTE → mostrar AVISO personalizado
+        # -------------------------------------------------------------------
+        if registro_existente is not None:
 
-participa = str(registro_existente.get("Participa Challenge","")).strip().lower()
-modo_atual = "Attend Open Day + Participate in the Challenge" if participa == "sim" else "Attend Open Day only"
+            participa = str(registro_existente.get("Participa Challenge","")).strip().lower()
+            modo_atual = "Attend Open Day + Participate in the Challenge" if participa == "sim" else "Attend Open Day only"
 
-# Mensagens personalizadas
-if modo_atual == "Attend Open Day + Participate in the Challenge":
-    st.warning("⚠️ Este email já está inscrito no Open Day e no Desafio. Queres mudar para participar só no Open Day?")
-else:
-    st.warning("⚠️ Este email já está inscrito no Open Day. Queres também participar no Desafio?")
+            # Mensagens personalizadas
+            if modo_atual == "Attend Open Day + Participate in the Challenge":
+                st.warning("⚠️ Este email já está inscrito no Open Day e no Desafio. Queres mudar para participar só no Open Day?")
+            else:
+                st.warning("⚠️ Este email já está inscrito no Open Day. Queres também participar no Desafio?")
 
-# Definir novo modo automaticamente
-novo_modo = (
-    "Attend Open Day only"
-    if modo_atual == "Attend Open Day + Participate in the Challenge"
-    else "Attend Open Day + Participate in the Challenge"
-)
+            # Definir novo modo automaticamente
+            novo_modo = (
+                "Attend Open Day only"
+                if modo_atual == "Attend Open Day + Participate in the Challenge"
+                else "Attend Open Day + Participate in the Challenge"
+            )
 
-# Se o novo modo exigir equipa → pedir equipa
-equipa_nova = ""
-if novo_modo == "Attend Open Day + Participate in the Challenge":
-    equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="alt_equipa")
-    equipa_nova = equipa_nova.strip().title() if equipa_nova else ""
+            # Se o novo modo exigir equipa → pedir equipa
+            equipa_nova = ""
+            if novo_modo == "Attend Open Day + Participate in the Challenge":
+                equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="alt_equipa")
+                equipa_nova = equipa_nova.strip().title() if equipa_nova else ""
 
-# Botão para atualizar
-if st.button("🔄 Atualizar inscrição"):
+            # Botão para atualizar
+            if st.button("🔄 Atualizar inscrição"):
 
-    # Validar equipa se necessário
-    if novo_modo == "Attend Open Day + Participate in the Challenge" and not equipa_nova:
-        st.warning("Nome da Equipa é obrigatório para o Challenge.")
-        st.stop()
+                # Validar equipa se necessário
+                if novo_modo == "Attend Open Day + Participate in the Challenge" and not equipa_nova:
+                    st.warning("Nome da Equipa é obrigatório para o Challenge.")
+                    st.stop()
 
-    # Apagar registo antigo
-    apagar_registo(email)
+                # Apagar registo antigo
+                apagar_registo(email)
 
-    # Criar novo registo
-    datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                # Criar novo registo
+                datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    guardar_registo(
-        registro_existente.get("Nome",""),
-        registro_existente.get("Apelido",""),
-        email,
-        "Sim" if novo_modo == "Attend Open Day + Participate in the Challenge" else "Não",
-        equipa_nova if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
-        datahora
-    )
+                guardar_registo(
+                    registro_existente.get("Nome",""),
+                    registro_existente.get("Apelido",""),
+                    email,
+                    "Sim" if novo_modo == "Attend Open Day + Participate in the Challenge" else "Não",
+                    equipa_nova if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
+                    datahora
+                )
 
-    # Mensagens personalizadas
-    if novo_modo == "Attend Open Day + Participate in the Challenge":
-        st.success("✔️ Inscrição atualizada para **Open Day e Desafio**.")
-    else:
-        st.success("✔️ Inscrição atualizada **apenas para o Open Day**.")
+                # Mensagens personalizadas
+                if novo_modo == "Attend Open Day + Participate in the Challenge":
+                    st.success("✔️ Inscrição atualizada para **Open Day e Desafio**.")
+                else:
+                    st.success("✔️ Inscrição atualizada **apenas para o Open Day**.")
 
-    # Email de atualização
-    enviar_email(
-        email,
-        "IBM Journey | Inscrição atualizada",
-        f"Olá {registro_existente.get('Nome','')},\n\nA tua inscrição foi atualizada.\n"
-        f"Previous mode: {modo_atual}\n"
-        f"New mode: {novo_modo}\n"
-        f"Team: {equipa_nova if equipa_nova else '—'}"
-    )
+                # Email de atualização
+                enviar_email(
+                    email,
+                    "IBM Journey | Inscrição atualizada",
+                    f"Olá {registro_existente.get('Nome','')},\n\nA tua inscrição foi atualizada.\n"
+                    f"Previous mode: {modo_atual}\n"
+                    f"New mode: {novo_modo}\n"
+                    f"Team: {equipa_nova if equipa_nova else '—'}"
+                )
 
-    st.stop()
+                st.stop()
 
 
 # -------------------------------
