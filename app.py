@@ -260,11 +260,12 @@ st.session_state.registro_existente = None
                         equipa_nova if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
                         datahora
                     )
-                    st.success(f"✔️ Inscrição atualizada ({novo_modo})")
-                   enviar_email(
-    email,
-    "IBM Journey | Inscrição atualizada",
-    f"""Olá {registro_existente.get('Nome','')},
+                                       st.success(f"✔️ Inscrição atualizada ({novo_modo})")
+
+                    enviar_email(
+                        email,
+                        "IBM Journey | Inscrição atualizada",
+                        f"""Olá {registro_existente.get('Nome','')},
 
 A tua inscrição no Open Day, dia 2 de dezembro, foi atualizada.
 Inscrição Atual: {novo_modo}
@@ -282,10 +283,11 @@ IBM Technology Portugal
 Mobile: +351 91 927 93 50
 E-mail: mariana.relvas1@ibm.com
 """
-)
+                    )
 
-st.session_state.email_verificado = False
-st.session_state.registro_existente = None
+                    st.session_state.email_verificado = False
+                    st.session_state.registro_existente = None
+
 
 # -------------------------------
 # 3️⃣ Challenge
