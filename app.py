@@ -150,8 +150,8 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
         st.session_state.email_verificado = True
         st.session_state.registro_existente = registro_existente
 
-    # Função para verificar se a equipa já tem 2 membros
-    def equipe_cheia(nome_equipa, email_atual=None):
+   # Função para verificar se a equipa já tem 2 membros
+def equipe_cheia(nome_equipa, email_atual=None):
     """
     Verifica se a equipa já tem 2 ou mais membros.
     email_atual: opcional, ignora este email na contagem (para updates)
@@ -170,6 +170,7 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
     ]
     
     return len(membros) >= 2
+
 
     # Se email foi verificado
     if st.session_state.get("email_verificado"):
