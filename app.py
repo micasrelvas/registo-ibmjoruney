@@ -267,7 +267,7 @@ with st.expander("3️⃣ Challenge", expanded=False):
     st.markdown("""
 **The Challenge:** In teams of 2, you'll prepare a few slides to present your use case: identify a current problem, explain how to solve it, and show—through words or a diagram—how watsonx would power your solution.
 
-📍 Presentations will take place on February 3 in front of a diverse jury (ISCTE, IBM, and Timestamp), who will evaluate your work.\n...so no excuses! You have 2 months to create your solution and showcase it in a presentation...
+📍 Presentations will take place on February 3 in front of a diverse jury (ISCTE, IBM, and Timestamp), who will evaluate your work. """...so no excuses! You have 2 months to create your solution and showcase it in a presentation..."""
 
 🏆 The best team may even earn a **2-week professional experience** in June/July (availability to be confirmed)!
 
