@@ -45,8 +45,8 @@ h1, h2, h3 { color: #003366; text-align: center; background-color: #cce6ff; padd
 div.stTextInput>div>div>input, div.stTextArea>div>div>textarea { background-color: white !important; color: black !important; font-family: 'IBM Plex Sans', Arial, sans-serif; }
 div.stTextInput>label, label { color: #003366 !important; font-weight: 600; font-family: 'IBM Plex Sans', Arial, sans-serif; }
 
-/* Altera a cor das labels dos radios para preto */
-[data-baseweb="radio"] label {
+/* Cor preta para opções do radio */
+[data-baseweb="radio"] span {
     color: black !important;
     font-weight: 600;
 }
@@ -215,7 +215,7 @@ with st.expander("2️⃣ Open Day Enroll/Update", expanded=False):
                 enviar_email(
                     email,
                     "IBM Journey | Confirmação de inscrição",
-                    f"Olá {nome},\n\nA tua inscrição está confirmada.\nParticipação: {modo}\nEquipa: {equipa if equipa else '—'}"
+                    f"Olá {nome},\n\nA tua inscrição no dia 2 de Dezembro está confirmada.\nParticipação: {modo}\nEquipa: {equipa if equipa else '—'}"
                 )
                 st.session_state.email_verificado = False
                 st.stop()
