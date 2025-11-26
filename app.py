@@ -335,8 +335,7 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
 
         # Texto fixo acima do botão de confirmação
         st.markdown("**⚠️ Please confirm your unenrollment below:**")
-
-        if st.button("🛑 Confirm Unenrollment"):
+if st.button("🛑 Confirm Unenrollment"):
     apagar_registo(email_cancel)
     st.success("🛑 Your enrollment has been successfully cancelled! You will receive an email with confirmation!")
     
@@ -358,14 +357,12 @@ E-mail: mariana.relvas1@ibm.com
 
     enviar_email(
         email_cancel,
-        "IBM Journey | Enrollment Cancelled",
+        "IBM Journey | Cancelamento da Inscrição",
         email_text
     )
     
     st.session_state.unenroll_registro = None
     st.session_state.unenroll_email_checked = None
-
-            )
-            st.session_state.unenroll_registro = None
+roll_registro = None
             st.session_state.unenroll_email_checked = None
 
