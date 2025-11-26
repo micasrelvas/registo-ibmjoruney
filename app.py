@@ -205,7 +205,7 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                     enviar_email(
                         email,
                         "IBM Journey | Confirmação de inscrição",
-                        f"Olá {nome},\n\nA tua inscrição foi confirmada.\nModo: {modo}\nEquipa: {equipa if equipa else '—'}"
+                        f"Olá {nome},\n\nA tua inscrição foi confirmada.\nModo: {modo}\nEquipa: {equipa if equipa else '—'} \nSe quiseres cancelar ou atualizar a inscrição, acede: https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app&d=DwIGaQ&c=BSDicqBQBDjDI9RkVyTcHQ&r=YjfJ_kr2WkXR-VrZ0gnxjD2J77rXGfRn9tFVZrDEBkA&m=XeOMlAmpY45XyTBbJFyynVegU2e88NxvRWO0wi3Wq6kpy3n4cGcUXCxXGCNVQgUb&s=JscuoVlLLpHaSfolIh6tAtRiJKinVL4KCA3jhH27sOk&e="
                     )
                     st.session_state.email_verificado = False
                     st.session_state.registro_existente = None
@@ -307,12 +307,12 @@ with st.expander("6️⃣ Technology", expanded=False):
 # 7️⃣ OpenDay Unenroll (Cancelamento)
 # -------------------------------
 with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
-    email_input = st.text_input("📧 Enter your email address to unenroll", key="unenroll_email_input")
+    email_input = st.text_input("📧 Enter your email to unenroll", key="unenroll_email_input")
 
-    if st.button("🔍 Verify enrollment"):
+    if st.button("🔍 Check enrollment"):
         email_cancel = email_input.strip()
         if not email_cancel:
-            st.warning("The Email field is required.")
+            st.warning("Email field is required.")
         else:
             registros = carregar_registos()
             registro = next(
@@ -320,7 +320,7 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
                 None
             )
             if registro is None:
-                st.info("⚠️ There is no enrollment associated with that email.")
+                st.info("⚠️ No enrollment found for this email.")
             else:
                 st.session_state.unenroll_registro = registro
                 st.session_state.unenroll_email_checked = email_cancel
@@ -331,16 +331,19 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
         participa_challenge = str(registro.get("Participa Challenge","")).strip().lower() == "sim"
         modo_atual = "Open Day + Challenge" if participa_challenge else "Open Day only"
 
-        st.success(f"✅ Enrollment found in mode: **{modo_atual}**")
-        st.warning("⚠️ Are you sure you want to unenroll?")
+        st.success(f"✅ Enrollment found in: **{modo_atual}**")
 
-        if st.button("🛑 Confirm cancellation"):
+        # Texto fixo acima do botão de confirmação
+        st.markdown("**⚠️ Please confirm your unenrollment below:**")
+
+        if st.button("🛑 Confirm Unenrollment"):
             apagar_registo(email_cancel)
-            st.success("🛑 Your enrollment has been successfully canceled! You will receive a confirmation email.")
+            st.success("🛑 Your enrollment has been successfully cancelled!")
             enviar_email(
                 email_cancel,
-                "IBM Journey | Inscrição cancelada",
-                f"Olá {registro.get('Nome','')},\n\nA tua inscrição foi cancelada.\nParticipação: {modo_atual}"
+                "IBM Journey | Enrollment Cancelled",
+                f"Olá {registro.get('Nome','')},\n\nA tua inscrição no Open Day, dia 2 de dezembro, foi cancelada.\nParticipação: {modo_atual}"
             )
             st.session_state.unenroll_registro = None
             st.session_state.unenroll_email_checked = None
+
