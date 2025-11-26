@@ -127,7 +127,7 @@ def equipe_cheia(nome_equipa, email_atual=None):
 # Cabeçalho fixo
 # -------------------------
 st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;'>Open Day - 📅 December 2nd | 📍Edifício Lumnia</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Open Day - 📅 December 2nd | 📍Edifício Lumnia (next to Gare do Oriente train station)</p>", unsafe_allow_html=True)
 
 # -------------------------------
 # 1️⃣ About IBM
@@ -145,7 +145,7 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 # -------------------------------
 # 2️⃣ OpenDay Enroll
 # -------------------------------
-with st.expander("2️⃣ OpenDay Enroll", expanded=False):
+with st.expander("2️⃣ Open Day Enroll", expanded=False):
     email = st.text_input("📧 Enter your email address", key="en_email")
     
     if st.button("🔍 Verify email"):
