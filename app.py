@@ -167,11 +167,12 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
         if registro_existente is None:
             st.success("✔️ Este email não está registado. Continua a inscrição:")
 
-            modo = st.radio(
-                "Seleciona o modo de participação:",
-                ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
-                key="en_modo"
-            )
+            modo = st.selectbox(
+    "Seleciona o modo de participação:",
+    ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
+    key="en_modo"
+)
+
 
             col1, col2 = st.columns(2)
             with col1:
@@ -335,15 +336,17 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
 
         # Texto fixo acima do botão de confirmação
         st.markdown("**⚠️ Please confirm your unenrollment below:**")
-if st.button("🛑 Confirm Unenrollment"):
-    apagar_registo(email_cancel)
-    st.success("🛑 Your enrollment has been successfully cancelled! You will receive an email with confirmation!")
-    
-    email_text = f"""Olá {registro.get('Nome','')},
+
+        # Botão de confirmação (indentado corretamente dentro do expander)
+        if st.button("🛑 Confirm Unenrollment"):
+            apagar_registo(email_cancel)
+            st.success("🛑 Your enrollment has been successfully cancelled! You will receive an email with confirmation!")
+
+            email_text = f"""Olá {registro.get('Nome','')},
 
 A tua inscrição no Open Day, dia 2 de dezembro, foi cancelada.
 Participação: {modo_atual} 
-Se quiseres cancelar ou atualizar a inscrição, acede: https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app&d=DwIGaQ&c=BSDicqBQBDjDI9RkVyTcHQ&r=YjfJ_kr2WkXR-VrZ0gnxjD2J77rXGfRn9tFVZrDEBkA&m=XeOMlAmpY45XyTBbJFyynVegU2e88NxvRWO0wi3Wq6kpy3n4cGcUXCxXGCNVQgUb&s=JscuoVlLLpHaSfolIh6tAtRiJKinVL4KCA3jhH27sOk&e=
+Se quiseres voltar a inscrever-te, acede: https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app&d=DwIGaQ&c=BSDicqBQBDjDI9RkVyTcHQ&r=YjfJ_kr2WkXR-VrZ0gnxjD2J77rXGfRn9tFVZrDEBkA&m=XeOMlAmpY45XyTBbJFyynVegU2e88NxvRWO0wi3Wq6kpy3n4cGcUXCxXGCNVQgUb&s=JscuoVlLLpHaSfolIh6tAtRiJKinVL4KCA3jhH27sOk&e=
 
 Obrigada,
 
@@ -355,14 +358,13 @@ Mobile: +351 91 927 93 50
 E-mail: mariana.relvas1@ibm.com
 """
 
-    enviar_email(
-        email_cancel,
-        "IBM Journey | Cancelamento da Inscrição",
-        email_text
-    )
-    
-    st.session_state.unenroll_registro = None
-    st.session_state.unenroll_email_checked = None
-roll_registro = None
+            enviar_email(
+                email_cancel,
+                "IBM Journey | Cancelamento da Inscrição",
+                email_text
+            )
+
+            st.session_state.unenroll_registro = None
             st.session_state.unenroll_email_checked = None
+
 
