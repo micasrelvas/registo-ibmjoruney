@@ -100,6 +100,29 @@ def enviar_email(destinatario, assunto, mensagem):
         st.warning(f"Não foi possível enviar email para {destinatario}: {e}")
 
 # -------------------------
+# Função para verificar se a equipa já tem 2 membros
+# -------------------------
+def equipe_cheia(nome_equipa, email_atual=None):
+    """
+    Verifica se a equipa já tem 2 ou mais membros.
+    email_atual: opcional, ignora este email na contagem (para updates)
+    """
+    if not nome_equipa:
+        return False
+
+    nome_equipa_norm = nome_equipa.strip().lower()
+    registros = carregar_registos()
+    
+    membros = [
+        r for r in registros
+        if str(r.get("Participa Challenge","")).strip().lower() == "sim"
+           and str(r.get("Nome da Equipa","")).strip().lower() == nome_equipa_norm
+           and (email_atual is None or str(r.get("Email","")).strip().lower() != email_atual.lower())
+    ]
+    
+    return len(membros) >= 2
+
+# -------------------------
 # Cabeçalho fixo
 # -------------------------
 st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
@@ -108,21 +131,6 @@ st.markdown("""
 **Estás pronto para levar a tua experiência com Inteligência Artificial a outro nível?**
 
 📅 **2 de dezembro | 🕙 10h – 17h30 | 📍 Edifício Lumnia (junto à Gare do Oriente)**
-
-Junta-te a nós para um dia exclusivo nos escritórios da IBM, onde vais descobrir o futuro do AI e pôr mãos à obra!
-""", unsafe_allow_html=True)
-
-# -------------------------------
-# 1️⃣ About IBM
-# -------------------------------
-with st.expander("1️⃣ About IBM", expanded=False):
-    st.markdown("""
-IBM, a pioneer in the tech industry, has been at the forefront of innovation for decades. Their contributions span across various fields, including AI, cloud computing, and quantum computing.
-
-• **AI and Machine Learning** – Leading the charge in AI development.  
-• **Cloud Solutions** – Scalable and flexible cloud services.  
-• **Quantum Computing** – Pushing the boundaries of computing.  
-• **Research & Open Source** – R&D and collaboration.
 """, unsafe_allow_html=True)
 
 # -------------------------------
@@ -130,43 +138,26 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 # -------------------------------
 with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 
-    # 📧 Pedir email
     email = st.text_input("📧 Introduz o teu Email", key="en_email")
 
-    # 🔍 Verificar email
     if st.button("🔍 Verificar email"):
         if not email.strip():
             st.warning("O campo Email é obrigatório.")
             st.stop()
-
         registros = carregar_registos()
         registro_existente = next(
-            (r for r in registros
-             if str(r.get("Email","")).strip().lower() == email.strip().lower()),
+            (r for r in registros if str(r.get("Email","")).strip().lower() == email.strip().lower()),
             None
         )
         st.session_state.email_verificado = True
         st.session_state.registro_existente = registro_existente
 
-    # Função para verificar se a equipa já tem 2 membros
-    def equipe_cheia(nome_equipa, email_atual=None):
-        if not nome_equipa:
-            return False
-        nome_equipa_norm = nome_equipa.strip().lower()
-        registros = carregar_registos()
-        membros = [
-            r for r in registros
-            if str(r.get("Participa Challenge","")).strip().lower() == "sim"
-               and str(r.get("Equipa","")).strip().lower() == nome_equipa_norm
-               and (email_atual is None or str(r.get("Email","")).strip().lower() != email_atual.lower())
-        ]
-        return len(membros) >= 2
-
-    # 🔹 Se email verificado, continuar
     if st.session_state.get("email_verificado"):
         registro_existente = st.session_state.get("registro_existente")
 
-        # 🟦 Novo registro
+        # -------------------------------
+        # Novo registro
+        # -------------------------------
         if registro_existente is None:
             st.success("✔️ Este email não está registado. Continua a inscrição:")
 
@@ -186,7 +177,6 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                     equipa = st.text_input("👥 Nome da Equipa (obrigatório)", key="en_equipa")
                     equipa = equipa.strip().title() if equipa else ""
 
-                    # ✅ Verificação imediata da equipa
                     if equipa and equipe_cheia(equipa):
                         st.warning(f"⚠️ A equipa '{equipa}' já está completa (2 membros). Escolhe outro nome de equipa.")
                         st.stop()
@@ -221,7 +211,9 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                 st.session_state.email_verificado = False
                 st.stop()
 
-        # 🟥 Email já existe → Update
+        # -------------------------------
+        # Update existente
+        # -------------------------------
         else:
             participa = str(registro_existente.get("Participa Challenge","")).strip().lower()
             modo_atual = "Attend Open Day + Participate in the Challenge" if participa == "sim" else "Attend Open Day only"
@@ -268,112 +260,4 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                 st.session_state.registro_existente = None
                 st.rerun()
 
-
-# -------------------------------
-# 3️⃣ Challenge
-# -------------------------------
-with st.expander("3️⃣ Challenge", expanded=False):
-    st.markdown("""
-**The Challenge:** Design an AI agent powered by IBM watsonx Orchestrate that helps people and businesses achieve more with less effort.
-
-**What’s Expected?**
-- Ideate with watsonx Orchestrate: Design a solution concept with orchestration features, integrations, and digital skills.  
-- Focus on Real-World Impact: Address challenges in HR, sales, customer service, finance, or procurement.  
-- Innovate for the Future of Work: Enhance human potential and productivity.  
-- Reference IBM Technology: Explain how watsonx Orchestrate’s features, skills, integrations, or workflows would be leveraged.
-""", unsafe_allow_html=True)
-
-# -------------------------------
-# 4️⃣ Requirements Checklist
-# -------------------------------
-with st.expander("4️⃣ Requirements Checklist", expanded=False):
-    st.markdown("""
-1 — Enroll in the tab "OpenDay Enroll"  
-2 — Create your IBM ID: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
-3 — Request Your Cloud Account following the workshop guide (includes watsonx Orchestrate).
-""", unsafe_allow_html=True)
-
-# -------------------------------
-# 5️⃣ Judging Criteria
-# -------------------------------
-with st.expander("5️⃣ Judging Criteria", expanded=False):
-    st.markdown("""
-**1️⃣ Application of Technology** — How effectively the chosen model(s) are integrated.  
-**2️⃣ Presentation** — Clarity and effectiveness of the solution presentation.  
-**3️⃣ Business Value** — Practical impact and alignment with business needs.  
-**4️⃣ Originality** — Uniqueness and creativity of the solution.
-""", unsafe_allow_html=True)
-
-# -------------------------------
-# 6️⃣ Technology
-# -------------------------------
-with st.expander("6️⃣ Technology", expanded=False):
-    st.markdown("""
-**Explore Before the OpenDay:** Familiarize yourself with watsonx Orchestrate:
-
-- [Product Overview](https://www.ibm.com/products/watsonx-orchestrate)  
-- [Demo Experience](https://www.ibm.com/products/watsonx-orchestrate/demos)  
-- [Integrations](https://www.ibm.com/products/watsonx-orchestrate/integrations)  
-- [Resources & Support](https://www.ibm.com/products/watsonx-orchestrate/resources)
-""", unsafe_allow_html=True)
-
-# -------------------------------
-# 7️⃣ OpenDay Unenroll (Cancelamento com confirmação)
-# -------------------------------
-with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
-
-    email_input = st.text_input("📧 Introduz o email para cancelar inscrição", key="unenroll_email_input")
-
-    if st.button("🔍 Verificar inscrição"):
-        email_cancel = email_input.strip()
-        if not email_cancel:
-            st.warning("O campo Email é obrigatório.")
-        else:
-            registros = carregar_registos()
-            registro = next(
-                (r for r in registros if str(r.get("Email","")).strip().lower() == email_cancel.lower()),
-                None
-            )
-            if registro is None:
-                st.info("⚠️ Não foi encontrada nenhuma inscrição associada a este email.")
-            else:
-                # Guardar na sessão
-                st.session_state.unenroll_registro = registro
-                st.session_state.unenroll_email_checked = email_cancel
-
-    # Se encontrou registo, pedir confirmação
-    if "unenroll_registro" in st.session_state:
-
-        registro = st.session_state.unenroll_registro
-        email_cancel = st.session_state.unenroll_email_checked
-
-        participa_challenge = str(registro.get("Participa Challenge","")).strip().lower() == "sim"
-        modo_atual = "Open Day + Challenge" if participa_challenge else "Open Day only"
-
-        st.success(f"✅ Inscrição encontrada em modo: **{modo_atual}**")
-
-        # Mensagem personalizada
-        if participa_challenge:
-            st.warning("⚠️ Estás inscrito no Open Day e no Desafio. Tens a certeza que queres cancelar a inscrição?")
-        else:
-            st.warning("⚠️ Estás apenas inscrito no Open Day. Tens a certeza que queres cancelar a inscrição?")
-
-        if st.button("🛑 Confirmar cancelamento"):
-            apagar_registo(email_cancel)
-
-            st.success("🛑 A tua inscrição foi cancelada com sucesso!")
-
-            # Enviar email de cancelamento
-            enviar_email(
-                email_cancel,
-                "IBM Journey | Inscrição cancelada",
-                f"Olá {registro.get('Nome','')},\n\n"
-                f"A tua inscrição foi cancelada.\n"
-                f"Modo anterior: {modo_atual}\n\n"
-                f"Se quiseres voltar a inscrever-te, usa o link: {st.secrets['APP_URL']}"
-            )
-
-            # limpar sessão
-            del st.session_state.unenroll_registro
-            del st.session_state.unenroll_email_checked
 
