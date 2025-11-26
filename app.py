@@ -145,7 +145,7 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 # -------------------------------
 # 2️⃣ OpenDay Enroll
 # -------------------------------
-with st.expander("2️⃣ Open Day Enroll", expanded=False):
+with st.expander("2️⃣ Open Day Enroll/Update", expanded=False):
     email = st.text_input("📧 Enter your email address", key="en_email")
     
     if st.button("🔍 Verify email"):
@@ -198,7 +198,7 @@ with st.expander("2️⃣ Open Day Enroll", expanded=False):
                         equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
                         datahora
                     )
-                    st.success(f"{nome}, your enrollment has been confirmed!")
+                    st.success(f"{nome}, your enrollment has been confirmed! You will receive an email with confirmation!")
                     enviar_email(
                         email,
                         "IBM Journey | Confirmação de inscrição",
@@ -254,7 +254,7 @@ E-mail: mariana.relvas1@ibm.com
                         equipa_nova if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
                         datahora
                     )
-                    st.success(f"✔️ Update Enrollment ({novo_modo})")
+                    st.success(f"✔️ Update Enrollment ({novo_modo}). You will receive an email with confirmation!")
 
                     enviar_email(
                         email,
