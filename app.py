@@ -141,10 +141,12 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 # -------------------------------
 with st.expander("2️⃣ OpenDay Enroll", expanded=False):
     email = st.text_input("📧 Introduz o teu Email", key="en_email")
+
     if st.button("🔍 Verificar email"):
         if not email.strip():
             st.warning("O campo Email é obrigatório.")
             st.stop()
+
         registros = carregar_registos()
         registro_existente = next(
             (r for r in registros if str(r.get("Email","")).strip().lower() == email.strip().lower()),
@@ -159,26 +161,30 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
         # Novo registro
         if registro_existente is None:
             st.success("✔️ Este email não está registado. Continua a inscrição:")
+
             modo = st.radio(
                 "Seleciona o modo de participação:",
                 ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
                 key="en_modo"
             )
+
             col1, col2 = st.columns(2)
             with col1:
                 nome = st.text_input("👤 Nome", key="en_nome")
                 apelido = st.text_input("👤 Apelido", key="en_apelido")
+
             with col2:
                 equipa = ""
                 if modo == "Attend Open Day + Participate in the Challenge":
                     equipa = st.text_input("👥 Nome da Equipa (obrigatório)", key="en_equipa")
                     equipa = equipa.strip().title() if equipa else ""
+
+                    # Aviso visual apenas
                     if equipa and equipe_cheia(equipa):
                         st.warning(f"⚠️ A equipa '{equipa}' já está completa (2 membros). Escolhe outro nome de equipa.")
 
-            # Botão sempre visível
+            # Botão de confirmação sempre visível
             if st.button("✅ Confirmar inscrição"):
-                # Verificação final ao submeter
                 if not nome or not apelido:
                     st.warning("Nome e Apelido são obrigatórios.")
                     st.stop()
@@ -187,8 +193,9 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                         st.warning("Nome da Equipa é obrigatório para o Challenge.")
                         st.stop()
                     if equipe_cheia(equipa):
-                        st.warning(f"⚠️ A equipa '{equipa}' já está completa (2 membros). Escolhe outro nome de equipa.")
+                        # Bloqueia a submissão sem mostrar aviso duplicado
                         st.stop()
+
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(
                     nome,
@@ -218,18 +225,20 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
             if novo_modo == "Attend Open Day + Participate in the Challenge":
                 equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="alt_equipa")
                 equipa_nova = equipa_nova.strip().title() if equipa_nova else ""
+
+                # Aviso visual apenas
                 if equipa_nova and equipe_cheia(equipa_nova, email_atual=email):
                     st.warning(f"⚠️ A equipa '{equipa_nova}' já está completa (2 membros). Escolhe outro nome de equipa.")
 
-            # Botão sempre visível
+            # Botão de atualização sempre visível
             if st.button("🔄 Atualizar inscrição"):
                 if novo_modo == "Attend Open Day + Participate in the Challenge":
                     if not equipa_nova:
                         st.warning("Nome da Equipa é obrigatório para o Challenge.")
                         st.stop()
                     if equipe_cheia(equipa_nova, email_atual=email):
-                        st.warning(f"⚠️ A equipa '{equipa_nova}' já está completa (2 membros). Escolhe outro nome de equipa.")
-                        st.stop()
+                        st.stop()  # Bloqueia sem aviso duplicado
+
                 apagar_registo(email)
                 datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 guardar_registo(
