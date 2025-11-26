@@ -44,6 +44,12 @@ h1, h2, h3 { color: #003366; text-align: center; background-color: #cce6ff; padd
 [data-baseweb="expander"] > div > div:first-child:hover { background-color: #3399ff !important; color: black !important; }
 div.stTextInput>div>div>input, div.stTextArea>div>div>textarea { background-color: white !important; color: black !important; font-family: 'IBM Plex Sans', Arial, sans-serif; }
 div.stTextInput>label, label { color: #003366 !important; font-weight: 600; font-family: 'IBM Plex Sans', Arial, sans-serif; }
+
+/* Altera a cor das labels dos radios para preto */
+[data-baseweb="radio"] label {
+    color: black !important;
+    font-weight: 600;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -137,9 +143,9 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 """, unsafe_allow_html=True)
 
 # -------------------------------
-# 2️⃣ OpenDay Enroll
+# 2️⃣ OpenDay Enrol
 # -------------------------------
-with st.expander("2️⃣ OpenDay Enroll", expanded=False):
+with st.expander("2️⃣ Open Day Enroll/Update", expanded=False):
     email = st.text_input("📧 Enter your email address", key="en_email")
 
     if st.button("🔍 Verify email"):
