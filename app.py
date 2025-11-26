@@ -209,7 +209,7 @@ Inscrição Atual: {modo}
 Equipa: {equipa if equipa else '—'}
 
 Se quiseres alterar ou cancelar a inscrição, acede:
-https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app
+https://registo-ibmjoruney-ebhbpznge9ec9vwgc58jlx.streamlit.app/
 
 Obrigada,
 
@@ -266,7 +266,7 @@ Inscrição Atual: {novo_modo}
 Equipa: {equipa_nova if equipa_nova else '—'}
 
 Se quiseres alterar ou cancelar a inscrição, acede:
-https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app
+https://registo-ibmjoruney-ebhbpznge9ec9vwgc58jlx.streamlit.app/
 
 Obrigada,
 
@@ -375,7 +375,7 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
 
 A tua inscrição no Open Day, dia 2 de dezembro, foi cancelada.
 Participação: {modo_atual} 
-Se quiseres voltar a inscrever-te, acede: https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app
+Se quiseres voltar a inscrever-te, acede: https://registo-ibmjoruney-ebhbpznge9ec9vwgc58jlx.streamlit.app/
 
 Obrigada,
 
