@@ -206,8 +206,27 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                     enviar_email(
                         email,
                         "IBM Journey | Confirmação de inscrição",
-                        f"Olá {nome},\n\nA tua inscrição foi confirmada.\nModo: {modo}\nEquipa: {equipa if equipa else '—'} \nSe quiseres cancelar ou atualizar a inscrição, acede: https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app&d=DwIGaQ&c=BSDicqBQBDjDI9RkVyTcHQ&r=YjfJ_kr2WkXR-VrZ0gnxjD2J77rXGfRn9tFVZrDEBkA&m=XeOMlAmpY45XyTBbJFyynVegU2e88NxvRWO0wi3Wq6kpy3n4cGcUXCxXGCNVQgUb&s=JscuoVlLLpHaSfolIh6tAtRiJKinVL4KCA3jhH27sOk&e="
+                       
+                    f"""Olá {nome},
+
+                    A tua inscrição no Open Day, dia 2 de dezembro, está confirmada.
+                    Inscrição Atual: {modo}
+                    Equipa: {equipa if equipa else '—'}
+                    
+                    Se quiseres alterar ou cancelar a inscrição, acede:
+                    https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app&d=DwIGaQ&c=BSDicqBQBDjDI9RkVyTcHQ&r=YjfJ_kr2WkXR-VrZ0gnxjD2J77rXGfRn9tFVZrDEBkA&m=XeOMlAmpY45XyTBbJFyynVegU2e88NxvRWO0wi3Wq6kpy3n4cGcUXCxXGCNVQgUb&s=JscuoVlLLpHaSfolIh6tAtRiJKinVL4KCA3jhH27sOk&e=
+                    
+                    Obrigada,
+                    
+                    Mariana Relvas
+                    Brand Storage Sales Specialist
+                    IBM Technology Portugal
+                    
+                    Mobile: +351 91 927 93 50
+                    E-mail: mariana.relvas1@ibm.com
+                    """
                     )
+                    
                     st.session_state.email_verificado = False
                     st.session_state.registro_existente = None
 
@@ -245,12 +264,29 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                     enviar_email(
                         email,
                         "IBM Journey | Inscrição atualizada",
-                        f"Olá {registro_existente.get('Nome','')},\n\nA tua inscrição foi atualizada.\nNovo modo: {novo_modo}\nEquipa: {equipa_nova if equipa_nova else '—'}"
+                       f"""Olá {registro_existente.get('Nome','')},
+
+                    A tua inscrição no Open Day, dia 2 de dezembro, foi atualizada.
+                    Inscrição Atual: {novo_modo}
+                    Equipa: {equipa_nova if equipa_nova else '—'}
+                    
+                    Se quiseres alterar ou cancelar a inscrição, acede:
+                    https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app&d=DwIGaQ&c=BSDicqBQBDjDI9RkVyTcHQ&r=YjfJ_kr2WkXR-VrZ0gnxjD2J77rXGfRn9tFVZrDEBkA&m=XeOMlAmpY45XyTBbJFyynVegU2e88NxvRWO0wi3Wq6kpy3n4cGcUXCxXGCNVQgUb&s=JscuoVlLLpHaSfolIh6tAtRiJKinVL4KCA3jhH27sOk&e=
+                    
+                    Obrigada,
+                    
+                    Mariana Relvas
+                    Brand Storage Sales Specialist
+                    IBM Technology Portugal
+                    
+                    Mobile: +351 91 927 93 50
+                    E-mail: mariana.relvas1@ibm.com
+                    """
                     )
                     st.session_state.email_verificado = False
                     st.session_state.registro_existente = None
 
-
+# -------------------------------
 # 3️⃣ Challenge
 # -------------------------------
 with st.expander("3️⃣ Challenge", expanded=False):
