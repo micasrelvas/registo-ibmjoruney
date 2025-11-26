@@ -121,7 +121,7 @@ def equipe_cheia(nome_equipa, email_atual=None):
 # Cabeçalho fixo
 # -------------------------
 st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;'>Open Day - 2 de dezembro | Edifício Lumnia</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Open Day - December 2nd | Edifício Lumnia</p>", unsafe_allow_html=True)
 
 # -------------------------------
 # 1️⃣ About IBM
@@ -265,7 +265,9 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
 # -------------------------------
 with st.expander("3️⃣ Challenge", expanded=False):
     st.markdown("""
-**The Challenge:** Design an AI agent powered by IBM watsonx Orchestrate that helps people and businesses achieve more with less effort.
+**The Challenge:** In teams of 2, you'll prepare a few slides to present your use case: identify a current problem, explain how to solve it, and show—through words or a diagram—how watsonx would power your solution.
+
+Presentations will take place on February 3 in front of a diverse jury (ISCTE, IBM, and Timestamp), who will evaluate your work. The best team may even earn a 2-week professional experience in June/July (availability to be confirmed)!
 
 **What’s Expected?**
 - Ideate with watsonx Orchestrate: Design a solution concept with orchestration features, integrations, and digital skills.  
@@ -279,9 +281,9 @@ with st.expander("3️⃣ Challenge", expanded=False):
 # -------------------------------
 with st.expander("4️⃣ Requirements Checklist", expanded=False):
     st.markdown("""
-1 — Enroll in the tab "OpenDay Enroll"  
-2 — Create your IBM ID: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
-3 — Request Your Cloud Account following the workshop guide (includes watsonx Orchestrate).
+✅ Enroll in the tab "OpenDay Enroll"  
+✅ Create your IBM ID using the same email you used to register for the Open Day: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
+  (If you already have an IBMid that uses the same email you used to register for the Open Day, proceed to log in, complete the authentication process)
 """, unsafe_allow_html=True)
 
 # -------------------------------
@@ -289,10 +291,10 @@ with st.expander("4️⃣ Requirements Checklist", expanded=False):
 # -------------------------------
 with st.expander("5️⃣ Judging Criteria", expanded=False):
     st.markdown("""
-**1️⃣ Application of Technology** — How effectively the chosen model(s) are integrated.  
-**2️⃣ Presentation** — Clarity and effectiveness of the solution presentation.  
-**3️⃣ Business Value** — Practical impact and alignment with business needs.  
-**4️⃣ Originality** — Uniqueness and creativity of the solution.
+**👉 Application of Technology** — How effectively the chosen model(s) are integrated.  
+**👉 Presentation** — Clarity and effectiveness of the solution presentation.  
+**👉 Business Value** — Practical impact and alignment with business needs.  
+**👉 Originality** — Uniqueness and creativity of the solution.
 """, unsafe_allow_html=True)
 
 # -------------------------------
