@@ -390,4 +390,4 @@ E-mail: mariana.relvas1@ibm.com
             enviar_email(email_cancel, "IBM Journey | Cancelamento da Inscrição", email_text)
 
             st.session_state.unenroll_registro = None
-            st.session_state.unenroll_email
+            #st.session_state.unenroll_email
