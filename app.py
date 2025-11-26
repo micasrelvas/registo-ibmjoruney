@@ -175,9 +175,10 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                     equipa = equipa.strip().title() if equipa else ""
                     if equipa and equipe_cheia(equipa):
                         st.warning(f"⚠️ A equipa '{equipa}' já está completa (2 membros). Escolhe outro nome de equipa.")
-                        st.stop()
 
+            # Botão sempre visível
             if st.button("✅ Confirmar inscrição"):
+                # Verificação final ao submeter
                 if not nome or not apelido:
                     st.warning("Nome e Apelido são obrigatórios.")
                     st.stop()
@@ -219,8 +220,8 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                 equipa_nova = equipa_nova.strip().title() if equipa_nova else ""
                 if equipa_nova and equipe_cheia(equipa_nova, email_atual=email):
                     st.warning(f"⚠️ A equipa '{equipa_nova}' já está completa (2 membros). Escolhe outro nome de equipa.")
-                    st.stop()
 
+            # Botão sempre visível
             if st.button("🔄 Atualizar inscrição"):
                 if novo_modo == "Attend Open Day + Participate in the Challenge":
                     if not equipa_nova:
@@ -248,6 +249,7 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                 st.session_state.email_verificado = False
                 st.session_state.registro_existente = None
                 st.rerun()
+
 
 # -------------------------------
 # 3️⃣ Challenge
