@@ -143,7 +143,7 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 """, unsafe_allow_html=True)
 
 # -------------------------------
-# 2️⃣ OpenDay Enroll (Atualizado)
+# 2️⃣ OpenDay Enroll
 # -------------------------------
 with st.expander("2️⃣ OpenDay Enroll", expanded=False):
     email = st.text_input("📧 Introduz o teu Email", key="en_email")
@@ -168,11 +168,10 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
             st.success("✔️ Este email não está registado. Continua a inscrição:")
 
             modo = st.selectbox(
-    "Seleciona o modo de participação:",
-    ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
-    key="en_modo"
-)
-
+                "Seleciona o modo de participação:",
+                ["Attend Open Day only", "Attend Open Day + Participate in the Challenge"],
+                key="en_modo"
+            )
 
             col1, col2 = st.columns(2)
             with col1:
@@ -184,7 +183,6 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                     equipa = st.text_input("👥 Nome da Equipa (obrigatório)", key="en_equipa")
                     equipa = equipa.strip().title() if equipa else ""
 
-            # Botão para confirmar inscrição
             if st.button("✅ Confirmar inscrição"):
                 if not nome or not apelido:
                     st.warning("Nome e Apelido são obrigatórios.")
@@ -195,25 +193,23 @@ with st.expander("2️⃣ OpenDay Enroll", expanded=False):
                 else:
                     datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     guardar_registo(
-                        nome,
-                        apelido,
-                        email,
+                        nome, apelido, email,
                         "Sim" if modo == "Attend Open Day + Participate in the Challenge" else "Não",
                         equipa if modo == "Attend Open Day + Participate in the Challenge" else "—",
                         datahora
                     )
                     st.success(f"{nome}, a tua inscrição foi confirmada!")
                     enviar_email(
-    email,
-    "IBM Journey | Confirmação de inscrição",
-    f"""Olá {nome},
+                        email,
+                        "IBM Journey | Confirmação de inscrição",
+                        f"""Olá {nome},
 
 A tua inscrição no Open Day, dia 2 de dezembro, está confirmada.
 Inscrição Atual: {modo}
 Equipa: {equipa if equipa else '—'}
 
 Se quiseres alterar ou cancelar a inscrição, acede:
-https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app&d=DwIGaQ&c=BSDicqBQBDjDI9RkVyTcHQ&r=YjfJ_kr2WkXR-VrZ0gnxjD2J77rXGfRn9tFVZrDEBkA&m=XeOMlAmpY45XyTBbJFyynVegU2e88NxvRWO0wi3Wq6kpy3n4cGcUXCxXGCNVQgUb&s=JscuoVlLLpHaSfolIh6tAtRiJKinVL4KCA3jhH27sOk&e=
+https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app
 
 Obrigada,
 
@@ -224,11 +220,10 @@ IBM Technology Portugal
 Mobile: +351 91 927 93 50
 E-mail: mariana.relvas1@ibm.com
 """
-)
+                    )
 
-st.session_state.email_verificado = False
-st.session_state.registro_existente = None
-
+                    st.session_state.email_verificado = False
+                    st.session_state.registro_existente = None
 
         # ---------- Update existente ----------
         else:
@@ -243,7 +238,6 @@ st.session_state.registro_existente = None
                 equipa_nova = st.text_input("👥 Nome da Equipa (obrigatório)", key="alt_equipa")
                 equipa_nova = equipa_nova.strip().title() if equipa_nova else ""
 
-            # Botão para atualizar inscrição
             if st.button("🔄 Atualizar inscrição"):
                 if novo_modo == "Attend Open Day + Participate in the Challenge" and not equipa_nova:
                     st.warning("Nome da Equipa é obrigatório para o Challenge.")
@@ -260,7 +254,7 @@ st.session_state.registro_existente = None
                         equipa_nova if novo_modo == "Attend Open Day + Participate in the Challenge" else "—",
                         datahora
                     )
-                                       st.success(f"✔️ Inscrição atualizada ({novo_modo})")
+                    st.success(f"✔️ Inscrição atualizada ({novo_modo})")
 
                     enviar_email(
                         email,
@@ -272,7 +266,7 @@ Inscrição Atual: {novo_modo}
 Equipa: {equipa_nova if equipa_nova else '—'}
 
 Se quiseres alterar ou cancelar a inscrição, acede:
-https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app&d=DwIGaQ&c=BSDicqBQBDjDI9RkVyTcHQ&r=YjfJ_kr2WkXR-VrZ0gnxjD2J77rXGfRn9tFVZrDEBkA&m=XeOMlAmpY45XyTBbJFyynVegU2e88NxvRWO0wi3Wq6kpy3n4cGcUXCxXGCNVQgUb&s=JscuoVlLLpHaSfolIh6tAtRiJKinVL4KCA3jhH27sOk&e=
+https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app
 
 Obrigada,
 
@@ -287,7 +281,6 @@ E-mail: mariana.relvas1@ibm.com
 
                     st.session_state.email_verificado = False
                     st.session_state.registro_existente = None
-
 
 # -------------------------------
 # 3️⃣ Challenge
@@ -372,11 +365,8 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
         modo_atual = "Open Day + Challenge" if participa_challenge else "Open Day only"
 
         st.success(f"✅ Enrollment found in: **{modo_atual}**")
-
-        # Texto fixo acima do botão de confirmação
         st.markdown("**⚠️ Please confirm your unenrollment below:**")
 
-        # Botão de confirmação (indentado corretamente dentro do expander)
         if st.button("🛑 Confirm Unenrollment"):
             apagar_registo(email_cancel)
             st.success("🛑 Your enrollment has been successfully cancelled! You will receive an email with confirmation!")
@@ -385,7 +375,7 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
 
 A tua inscrição no Open Day, dia 2 de dezembro, foi cancelada.
 Participação: {modo_atual} 
-Se quiseres voltar a inscrever-te, acede: https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app&d=DwIGaQ&c=BSDicqBQBDjDI9RkVyTcHQ&r=YjfJ_kr2WkXR-VrZ0gnxjD2J77rXGfRn9tFVZrDEBkA&m=XeOMlAmpY45XyTBbJFyynVegU2e88NxvRWO0wi3Wq6kpy3n4cGcUXCxXGCNVQgUb&s=JscuoVlLLpHaSfolIh6tAtRiJKinVL4KCA3jhH27sOk&e=
+Se quiseres voltar a inscrever-te, acede: https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app
 
 Obrigada,
 
@@ -397,13 +387,7 @@ Mobile: +351 91 927 93 50
 E-mail: mariana.relvas1@ibm.com
 """
 
-            enviar_email(
-                email_cancel,
-                "IBM Journey | Cancelamento da Inscrição",
-                email_text
-            )
+            enviar_email(email_cancel, "IBM Journey | Cancelamento da Inscrição", email_text)
 
             st.session_state.unenroll_registro = None
-            st.session_state.unenroll_email_checked = None
-
-
+            st.session_state.unenroll_email
