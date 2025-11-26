@@ -338,11 +338,18 @@ with st.expander("7️⃣ OpenDay Unenroll", expanded=False):
 
         if st.button("🛑 Confirm Unenrollment"):
             apagar_registo(email_cancel)
-            st.success("🛑 Your enrollment has been successfully cancelled!")
+            st.success("🛑 Your enrollment has been successfully cancelled! You will receive an email with confirmation!")
             enviar_email(
                 email_cancel,
                 "IBM Journey | Enrollment Cancelled",
-                f"Olá {registro.get('Nome','')},\n\nA tua inscrição no Open Day, dia 2 de dezembro, foi cancelada.\nParticipação: {modo_atual}"
+                f"Olá {registro.get('Nome','')},\n\nA tua inscrição no Open Day, dia 2 de dezembro, foi cancelada.\nParticipação: {modo_atual} \nSe quiseres cancelar ou atualizar a inscrição, acede: https://urldefense.proofpoint.com/v2/url?u=https-3A__registo-2Dibmjoruney-2Debhbpznge9ec9vwgc58jlx.streamlit.app&d=DwIGaQ&c=BSDicqBQBDjDI9RkVyTcHQ&r=YjfJ_kr2WkXR-VrZ0gnxjD2J77rXGfRn9tFVZrDEBkA&m=XeOMlAmpY45XyTBbJFyynVegU2e88NxvRWO0wi3Wq6kpy3n4cGcUXCxXGCNVQgUb&s=JscuoVlLLpHaSfolIh6tAtRiJKinVL4KCA3jhH27sOk&e= \nObrigada,
+
+Mariana Relvas
+Brand Storage Sales Specialist
+IBM Technology Portugal
+ 
+Mobile: +351 91 927 93 50   
+E-mail: mariana.relvas1@ibm.com"
             )
             st.session_state.unenroll_registro = None
             st.session_state.unenroll_email_checked = None
