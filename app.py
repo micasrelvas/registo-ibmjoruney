@@ -9,7 +9,7 @@ import time
 # -------------------------
 # Configuração da página
 # -------------------------
-st.set_page_config(page_title="🚀 IBM Journey powered by Timestamp - Open Day", layout="wide")
+st.set_page_config(page_title="🚀 IBM Journey powered by Timestamp - Challenge ", layout="wide")
 
 # -------------------------
 # Inicializar session_state
@@ -127,7 +127,7 @@ def equipe_cheia(nome_equipa, email_atual=None):
 # Cabeçalho fixo
 # -------------------------
 st.markdown("<h1>🚀 IBM Journey powered by Timestamp</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;'>Open Day - 📅 December 2nd | 🕐 10h - 17h30 | 📍Edifício Lumnia (next to Gare do Oriente train station)</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Challenge - 📅 February 3rd | 🕐 10am - 12pm | 📍ISCTE, Edificio 2 - sala C.506 </p>", unsafe_allow_html=True)
 
 # -------------------------------
 # 1️⃣ About IBM
