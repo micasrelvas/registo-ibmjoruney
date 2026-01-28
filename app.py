@@ -325,7 +325,7 @@ IBM, a pioneer in the tech industry, has been at the forefront of innovation for
 # -------------------------------
 # 2️⃣ Challenge
 # -------------------------------
-with st.expander("3️⃣ Challenge", expanded=False):
+with st.expander("2️⃣ Challenge", expanded=False):
     st.markdown("""
 **The Challenge:** In teams of 2, you'll prepare a few slides to present your use case: identify a current problem, explain how to solve it, and show—through words or a diagram—how watsonx would power your solution.
 
@@ -345,7 +345,7 @@ with st.expander("3️⃣ Challenge", expanded=False):
 # -------------------------------
 # 3️⃣ Requirements Checklist
 # -------------------------------
-with st.expander("4️⃣ Requirements Checklist", expanded=False):
+with st.expander("3️⃣ Requirements Checklist", expanded=False):
     st.markdown("""
 ✅ Enroll in the tab "OpenDay Enroll"  
 ✅ Create your IBM ID using the same email you used to register for the Open Day: [Create your IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776)  
@@ -355,7 +355,7 @@ with st.expander("4️⃣ Requirements Checklist", expanded=False):
 # -------------------------------
 # 4️⃣ Judging Criteria
 # -------------------------------
-with st.expander("5️⃣ Judging Criteria", expanded=False):
+with st.expander("4️⃣ Judging Criteria", expanded=False):
     st.markdown("""
 **👉 Application of Technology** — How effectively the chosen model(s) are integrated.  
 **👉 Presentation** — Clarity and effectiveness of the solution presentation.  
@@ -366,7 +366,7 @@ with st.expander("5️⃣ Judging Criteria", expanded=False):
 # -------------------------------
 # 5️⃣ Technology
 # -------------------------------
-with st.expander("6️⃣ Technology", expanded=False):
+with st.expander("5️⃣ Technology", expanded=False):
     st.markdown("""
 **Explore Before the OpenDay:** Familiarize yourself with watsonx Orchestrate:
 
